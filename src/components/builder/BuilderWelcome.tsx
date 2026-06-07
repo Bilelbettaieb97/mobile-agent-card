@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Check, Sparkles, SkipForward } from "lucide-react";
+import { Search, Check, Sparkles, SkipForward, ChevronDown } from "lucide-react";
 import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
 import { StepFooter } from "@/components/builder/StepFooter";
 import { Input } from "@/components/ui/input";
