@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Check, ArrowRight, Sparkles, SkipForward } from "lucide-react";
-import { StepHeader } from "@/components/builder/StepHeader";
+import { Search, Check, Sparkles, SkipForward } from "lucide-react";
+import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
+import { StepFooter } from "@/components/builder/StepFooter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BusinessCard } from "@/components/card/BusinessCard";
@@ -19,6 +20,8 @@ import type { CardData } from "@/lib/card-types";
 interface Props {
   initialProfessionId?: string;
   initialAccent?: CardData["accent"];
+  completedThrough: StepNum;
+  onGoToStep: (n: StepNum) => void;
   /** Profession sélectionnée → étape "compare" (vue 3 mises en page). */
   onChooseProfession: (profession: Profession) => void;
   /** Thème seul (sans persona) ou "Passer" → étape "essentials" directe. */
