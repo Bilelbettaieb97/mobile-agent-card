@@ -102,11 +102,13 @@ interface Props {
   update: <K extends keyof CardData>(k: K, v: CardData[K]) => void;
   plan: VariantId;
   setPlan: (p: VariantId) => void;
+  completedThrough: import("./StepHeader").StepNum;
+  onGoToStep: (n: import("./StepHeader").StepNum) => void;
   onBack: () => void;
   onNext: () => void;
 }
 
-export function BuilderSections({ step, data, setData, update, plan, setPlan, onBack, onNext }: Props) {
+export function BuilderSections({ step, data, setData, update, plan, setPlan, completedThrough, onGoToStep, onBack, onNext }: Props) {
   const isEssentials = step === "essentials";
   const defs = isEssentials ? ESSENTIALS : EXTRAS;
 
