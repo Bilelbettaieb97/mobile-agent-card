@@ -31,11 +31,28 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
     initialProfessionId ? PROFESSIONS.find((p) => p.id === initialProfessionId)?.themeId ?? initialAccent : initialAccent,
   );
   const [variant, setVariant] = useState<VariantId>("vitrine");
+  const [compareOpen, setCompareOpen] = useState(false);
 
   // Reset to the wow variant whenever the profession changes
   useEffect(() => {
     setVariant("vitrine");
   }, [selectedProfession?.id]);
+
+  // Lock body scroll while compare overlay is open
+  useEffect(() => {
+    if (!compareOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setCompareOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => { document.body.style.overflow = prev; window.removeEventListener("keydown", onKey); };
+  }, [compareOpen]);
+
+  // Build all 3 variants once for the comparison view
+  const compareCards = useMemo(() => {
+    if (!selectedProfession) return [];
+    return VARIANTS.map((v) => ({ ...v, data: buildPreviewCard(selectedProfession, v.id) }));
+  }, [selectedProfession]);
 
   // Preview data — derives from current selection + variant
   const previewData = useMemo<CardData>(() => {
