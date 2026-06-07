@@ -1,92 +1,84 @@
-# Refonte du parcours /builder en 5 étapes
+# Plan : ergonomie guidée du Builder (5 étapes)
 
-Aujourd'hui le parcours est en 3 étapes (welcome → essentials → extras → édition). La variante (essentielle/vitrine/pro) est cachée dans un panneau latéral et la sélection des sections est binaire (toggle puis "Continuer"), sans saisie en ligne. On le réorganise pour rendre le choix de mise en page central et le remplissage progressif.
+## Objectif
+Transformer le `/builder` en parcours fluide et guidé où chaque étape est immédiatement compréhensible, avec un CTA toujours visible et des repères visuels clairs.
 
-## Nouveau flux
+## État actuel identifié
+- Le header d'étape est aligné à gauche, peu visible.
+- Le CTA "Choisir ce template" est en bas, compact, pas suffisamment mis en avant.
+- Les étapes 3/4 ont le même pattern de header à gauche.
+- Pas de barre de progression globale.
 
+## Décisions de design
+- **Header centré** sur chaque étape : badge "Étape X / 5", titre H1, sous-titre explicatif. Centré horizontalement avec un max-width lisible.
+- **CTA double** sur l'étape 1 : un bouton principal "Choisir ce template" flottant sticky en **haut** de la zone de contenu (desktop) / en bas de l'écran (mobile), ET un second bouton identique en bas de la liste de métiers. Cela évite le scroll infini pour trouver le bouton.
+- **Boutons plus visibles** : taille `size="lg"`, icône, style plein avec `shadow-glow`, possiblement un `transform scale` subtil au hover.
+- **Barre de progression** fine en haut de page pour montrer visuellement où on en est dans les 5 étapes.
+- **Indicateurs de sélection** renforcés sur les cartes métier (bordure plus épaisse, fond plus contrasté).
+
+## Changements détaillés
+
+### 1. `BuilderWelcome.tsx`
+- Refactor le header : centrer verticalement et horizontalement le bloc titre/badge/sous-titre au-dessus du contenu principal.
+- Ajouter une **barre de progression sticky** fine en haut de page (h-1, couleur primary, width = step/5).
+- Ajouter un **CTA sticky en haut** de la colonne gauche (ou bandeau flottant desktop) : "Choisir ce template" `size="lg"` avec icône `ArrowRight`, style `shadow-glow`.
+- Garder le CTA existant en bas de la liste, mais le rendre plus visible (pleine largeur sur mobile, plus grand).
+- Le bouton "Passer" devient un lien texte discret à côté du CTA principal plutôt qu'un bouton ghost isolé.
+- Renforcer le style de la carte métier sélectionnée : ajouter un fond `primary/10`, une bordure `primary/50`, et un badge "Sélectionné".
+
+### 2. `BuilderCompare.tsx`
+- Uniformiser le header : centrer le titre/badge/sous-titre comme sur l'étape 1.
+- Conserver le CTA "Choisir cette mise en page" mais le rendre plus visible sur la variante Vitrine (badge + bouton plein + `shadow-glow`).
+- Ajouter la barre de progression sticky (2/5).
+
+### 3. `BuilderSections.tsx`
+- Uniformiser le header : centrer le titre/badge/sous-titre.
+- Ajouter la barre de progression sticky (3/5 ou 4/5).
+- Renforcer le CTA "Continuer" / "Personnaliser ma carte" en bas (pleine largeur mobile, `size="lg"`, `shadow-glow`).
+- Ajouter un petit texte "X sections activées" plus visible (badge de statut).
+
+### 4. `builder.tsx` (étape 5)
+- Uniformiser le header : centrer le titre/badge/sous-titre si applicable, ou ajouter le badge étape dans la topbar existante.
+- Ajouter la barre de progression sticky (5/5).
+- Renforcer le bouton "Activer ma carte" (`size="lg"`, `shadow-glow`).
+
+### 5. `styles.css`
+- Ajouter si besoin un token `--shadow-glow-strong` pour les CTA principaux.
+
+## Mise en page textuelle
+
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│ [==========●====]  ← barre de progression fine sticky          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│              ● Étape 1 / 5  (badge centré)                      │
+│            Choisissez votre univers  (H1 centré)                │
+│     Sélectionnez votre métier — votre carte sera…  (sous-titre) │
+│                                                                 │
+├────────────────────────────┬──────────────────────────────────────┤
+│ [CTA sticky] Choisir ce  │                                      │
+│  template  (Passer →)      │         Aperçu live                │
+│                            │         [PhoneFrame]               │
+│  [Tabs: Par métier /       │                                      │
+│   Par thème]               │                                      │
+│                            │                                      │
+│  [Rechercher…]             │                                      │
+│                            │                                      │
+│  ○ Agent immobilier        │                                      │
+│  ● Architecte   ← fond     │                                      │
+│    plus visible            │                                      │
+│  ○ …                       │                                      │
+│                            │                                      │
+│  [CTA bas] Choisir ce      │                                      │
+│   template  (Passer →)     │                                      │
+├────────────────────────────┴──────────────────────────────────────┤
 ```
-Étape 1 — Choix du métier (ou thème) + aperçu live
-   [Choisir ce template]   [Passer →]
-        │                       │
-        ▼                       ▼
-Étape 2 — Comparaison 3 variantes plein écran (Vitrine mise en avant)
-   [Choisir cette mise en page]
-        │
-        ▼
-Étape 3 — Sections essentielles (toggle + formulaires inline)
-   Identité · Contact · Boutons d'action · vCard · À propos
-        │
-        ▼
-Étape 4 — Sections complémentaires (toggle ouvre le formulaire)
-   Services · Stats · Réalisations · Témoignages · Vidéo · RDV · CTA · Langues · Réseaux
-        │
-        ▼
-Étape 5 — Édition libre (liste complète des briques + design)
-   [Activer ma carte]
-```
 
-## Détails par étape
+## Dépendances
+Aucun package supplémentaire. Tout est réalisable avec les composants existants (Button, Badge) et Tailwind.
 
-**Étape 1 — Choix du template**
-- Vue actuelle (BuilderWelcome), sans le panneau "variantes" à droite ni le bouton "Comparer les 3".
-- Le clic "Choisir ce template" → étape 2.
-- Lien secondaire "Passer cette étape" → applique un template par défaut (thème "gold" sans persona) et saute directement à l'étape 3.
-
-**Étape 2 — Comparaison des 3 mises en page**
-- Au lieu d'arriver sur l'édition directement, le mode plein écran "Comparer" s'ouvre automatiquement.
-- Présentation : 3 cartes côte à côte (Essentielle / Vitrine / Pro), Vitrine au centre, légèrement plus grande, avec un badge "Recommandée — tout le potentiel".
-- Chaque carte a un bouton "Choisir cette mise en page" → étape 3.
-- Bouton retour "Changer de métier" → étape 1.
-
-**Garantir que "Vitrine" montre toutes les briques disponibles**
-Actuellement chaque catégorie active 4-5 sections seulement en variante Vitrine. On élargit `vitrine` pour activer la liste maximale (toutes les sections compatibles avec la persona) : about, stats, services, listings (si `withListings`), testimonials, video, calendar, languages, cta, socials. Seules les sections sans contenu cohérent dans la persona restent off. Ainsi le visiteur voit le potentiel maximal d'un coup d'œil dans l'aperçu Vitrine.
-
-**Étape 3 — Sections essentielles avec saisie inline**
-Réécriture de la vue actuelle "essentials" :
-- Chaque ligne devient une carte expansible. Toggle ON → la carte s'ouvre et affiche ses champs (réutilise les composants `IdentityBrick`, `ContactBrick`, `ActionsBrick`, `AboutBrick` déjà dans `builder.tsx`).
-- Identité reste verrouillée ON, ouverte par défaut.
-- Aperçu live à droite (déjà en place) qui suit chaque saisie.
-- Bouton "Continuer" → étape 4.
-
-**Étape 4 — Sections complémentaires avec saisie inline**
-Même principe que l'étape 3 : toggle ON ouvre le formulaire de la brique correspondante (`ServicesBrick`, `StatsBrick`, `ListingsBrick`, etc.) directement dans la liste, l'utilisateur peut remplir avant de continuer.
-- Bouton "Continuer" → étape 5.
-
-**Étape 5 — Édition libre + activation**
-La vue "édition" actuelle (liste complète DnD avec toutes les briques, panneau aperçu, header). Le bouton principal en haut à droite devient "Activer ma carte" (gros bouton primaire, ouvre la `ShareDialog` existante avec lien public + QR). Les boutons existants (Réinitialiser, Changer de thème, Aperçu mobile) restent.
-
-## Changements techniques
-
-**`src/lib/profession-personas.ts`**
-- Reformuler `SECTION_PROFILES` : pour chaque catégorie, la variante `vitrine` active la liste maximale de sections supportées. Helper `vitrineAll()` qui active tout sauf ce qui n'a pas de contenu persona.
-- Garder `essentielle` (minimal) et `pro` (contact/crédibilité) inchangés.
-
-**`src/components/builder/BuilderWelcome.tsx`**
-- Retirer le mini-sélecteur de variantes et le bouton "Comparer les 3" (la comparaison devient une étape à part entière).
-- Le bouton principal "Choisir ce template" remplace l'actuel CTA.
-- Ajouter un lien discret "Passer cette étape →" sous le CTA.
-- `onConfirm` reçoit maintenant juste la sélection métier/thème, sans variant.
-
-**Nouveau `src/components/builder/BuilderCompare.tsx`**
-- Vue plein écran dédiée (extraction du Dialog actuel).
-- Props : `data`, `selectedProfession`, `onBack`, `onChoose(variant)`.
-- Layout 3 colonnes desktop, carrousel mobile snap.
-- Vitrine au centre, plus grande (scale ~1.05), badge "Recommandée".
-- Chaque carte cliquable → `onChoose(v.id)`.
-
-**`src/components/builder/BuilderSections.tsx`**
-- Refonte : `<label>` simple devient `<div>` avec accordéon contrôlé par le toggle.
-- Quand `toggles[key] === true`, render le formulaire de la brique (les composants `*Brick` doivent être exportés depuis `builder.tsx` ou déplacés dans `src/components/builder/bricks/` pour être partagés).
-- Identité ouverte par défaut, toggle masqué.
-- Le compteur "X sections actives" reste, l'aperçu live à droite reste.
-
-**`src/routes/builder.tsx`**
-- `step` devient `"welcome" | "compare" | "essentials" | "extras" | "edit"`.
-- Après `welcome.onConfirm`, on passe à `"compare"` (au lieu d'`"essentials"`).
-- `compare.onChoose(variant)` : applique le profil de sections de la variante via `buildPreviewCard(profession, variant)` au store, puis passe à `"essentials"`.
-- Lien "Passer" depuis welcome → applique le thème seul → passe directement à `"essentials"`.
-- Refactor : extraire `IdentityBrick`, `ContactBrick`, `ActionsBrick`, `AboutBrick`, `ServicesBrick`, `StatsBrick`, `ListingsBrick`, `TestimonialsBrick`, `VideoBrick`, `CalendarBrick`, `LanguagesBrick`, `CtaBrick`, `SocialsBrick` vers `src/components/builder/bricks.tsx` (ou un dossier `bricks/`) pour être réutilisables par `BuilderSections` et la vue d'édition finale.
-- Bouton principal de la vue "edit" : "Activer ma carte" qui ouvre `ShareDialog`.
-
-**Compteur d'étapes**
-Étiquette "Étape N / 5" mise à jour dans Welcome (1), Compare (2), Essentials (3), Extras (4), Edit (5).
+## Non inclus dans ce plan
+- Refonte des couleurs ou thème global.
+- Ajout d'animations complexes (hors hover/focus standards).
+- Modification du contenu des briques d'édition.

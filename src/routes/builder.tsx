@@ -120,15 +120,20 @@ function BuilderPage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      {/* Progress bar */}
+      <div className="sticky top-0 z-30 h-1 bg-muted/40 backdrop-blur">
+        <div className="h-full bg-primary" style={{ width: "100%", boxShadow: "0 0 12px var(--ring)" }} />
+      </div>
+
       {/* Topbar */}
-      <header className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur">
+      <header className="sticky top-1 z-20 border-b border-border bg-background/85 backdrop-blur">
         <div className="mx-auto max-w-7xl px-5 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-md grid place-items-center" style={{ background: "var(--gradient-gold)" }}>
               <Sparkles className="h-4 w-4 text-primary-foreground" strokeWidth={2.4} />
             </div>
             <span className="font-display text-base">Builder</span>
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground ml-2 hidden sm:inline">
+            <span className="text-[10px] uppercase tracking-wider text-primary ml-2 px-2 py-0.5 rounded-full border border-primary/30 bg-primary/5">
               Étape 5 / 5
             </span>
           </div>
@@ -147,12 +152,13 @@ function BuilderPage() {
             <Button size="sm" className="lg:hidden" onClick={() => setPreviewOpen(true)}>
               <Eye className="h-4 w-4 mr-1.5" /> Aperçu
             </Button>
-            <Button size="sm" onClick={() => setShareOpen(true)} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button size="sm" onClick={() => setShareOpen(true)} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[var(--shadow-glow)]">
               <Rocket className="h-4 w-4 mr-1.5" /> Activer ma carte
             </Button>
           </div>
         </div>
       </header>
+
 
       <div className="mx-auto max-w-7xl px-5 py-8 grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-10">
         {/* LEFT: editor */}

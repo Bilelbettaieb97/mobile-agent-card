@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Sparkles, ArrowRight, ArrowLeft, Check, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
+import { StepHeader } from "@/components/builder/StepHeader";
 import { THEMES_BY_ID } from "@/lib/card-themes";
 import type { CardData, BrickId } from "@/lib/card-types";
 import { renderBrickBody } from "@/components/builder/bricks";
@@ -117,7 +118,7 @@ export function BuilderSections({ step, data, setData, update, onBack, onNext }:
   const activeTheme = THEMES_BY_ID[data.accent] ?? THEMES_BY_ID.gold;
   const total = defs.filter((d) => isEnabled(data, d.key)).length;
 
-  const stepLabel = isEssentials ? "Étape 3 / 5" : "Étape 4 / 5";
+  const stepNum: 3 | 4 = isEssentials ? 3 : 4;
   const heading = isEssentials ? "Les sections essentielles" : "Sections complémentaires";
   const intro = isEssentials
     ? "Ce que toute carte de visite digitale doit contenir. Activez et remplissez les champs — l'aperçu se met à jour en direct."
@@ -125,16 +126,12 @@ export function BuilderSections({ step, data, setData, update, onBack, onNext }:
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-7xl px-5 py-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10">
+      <StepHeader step={stepNum} title={heading} subtitle={intro} />
+
+      <div className="mx-auto max-w-7xl px-5 pb-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10">
         {/* LEFT — sections list with inline forms */}
         <section className="flex flex-col min-h-0">
-          <div className="mb-6">
-            <p className="text-xs uppercase tracking-[0.18em] text-primary mb-2 flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" /> {stepLabel}
-            </p>
-            <h1 className="font-display text-4xl mb-2">{heading}</h1>
-            <p className="text-sm text-muted-foreground">{intro}</p>
-          </div>
+
 
           <div className="space-y-3">
             {defs.map((d) => {
@@ -212,20 +209,22 @@ export function BuilderSections({ step, data, setData, update, onBack, onNext }:
             })}
           </div>
 
-          <div className="mt-8 pt-4 border-t border-border flex items-center justify-between gap-4">
-            <Button variant="ghost" onClick={onBack}>
+          <div className="mt-8 pt-4 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:justify-between">
+            <Button variant="ghost" onClick={onBack} className="sm:w-auto">
               <ArrowLeft className="h-4 w-4 mr-1.5" /> Retour
             </Button>
-            <div className="flex items-center gap-4">
-              <span className="text-xs text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <span className="text-xs text-muted-foreground text-center sm:text-left inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary">
+                <Check className="h-3.5 w-3.5" />
                 {total} section{total > 1 ? "s" : ""} active{total > 1 ? "s" : ""}
               </span>
-              <Button size="lg" onClick={onNext}>
+              <Button size="lg" onClick={onNext} className="h-12 text-base shadow-[var(--shadow-glow)]">
                 {isEssentials ? "Continuer" : "Personnaliser ma carte"}
-                <ArrowRight className="h-4 w-4 ml-1.5" />
+                <ArrowRight className="h-5 w-5 ml-1.5" />
               </Button>
             </div>
           </div>
+
         </section>
 
         {/* RIGHT preview */}
