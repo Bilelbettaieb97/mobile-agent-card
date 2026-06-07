@@ -1,48 +1,43 @@
 ## Objectif
 
-Permettre à l'utilisateur de choisir un **métier** dans la brique « Thème » : la sélection applique automatiquement la palette complète associée. Chaque thème existant est mappé à plusieurs métiers courants, et un même thème peut être proposé pour plusieurs métiers (ex. « Coach sportif » → `crimson`, « Coach de vie » → `cream`).
+Améliorer la brique « Thème » pour que :
+1. La sélection d'un métier applique la palette **immédiatement** (déjà le cas — confirmer le comportement).
+2. La sélection courante soit **visuellement évidente** à tout moment, où qu'on soit dans la liste.
 
-## Ce qui sera ajouté / modifié
+## Modifications dans `src/routes/builder.tsx` — `ThemeBrick`
 
-### 1. `src/lib/card-themes.ts`
-Ajouter un mapping **métier → themeId** (typé) à côté du catalogue existant.
-
-- Nouvelle constante `PROFESSIONS: { id, label, category, themeId }[]` (~60 métiers courants regroupés par catégorie : Immobilier, Juridique, Santé, Beauté, Restauration, Tech, Finance, Coaching, Artisanat, Mode, Sport, Éducation, Voyage, Créatif, BTP, Événementiel, etc.).
-- Chaque entrée pointe vers un `themeId` existant parmi les 22 palettes déjà définies — **pas de nouvelle palette créée**.
-- Export `PROFESSIONS_BY_THEME` (groupement inverse) pour afficher les métiers suggérés sous chaque thème.
-
-### 2. `src/routes/builder.tsx` — refonte du `ThemeBrick`
-Deux onglets dans la brique Thème :
+### a. Bandeau de sélection courante (toujours visible, en haut)
+Au-dessus des onglets, afficher une carte récapitulative :
 
 ```text
-┌─ Par métier ─┬─ Par thème ─┐
-│ [Combobox / select]        │
-│  Catégorie ▾  Métier ▾     │
-│                            │
-│  ou liste filtrée :        │
-│  • Agent immobilier  → Or  │
-│  • Avocat            → ... │
-└────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│ ● [swatch]  Métier : Avocat                  │
+│            Thème appliqué : Marine           │
+└──────────────────────────────────────────────┘
 ```
 
-- **Onglet « Par métier »** (par défaut) : un champ de recherche + liste groupée par catégorie. Cliquer sur un métier appelle `update("accent", themeId)`. Le métier sélectionné est mémorisé dans `data.profession` pour ré-afficher l'état actif.
-- **Onglet « Par thème »** : grille actuelle des 22 palettes, inchangée visuellement, avec en plus la liste des métiers suggérés affichée sous le label.
+- Swatch carré (bg + surface + pastille accent) du thème actif.
+- Si `data.profession` est défini → libellé du métier ; sinon → « Thème personnalisé ».
+- Toujours affiché, sticky en haut du contenu de la brique.
 
-### 3. `src/lib/card-types.ts`
-Ajouter un champ optionnel `profession?: string` à `CardData` pour mémoriser le métier choisi (utile pour pré-cocher l'onglet « Par métier » et ré-ouvrir l'app sur le bon item). Valeur par défaut : `undefined`.
+### b. Indicateur de sélection renforcé sur les items
+Remplacer le `border-primary bg-accent/40` discret par :
+- Anneau extérieur 2px `ring-2 ring-primary ring-offset-2 ring-offset-card`.
+- Pastille « ✓ Sélectionné » (badge) en haut à droite de l'item actif.
+- Léger fond `bg-primary/5` pour distinguer du hover.
+- Petit point clignotant/animé `animate-pulse` sur le swatch actif (subtil).
 
-### 4. `src/lib/card-store.ts`
-Inclure `profession: undefined` dans l'état initial pour que la persistance locale ne casse pas.
+Appliqué aux deux onglets (liste métiers + grille thèmes).
+
+### c. Scroll automatique vers l'élément actif
+Quand on ouvre l'onglet « Par métier », si un métier est déjà sélectionné, scroller pour l'amener en vue (`ref.scrollIntoView({ block: "nearest" })` au mount).
+
+### d. Application immédiate (déjà OK)
+Le clic appelle déjà `update("profession", id)` + `update("accent", themeId)` qui propagent instantanément la palette via le store Zustand-like et CSS variables. Aucune action différée — confirmer simplement.
 
 ## Hors périmètre
+- Pas de nouveaux métiers ni de nouvelles palettes.
+- Pas de modification de `BusinessCard`, `card-themes.ts`, `card-store.ts`.
 
-- Pas de nouvelle palette de couleurs (le set actuel de 22 thèmes reste tel quel).
-- Pas de modification du rendu de `BusinessCard` — seul le sélecteur change.
-- Pas d'auto-suggestion basée sur le titre/poste saisi dans Identité (uniquement sélection explicite).
-
-## Fichiers touchés
-
-- `src/lib/card-themes.ts` (ajout mapping métiers)
-- `src/lib/card-types.ts` (champ `profession`)
-- `src/lib/card-store.ts` (defaut)
-- `src/routes/builder.tsx` (refonte `ThemeBrick` avec onglets + recherche)
+## Fichier touché
+- `src/routes/builder.tsx` (uniquement la fonction `ThemeBrick`).
