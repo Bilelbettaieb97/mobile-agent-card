@@ -24,6 +24,7 @@ import { useCardStore } from "@/lib/card-store";
 import type { CardData, Listing, Badge, Stat, BrickId, TestimonialsStyle } from "@/lib/card-types";
 import { BRICK_VARIANTS } from "@/lib/brick-variants";
 import { BuilderWelcome } from "@/components/builder/BuilderWelcome";
+import { BuilderSections } from "@/components/builder/BuilderSections";
 import { Palette } from "lucide-react";
 
 
@@ -43,9 +44,9 @@ function BuilderPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [gridOn, setGridOn] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const [step, setStep] = useState<"welcome" | "edit">("welcome");
+  const [step, setStep] = useState<"welcome" | "essentials" | "extras" | "edit">("welcome");
 
-  // After hydration, skip welcome if a profession was already saved
+  // After hydration, skip onboarding if a profession was already saved
   useEffect(() => {
     if (hydrated && data.profession) setStep("edit");
   }, [hydrated, data.profession]);
@@ -59,6 +60,34 @@ function BuilderPage() {
       <BuilderWelcome
         initialProfessionId={data.profession}
         initialAccent={data.accent}
+        onConfirm={(next) => {
+          setData(next);
+          setStep("essentials");
+        }}
+      />
+    );
+  }
+
+  if (step === "essentials") {
+    return (
+      <BuilderSections
+        step="essentials"
+        data={data}
+        onBack={() => setStep("welcome")}
+        onConfirm={(next) => {
+          setData(next);
+          setStep("extras");
+        }}
+      />
+    );
+  }
+
+  if (step === "extras") {
+    return (
+      <BuilderSections
+        step="extras"
+        data={data}
+        onBack={() => setStep("essentials")}
         onConfirm={(next) => {
           setData(next);
           setStep("edit");

@@ -70,7 +70,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
         <section className="flex flex-col min-h-0">
           <div className="mb-6">
             <p className="text-xs uppercase tracking-[0.18em] text-primary mb-2 flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" /> Étape 1 / 2
+              <Sparkles className="h-3.5 w-3.5" /> Étape 1 / 3
             </p>
             <h1 className="font-display text-4xl mb-2">Choisissez votre univers</h1>
             <p className="text-sm text-muted-foreground">
@@ -208,7 +208,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
               </div>
             </div>
             <Button size="lg" onClick={handleStart} className="shrink-0">
-              Commencer
+              Continuer
               <ArrowRight className="h-4 w-4 ml-1.5" />
             </Button>
           </div>
