@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CarteNfcRouteImport } from './routes/carte-nfc'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
@@ -27,6 +28,11 @@ const PricingRoute = PricingRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarteNfcRoute = CarteNfcRouteImport.update({
+  id: '/carte-nfc',
+  path: '/carte-nfc',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuilderRoute = BuilderRouteImport.update({
@@ -68,6 +74,7 @@ const DashboardAccountRoute = DashboardAccountRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/carte-nfc': typeof CarteNfcRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/carte-nfc': typeof CarteNfcRoute
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/card': typeof DashboardCardRoute
@@ -90,6 +98,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/carte-nfc': typeof CarteNfcRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/builder'
+    | '/carte-nfc'
     | '/dashboard'
     | '/pricing'
     | '/dashboard/account'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/builder'
+    | '/carte-nfc'
     | '/pricing'
     | '/dashboard/account'
     | '/dashboard/card'
@@ -124,6 +135,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/builder'
+    | '/carte-nfc'
     | '/dashboard'
     | '/pricing'
     | '/dashboard/account'
@@ -136,6 +148,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuilderRoute: typeof BuilderRoute
+  CarteNfcRoute: typeof CarteNfcRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   PricingRoute: typeof PricingRoute
 }
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/carte-nfc': {
+      id: '/carte-nfc'
+      path: '/carte-nfc'
+      fullPath: '/carte-nfc'
+      preLoaderRoute: typeof CarteNfcRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/builder': {
@@ -231,6 +251,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuilderRoute: BuilderRoute,
+  CarteNfcRoute: CarteNfcRoute,
   DashboardRoute: DashboardRouteWithChildren,
   PricingRoute: PricingRoute,
 }

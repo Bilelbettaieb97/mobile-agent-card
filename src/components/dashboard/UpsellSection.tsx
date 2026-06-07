@@ -1,4 +1,5 @@
 import { CreditCard, Globe, Nfc, Sparkles, ArrowRight, Check, Zap } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -16,6 +17,7 @@ export function UpsellSection({
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <CompactCard
+          to="/carte-nfc"
           icon={Nfc}
           tag="Carte physique NFC"
           title="Votre carte digitale dans votre poche"
@@ -63,9 +65,12 @@ export function UpsellSection({
           ]}
           cta="Commander ma carte"
           ctaSecondary="Voir les modèles"
+          ctaTo="/carte-nfc"
+          ctaSecondaryTo="/carte-nfc"
           highlight="🔥 +84% de prospects sauvegardent un contact reçu via NFC vs carte papier."
           visual={<NFCVisual />}
         />
+
 
         {/* UPSELL 2 — Website creation */}
         <UpsellCard
@@ -105,11 +110,12 @@ export function UpsellSection({
 
 function UpsellCard({
   tag, tagIcon: TagIcon, gradient, glowColor, title, subtitle,
-  price, priceSuffix, features, cta, ctaSecondary, highlight, visual,
+  price, priceSuffix, features, cta, ctaSecondary, ctaTo, ctaSecondaryTo, highlight, visual,
 }: {
   tag: string; tagIcon: any; gradient: string; glowColor: string;
   title: string; subtitle: string; price: string; priceSuffix: string;
   features: string[]; cta: string; ctaSecondary: string;
+  ctaTo?: string; ctaSecondaryTo?: string;
   highlight: string; visual: React.ReactNode;
 }) {
   return (
@@ -165,20 +171,33 @@ function UpsellCard({
 
       {/* CTAs */}
       <div className="relative flex flex-col sm:flex-row gap-2">
-        <Button className="flex-1 h-11 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-[0_4px_20px_-4px] shadow-primary/40">
-          {cta} <ArrowRight className="h-4 w-4 ml-1.5" />
-        </Button>
-        <Button variant="outline" className="h-11 sm:flex-none">
-          {ctaSecondary}
-        </Button>
+        {ctaTo ? (
+          <Button asChild className="flex-1 h-11 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-[0_4px_20px_-4px] shadow-primary/40">
+            <Link to={ctaTo}>{cta} <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+          </Button>
+        ) : (
+          <Button className="flex-1 h-11 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-[0_4px_20px_-4px] shadow-primary/40">
+            {cta} <ArrowRight className="h-4 w-4 ml-1.5" />
+          </Button>
+        )}
+        {ctaSecondaryTo ? (
+          <Button asChild variant="outline" className="h-11 sm:flex-none">
+            <Link to={ctaSecondaryTo}>{ctaSecondary}</Link>
+          </Button>
+        ) : (
+          <Button variant="outline" className="h-11 sm:flex-none">
+            {ctaSecondary}
+          </Button>
+        )}
       </div>
     </div>
   );
 }
 
-function CompactCard({ icon: Icon, tag, title, price, gradient }: { icon: any; tag: string; title: string; price: string; gradient: string }) {
-  return (
-    <button className={`group text-left rounded-2xl border border-border bg-gradient-to-br ${gradient} p-4 transition hover:-translate-y-0.5 hover:border-primary/40`}>
+
+function CompactCard({ icon: Icon, tag, title, price, gradient, to }: { icon: any; tag: string; title: string; price: string; gradient: string; to?: string }) {
+  const content = (
+    <>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="h-8 w-8 grid place-items-center rounded-lg bg-background/60 backdrop-blur text-primary">
@@ -190,9 +209,13 @@ function CompactCard({ icon: Icon, tag, title, price, gradient }: { icon: any; t
       </div>
       <div className="text-sm font-medium leading-snug mb-1">{title}</div>
       <div className="text-xs text-primary font-medium">{price}</div>
-    </button>
+    </>
   );
+  const cls = `group block text-left rounded-2xl border border-border bg-gradient-to-br ${gradient} p-4 transition hover:-translate-y-0.5 hover:border-primary/40`;
+  if (to) return <Link to={to} className={cls}>{content}</Link>;
+  return <button className={cls}>{content}</button>;
 }
+
 
 /* ============================================================
    Visuals
