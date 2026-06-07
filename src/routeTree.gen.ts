@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardStyleRouteImport } from './routes/dashboard.style'
 import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
+import { Route as DashboardCardRouteImport } from './routes/dashboard.card'
 import { Route as DashboardAccountRouteImport } from './routes/dashboard.account'
 
 const PricingRoute = PricingRouteImport.update({
@@ -53,6 +54,11 @@ const DashboardShareRoute = DashboardShareRouteImport.update({
   path: '/share',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardCardRoute = DashboardCardRouteImport.update({
+  id: '/card',
+  path: '/card',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardAccountRoute = DashboardAccountRouteImport.update({
   id: '/account',
   path: '/account',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
+  '/dashboard/card': typeof DashboardCardRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/builder': typeof BuilderRoute
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
+  '/dashboard/card': typeof DashboardCardRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
+  '/dashboard/card': typeof DashboardCardRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/pricing'
     | '/dashboard/account'
+    | '/dashboard/card'
     | '/dashboard/share'
     | '/dashboard/style'
     | '/dashboard/'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/builder'
     | '/pricing'
     | '/dashboard/account'
+    | '/dashboard/card'
     | '/dashboard/share'
     | '/dashboard/style'
     | '/dashboard'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/pricing'
     | '/dashboard/account'
+    | '/dashboard/card'
     | '/dashboard/share'
     | '/dashboard/style'
     | '/dashboard/'
@@ -179,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardShareRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/card': {
+      id: '/dashboard/card'
+      path: '/card'
+      fullPath: '/dashboard/card'
+      preLoaderRoute: typeof DashboardCardRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/account': {
       id: '/dashboard/account'
       path: '/account'
@@ -191,6 +210,7 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardAccountRoute: typeof DashboardAccountRoute
+  DashboardCardRoute: typeof DashboardCardRoute
   DashboardShareRoute: typeof DashboardShareRoute
   DashboardStyleRoute: typeof DashboardStyleRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -198,6 +218,7 @@ interface DashboardRouteChildren {
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAccountRoute: DashboardAccountRoute,
+  DashboardCardRoute: DashboardCardRoute,
   DashboardShareRoute: DashboardShareRoute,
   DashboardStyleRoute: DashboardStyleRoute,
   DashboardIndexRoute: DashboardIndexRoute,
@@ -216,3 +237,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
