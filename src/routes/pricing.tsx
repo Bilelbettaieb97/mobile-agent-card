@@ -9,6 +9,7 @@ import {
   Check, X, Crown, Sparkles, ShieldCheck, Clock, ArrowLeft, Rocket, Gift,
   Star, Users, Coffee, TrendingUp, Calendar,
 } from "lucide-react";
+import { UpsellSection } from "@/components/dashboard/UpsellSection";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -370,6 +371,13 @@ function PricingPage() {
           ))}
         </Accordion>
       </section>
+
+      {/* Premium upsells */}
+      <UpsellSection
+        title="Renforcez votre stack"
+        subtitle="Deux options pour aller plus loin que la carte digitale — pensées pour les pros qui veulent un impact maximum."
+      />
+
 
       {/* Trust strip */}
       <section className="border-t border-border bg-muted/20">
