@@ -67,7 +67,7 @@ export function BusinessCard({ data }: { data: CardData }) {
   };
 
   return (
-    <div className="w-full bg-background text-foreground" style={styleVars}>
+    <div className="w-full" style={styleVars}>
       {/* Top bar */}
       <div className="flex items-center justify-between px-5 pt-5">
         <div className="flex items-center gap-2">
