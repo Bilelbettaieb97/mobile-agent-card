@@ -115,20 +115,40 @@ export function BuilderCompare({ profession, onBack, onChoose }: Props) {
                       )}
                     </div>
 
-                    {/* Titre */}
+                    {/* Titre + nombre de sections */}
                     <div className="text-center">
                       <div className="font-display text-lg">{v.label}</div>
                       <div className="text-xs text-muted-foreground mt-0.5">{v.hint}</div>
+                      <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-full px-2 py-0.5">
+                        <Layers className="h-3 w-3" /> {v.sectionCount} sections incluses
+                      </div>
                     </div>
+
+                    {/* Puces différenciantes */}
+                    <ul className="w-full space-y-1.5 text-xs text-foreground/80">
+                      {VARIANT_BULLETS[v.id].map((b) => (
+                        <li key={b} className="flex items-start gap-1.5">
+                          <Check className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
 
                     {/* Phone preview */}
                     <div className="origin-top">
                       <div className="scale-[0.88] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-100 -mx-4">
-                        <PhoneFrame>
+                        <PhoneFrame scrollHint>
                           <BusinessCard data={v.data} />
                         </PhoneFrame>
                       </div>
                     </div>
+
+                    {/* Indice scroll */}
+                    <div className="-mt-2 inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <ChevronDown className="h-3 w-3 animate-bounce" />
+                      Faites défiler l'aperçu
+                    </div>
+
 
                     {/* CTA */}
                     <Button
