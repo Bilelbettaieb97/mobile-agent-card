@@ -215,8 +215,8 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
         </section>
 
         {/* RIGHT — live preview */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-8">
+        <aside className="hidden lg:block h-full overflow-hidden">
+          <div className="h-full flex flex-col justify-center">
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs uppercase tracking-[0.18em] text-primary flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5" /> Aperçu live
