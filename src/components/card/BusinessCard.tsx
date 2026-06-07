@@ -6,21 +6,7 @@ import {
 } from "lucide-react";
 import type { CardData, Testimonial, TestimonialsStyle, Listing, Service, Language, Stat, Badge } from "@/lib/card-types";
 import { THEMES_BY_ID } from "@/lib/card-themes";
-
-function buildVCard(d: CardData) {
-  return [
-    "BEGIN:VCARD",
-    "VERSION:3.0",
-    `FN:${d.name}`,
-    `ORG:${d.agency}`,
-    `TITLE:${d.title}`,
-    `TEL;TYPE=CELL:${d.phone}`,
-    `EMAIL:${d.email}`,
-    `URL:https://${d.website}`,
-    `ADR;TYPE=WORK:;;${d.area};;;;France`,
-    "END:VCARD",
-  ].join("\n");
-}
+import { downloadVCard } from "@/lib/vcard";
 
 export function BusinessCard({ data }: { data: CardData }) {
   const [copied, setCopied] = useState(false);
@@ -41,15 +27,8 @@ export function BusinessCard({ data }: { data: CardData }) {
     color:                     theme.text,
   } as React.CSSProperties;
 
-  const handleSave = () => {
-    const blob = new Blob([buildVCard(data)], { type: "text/vcard" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${data.name.toLowerCase().replace(/\s+/g, "-")}.vcf`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const handleSave = () => downloadVCard(data);
+
 
   const handleShare = async () => {
     const shareData = {
