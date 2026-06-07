@@ -1,34 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState, type ReactNode } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Switch } from "@/components/ui/switch";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  RotateCcw, Eye, X, ExternalLink, Sparkles, GripVertical, Grid3x3, Palette, Rocket,
+  RotateCcw, Eye, X, ExternalLink, Grid3x3, Palette, LayoutDashboard,
 } from "lucide-react";
-import {
-  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy, arrayMove,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
 import { ShareDialog } from "@/components/card/ShareDialog";
 import { useCardStore } from "@/lib/card-store";
-import type { CardData, BrickId } from "@/lib/card-types";
+import type { CardData } from "@/lib/card-types";
 import { BuilderWelcome } from "@/components/builder/BuilderWelcome";
 import { BuilderSections } from "@/components/builder/BuilderSections";
 import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
 import { StepFooter } from "@/components/builder/StepFooter";
-import {
-  BRICK_META,
-  VariantPicker,
-  renderBrickBody,
-  type BrickProps,
-} from "@/components/builder/bricks";
+import { BrickList } from "@/components/builder/BrickList";
+import { buildPreviewCard, buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
+
 import { buildPreviewCard, buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
 
 
