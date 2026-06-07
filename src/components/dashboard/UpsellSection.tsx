@@ -65,9 +65,12 @@ export function UpsellSection({
           ]}
           cta="Commander ma carte"
           ctaSecondary="Voir les modèles"
+          ctaTo="/carte-nfc"
+          ctaSecondaryTo="/carte-nfc"
           highlight="🔥 +84% de prospects sauvegardent un contact reçu via NFC vs carte papier."
           visual={<NFCVisual />}
         />
+
 
         {/* UPSELL 2 — Website creation */}
         <UpsellCard
