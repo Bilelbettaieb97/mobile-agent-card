@@ -209,20 +209,22 @@ export function BuilderSections({ step, data, setData, update, onBack, onNext }:
             })}
           </div>
 
-          <div className="mt-8 pt-4 border-t border-border flex items-center justify-between gap-4">
-            <Button variant="ghost" onClick={onBack}>
+          <div className="mt-8 pt-4 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:justify-between">
+            <Button variant="ghost" onClick={onBack} className="sm:w-auto">
               <ArrowLeft className="h-4 w-4 mr-1.5" /> Retour
             </Button>
-            <div className="flex items-center gap-4">
-              <span className="text-xs text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <span className="text-xs text-muted-foreground text-center sm:text-left inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary">
+                <Check className="h-3.5 w-3.5" />
                 {total} section{total > 1 ? "s" : ""} active{total > 1 ? "s" : ""}
               </span>
-              <Button size="lg" onClick={onNext}>
+              <Button size="lg" onClick={onNext} className="h-12 text-base shadow-[var(--shadow-glow)]">
                 {isEssentials ? "Continuer" : "Personnaliser ma carte"}
-                <ArrowRight className="h-4 w-4 ml-1.5" />
+                <ArrowRight className="h-5 w-5 ml-1.5" />
               </Button>
             </div>
           </div>
+
         </section>
 
         {/* RIGHT preview */}
