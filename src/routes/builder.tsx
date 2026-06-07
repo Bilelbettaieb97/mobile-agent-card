@@ -90,8 +90,8 @@ function BuilderPage() {
         onChooseProfession={(p) => {
           update("profession", p.id);
           update("accent", p.themeId as CardData["accent"]);
-          setData(buildPreviewCard(p, "vitrine"));
-          setPlan("vitrine");
+          setData(buildPreviewCard(p, "essentielle"));
+          setPlan("essentielle");
           advanceTo("essentials");
         }}
         onChooseTheme={(themeId) => {
