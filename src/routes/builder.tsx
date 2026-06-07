@@ -515,3 +515,110 @@ function ImportJsonButton({ onImport }: { onImport: (d: CardData) => void }) {
     </>
   );
 }
+
+/* ---------- Additional brick bodies ---------- */
+
+function VideoBrick({ data, update }: BrickProps) {
+  return (
+    <div className="space-y-3">
+      <Field label="Titre de la vidéo">
+        <Input value={data.videoTitle} onChange={(e) => update("videoTitle", e.target.value)} />
+      </Field>
+      <Field label="Lien YouTube (watch, youtu.be ou shorts)">
+        <Input value={data.videoUrl} onChange={(e) => update("videoUrl", e.target.value)} placeholder="https://www.youtube.com/watch?v=..." />
+      </Field>
+      <p className="text-xs text-muted-foreground">L'aperçu intègre la vidéo via youtube.com/embed.</p>
+    </div>
+  );
+}
+
+function ServicesBrick({ data, update }: BrickProps) {
+  const set = (id: string, patch: Partial<typeof data.services[number]>) =>
+    update("services", data.services.map((s) => s.id === id ? { ...s, ...patch } : s));
+  const add = () => update("services", [...data.services, { id: crypto.randomUUID(), title: "Nouveau service", description: "" }]);
+  const remove = (id: string) => update("services", data.services.filter((s) => s.id !== id));
+  return (
+    <div className="space-y-3">
+      {data.services.map((s) => (
+        <div key={s.id} className="rounded-xl border border-border p-3 space-y-2">
+          <Input placeholder="Titre" value={s.title} onChange={(e) => set(s.id, { title: e.target.value })} />
+          <Textarea rows={2} placeholder="Description courte" value={s.description} onChange={(e) => set(s.id, { description: e.target.value })} />
+          <div className="flex justify-end">
+            <Button type="button" variant="ghost" size="icon" onClick={() => remove(s.id)}><Trash2 className="h-4 w-4" /></Button>
+          </div>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={add}><Plus className="h-4 w-4 mr-1.5" />Ajouter un service</Button>
+    </div>
+  );
+}
+
+function TestimonialsBrick({ data, update }: BrickProps) {
+  const set = (id: string, patch: Partial<typeof data.testimonials[number]>) =>
+    update("testimonials", data.testimonials.map((t) => t.id === id ? { ...t, ...patch } : t));
+  const add = () => update("testimonials", [...data.testimonials, { id: crypto.randomUUID(), name: "Prénom N.", role: "Client", text: "", rating: 5 }]);
+  const remove = (id: string) => update("testimonials", data.testimonials.filter((t) => t.id !== id));
+  return (
+    <div className="space-y-3">
+      {data.testimonials.map((t) => (
+        <div key={t.id} className="rounded-xl border border-border p-3 space-y-2">
+          <div className="flex gap-2">
+            <Input placeholder="Nom" value={t.name} onChange={(e) => set(t.id, { name: e.target.value })} />
+            <Input placeholder="Rôle" value={t.role} onChange={(e) => set(t.id, { role: e.target.value })} />
+          </div>
+          <Textarea rows={3} placeholder="Témoignage" value={t.text} onChange={(e) => set(t.id, { text: e.target.value })} />
+          <div className="flex items-center justify-between">
+            <Field label="Note (1-5)" className="w-24">
+              <Input type="number" min={1} max={5} value={t.rating}
+                onChange={(e) => set(t.id, { rating: Math.max(1, Math.min(5, Number(e.target.value) || 5)) })} />
+            </Field>
+            <Button type="button" variant="ghost" size="icon" onClick={() => remove(t.id)}><Trash2 className="h-4 w-4" /></Button>
+          </div>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={add}><Plus className="h-4 w-4 mr-1.5" />Ajouter un témoignage</Button>
+    </div>
+  );
+}
+
+function CalendarBrick({ data, update }: BrickProps) {
+  return (
+    <div className="space-y-3">
+      <Field label="Libellé du bouton"><Input value={data.calendarLabel} onChange={(e) => update("calendarLabel", e.target.value)} /></Field>
+      <Field label="URL (Calendly, Cal.com, Google Calendar…)">
+        <Input value={data.calendarUrl} onChange={(e) => update("calendarUrl", e.target.value)} placeholder="https://calendly.com/..." />
+      </Field>
+    </div>
+  );
+}
+
+function LanguagesBrick({ data, update }: BrickProps) {
+  const set = (id: string, patch: Partial<typeof data.languages[number]>) =>
+    update("languages", data.languages.map((l) => l.id === id ? { ...l, ...patch } : l));
+  const add = () => update("languages", [...data.languages, { id: crypto.randomUUID(), name: "Langue", level: "Courant" }]);
+  const remove = (id: string) => update("languages", data.languages.filter((l) => l.id !== id));
+  return (
+    <div className="space-y-2">
+      {data.languages.map((l) => (
+        <div key={l.id} className="flex gap-2">
+          <Input placeholder="Langue" value={l.name} onChange={(e) => set(l.id, { name: e.target.value })} />
+          <Input placeholder="Niveau" value={l.level} onChange={(e) => set(l.id, { level: e.target.value })} />
+          <Button type="button" variant="ghost" size="icon" onClick={() => remove(l.id)}><Trash2 className="h-4 w-4" /></Button>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={add}><Plus className="h-4 w-4 mr-1.5" />Ajouter une langue</Button>
+    </div>
+  );
+}
+
+function CtaBrick({ data, update }: BrickProps) {
+  return (
+    <div className="space-y-3">
+      <Field label="Titre"><Input value={data.ctaTitle} onChange={(e) => update("ctaTitle", e.target.value)} /></Field>
+      <Field label="Texte"><Textarea rows={2} value={data.ctaText} onChange={(e) => update("ctaText", e.target.value)} /></Field>
+      <Field label="Libellé du bouton"><Input value={data.ctaButtonLabel} onChange={(e) => update("ctaButtonLabel", e.target.value)} /></Field>
+      <Field label="URL du bouton"><Input value={data.ctaButtonUrl} onChange={(e) => update("ctaButtonUrl", e.target.value)} /></Field>
+    </div>
+  );
+}
+
