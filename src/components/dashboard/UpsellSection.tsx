@@ -178,9 +178,9 @@ function UpsellCard({
   );
 }
 
-function CompactCard({ icon: Icon, tag, title, price, gradient }: { icon: any; tag: string; title: string; price: string; gradient: string }) {
-  return (
-    <button className={`group text-left rounded-2xl border border-border bg-gradient-to-br ${gradient} p-4 transition hover:-translate-y-0.5 hover:border-primary/40`}>
+function CompactCard({ icon: Icon, tag, title, price, gradient, to }: { icon: any; tag: string; title: string; price: string; gradient: string; to?: string }) {
+  const content = (
+    <>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="h-8 w-8 grid place-items-center rounded-lg bg-background/60 backdrop-blur text-primary">
@@ -192,9 +192,13 @@ function CompactCard({ icon: Icon, tag, title, price, gradient }: { icon: any; t
       </div>
       <div className="text-sm font-medium leading-snug mb-1">{title}</div>
       <div className="text-xs text-primary font-medium">{price}</div>
-    </button>
+    </>
   );
+  const cls = `group block text-left rounded-2xl border border-border bg-gradient-to-br ${gradient} p-4 transition hover:-translate-y-0.5 hover:border-primary/40`;
+  if (to) return <Link to={to} className={cls}>{content}</Link>;
+  return <button className={cls}>{content}</button>;
 }
+
 
 /* ============================================================
    Visuals
