@@ -110,11 +110,12 @@ export function UpsellSection({
 
 function UpsellCard({
   tag, tagIcon: TagIcon, gradient, glowColor, title, subtitle,
-  price, priceSuffix, features, cta, ctaSecondary, highlight, visual,
+  price, priceSuffix, features, cta, ctaSecondary, ctaTo, ctaSecondaryTo, highlight, visual,
 }: {
   tag: string; tagIcon: any; gradient: string; glowColor: string;
   title: string; subtitle: string; price: string; priceSuffix: string;
   features: string[]; cta: string; ctaSecondary: string;
+  ctaTo?: string; ctaSecondaryTo?: string;
   highlight: string; visual: React.ReactNode;
 }) {
   return (
@@ -170,16 +171,29 @@ function UpsellCard({
 
       {/* CTAs */}
       <div className="relative flex flex-col sm:flex-row gap-2">
-        <Button className="flex-1 h-11 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-[0_4px_20px_-4px] shadow-primary/40">
-          {cta} <ArrowRight className="h-4 w-4 ml-1.5" />
-        </Button>
-        <Button variant="outline" className="h-11 sm:flex-none">
-          {ctaSecondary}
-        </Button>
+        {ctaTo ? (
+          <Button asChild className="flex-1 h-11 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-[0_4px_20px_-4px] shadow-primary/40">
+            <Link to={ctaTo}>{cta} <ArrowRight className="h-4 w-4 ml-1.5" /></Link>
+          </Button>
+        ) : (
+          <Button className="flex-1 h-11 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-[0_4px_20px_-4px] shadow-primary/40">
+            {cta} <ArrowRight className="h-4 w-4 ml-1.5" />
+          </Button>
+        )}
+        {ctaSecondaryTo ? (
+          <Button asChild variant="outline" className="h-11 sm:flex-none">
+            <Link to={ctaSecondaryTo}>{ctaSecondary}</Link>
+          </Button>
+        ) : (
+          <Button variant="outline" className="h-11 sm:flex-none">
+            {ctaSecondary}
+          </Button>
+        )}
       </div>
     </div>
   );
 }
+
 
 function CompactCard({ icon: Icon, tag, title, price, gradient, to }: { icon: any; tag: string; title: string; price: string; gradient: string; to?: string }) {
   const content = (
