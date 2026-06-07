@@ -33,20 +33,27 @@ export const Route = createFileRoute("/carte-nfc")({
 function NfcLandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <StockBar />
       <Nav />
       <Hero />
       <SocialProofBar />
+      <VideoSection />
       <ProblemSection />
       <HowItWorks />
+      <Configurator />
       <Models />
+      <ComparisonTable />
       <FeatureGrid />
+      <GuaranteeSection />
       <Testimonials />
       <Pricing />
       <FAQ />
       <FinalCTA />
+      <FomoToasts />
     </div>
   );
 }
+
 
 /* ============================================================
    NAV
