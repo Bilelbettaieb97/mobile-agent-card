@@ -139,11 +139,11 @@ function BuilderPage() {
     );
   }
 
-  // Step 5 — edit
+  // Step 4 — edit
   return (
     <main className="min-h-screen bg-background text-foreground">
       <StepHeader
-        step={5}
+        step={4}
         title="Personnalisez et activez"
         subtitle="Réorganisez vos sections, ajustez le style — l'aperçu se met à jour en direct."
         completedThrough={completedThrough}
