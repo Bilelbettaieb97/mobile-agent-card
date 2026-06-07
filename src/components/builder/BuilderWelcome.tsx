@@ -335,40 +335,82 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
             </button>
           </header>
 
-          {/* Carrousel des 3 phones */}
+          {/* Comparaison — grille fluide sur desktop, snap-carousel sur mobile */}
           <div className="flex-1 overflow-x-auto overflow-y-auto overscroll-contain">
-            <div className="min-w-full h-full flex items-start lg:items-center justify-start lg:justify-center gap-6 px-5 py-6 snap-x snap-mandatory">
+            <div
+              className="
+                min-h-full h-full
+                flex lg:grid lg:grid-cols-3
+                items-stretch justify-start lg:justify-items-center
+                gap-4 lg:gap-6 xl:gap-8
+                px-[max(env(safe-area-inset-left),1rem)] lg:px-8
+                py-6
+                snap-x snap-mandatory lg:snap-none
+                w-max lg:w-full mx-auto
+              "
+            >
               {compareCards.map((v) => {
                 const active = variant === v.id;
                 return (
                   <div
                     key={v.id}
-                    className="snap-center shrink-0 flex flex-col items-center gap-3"
+                    className="
+                      snap-center shrink-0 lg:shrink
+                      flex flex-col items-center justify-between
+                      w-[306px] lg:w-full
+                    "
                   >
-                    <div className="flex items-center gap-2">
-                      <span className={`text-xs font-medium ${active ? "text-foreground" : "text-muted-foreground"}`}>
+                    {/* Header row — hauteur fixe pour alignement parfait entre colonnes */}
+                    <div className="h-10 flex flex-col items-center justify-center text-center gap-0.5">
+                      <span className={`text-sm font-medium ${active ? "text-foreground" : "text-muted-foreground"}`}>
                         {v.label}
                       </span>
-                      <span className="text-[10px] text-muted-foreground/80">· {v.hint}</span>
-                      {active && (
-                        <span className="text-[9px] uppercase tracking-wider text-primary inline-flex items-center gap-1">
-                          <Check className="h-3 w-3" strokeWidth={3} /> sélectionnée
-                        </span>
-                      )}
+                      <span className="text-[10px] text-muted-foreground/80">{v.hint}</span>
                     </div>
-                    <div className={`rounded-[42px] transition ${active ? "ring-2 ring-primary ring-offset-4 ring-offset-background" : ""}`}>
-                      <PhoneFrame>
-                        <BusinessCard data={v.data} />
-                      </PhoneFrame>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant={active ? "default" : "outline"}
-                      onClick={() => { setVariant(v.id); setCompareOpen(false); }}
+
+                    {/* Téléphone scalé — hauteur réservée par breakpoint */}
+                    <div
+                      className={`
+                        my-3 rounded-[44px] transition
+                        ${active ? "ring-2 ring-primary ring-offset-4 ring-offset-background" : ""}
+                        w-[306px] h-[629px]
+                        lg:w-[252px] lg:h-[518px]
+                        xl:w-[295px] xl:h-[607px]
+                        2xl:w-[342px] 2xl:h-[703px]
+                      `}
                     >
-                      {active ? "Continuer avec celle-ci" : "Choisir"}
-                      <ArrowRight className="h-3.5 w-3.5 ml-1" />
-                    </Button>
+                      <div
+                        className="
+                          origin-top-left w-[360px]
+                          scale-[0.85] lg:scale-[0.70] xl:scale-[0.82] 2xl:scale-[0.95]
+                        "
+                      >
+                        <PhoneFrame>
+                          <BusinessCard data={v.data} />
+                        </PhoneFrame>
+                      </div>
+                    </div>
+
+                    {/* CTA — hauteur fixe pour alignement */}
+                    <div className="h-10 flex items-center">
+                      <Button
+                        size="sm"
+                        variant={active ? "default" : "outline"}
+                        onClick={() => { setVariant(v.id); setCompareOpen(false); }}
+                      >
+                        {active ? (
+                          <>
+                            <Check className="h-3.5 w-3.5 mr-1" strokeWidth={3} />
+                            Continuer avec celle-ci
+                          </>
+                        ) : (
+                          <>
+                            Choisir
+                            <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 );
               })}
