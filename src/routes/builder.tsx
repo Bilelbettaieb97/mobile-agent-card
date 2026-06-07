@@ -33,13 +33,13 @@ import {
 import { buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
 import { PROFESSIONS } from "@/lib/card-themes";
 
-type Step = "welcome" | "compare" | "essentials" | "extras" | "edit";
+type Step = "welcome" | "compare" | "sections" | "edit";
 
 const STEP_NUM: Record<Step, StepNum> = {
-  welcome: 1, compare: 2, essentials: 3, extras: 4, edit: 5,
+  welcome: 1, compare: 2, sections: 3, edit: 4,
 };
 const NUM_STEP: Record<StepNum, Step> = {
-  1: "welcome", 2: "compare", 3: "essentials", 4: "extras", 5: "edit",
+  1: "welcome", 2: "compare", 3: "sections", 4: "edit",
 };
 
 export const Route = createFileRoute("/builder")({
