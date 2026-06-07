@@ -1,5 +1,6 @@
-import { useMemo, useState, useEffect } from "react";
-import { Search, Check, ArrowRight, Sparkles, Maximize2, X } from "lucide-react";
+import { useMemo, useState, useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { Search, Check, ArrowRight, Sparkles, Maximize2 } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BusinessCard } from "@/components/card/BusinessCard";
@@ -38,21 +39,32 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
     setVariant("vitrine");
   }, [selectedProfession?.id]);
 
-  // Lock body scroll while compare overlay is open
-  useEffect(() => {
-    if (!compareOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setCompareOpen(false); };
-    window.addEventListener("keydown", onKey);
-    return () => { document.body.style.overflow = prev; window.removeEventListener("keydown", onKey); };
-  }, [compareOpen]);
-
   // Build all 3 variants once for the comparison view
   const compareCards = useMemo(() => {
     if (!selectedProfession) return [];
     return VARIANTS.map((v) => ({ ...v, data: buildPreviewCard(selectedProfession, v.id) }));
   }, [selectedProfession]);
+
+  // Keyboard navigation within the compare dialog: ←/→/Home/End move focus and selection
+  const compareGridRef = useRef<HTMLDivElement>(null);
+  const handleCompareKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+    if (!keys.includes(e.key)) return;
+    const buttons = compareGridRef.current?.querySelectorAll<HTMLButtonElement>(
+      'button[data-variant-card="true"]'
+    );
+    if (!buttons || buttons.length === 0) return;
+    const list = Array.from(buttons);
+    const current = list.findIndex((b) => b === document.activeElement);
+    let next = current;
+    if (e.key === "ArrowRight") next = current < 0 ? 0 : (current + 1) % list.length;
+    if (e.key === "ArrowLeft") next = current < 0 ? list.length - 1 : (current - 1 + list.length) % list.length;
+    if (e.key === "Home") next = 0;
+    if (e.key === "End") next = list.length - 1;
+    e.preventDefault();
+    list[next]?.focus();
+  };
+
 
   // Preview data — derives from current selection + variant
   const previewData = useMemo<CardData>(() => {
@@ -248,9 +260,11 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
                 <button
                   type="button"
                   onClick={() => setCompareOpen(true)}
-                  className="text-[10px] inline-flex items-center gap-1 text-foreground/80 hover:text-foreground transition px-2 py-1 rounded-md border border-border bg-background"
+                  aria-haspopup="dialog"
+                  aria-expanded={compareOpen}
+                  className="text-[10px] inline-flex items-center gap-1 text-foreground/80 hover:text-foreground transition px-2 py-1 rounded-md border border-border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
-                  <Maximize2 className="h-3 w-3" /> Comparer les 3
+                  <Maximize2 className="h-3 w-3" aria-hidden="true" /> Comparer les 3
                 </button>
               ) : (
                 <span className="text-[10px] text-muted-foreground">Met à jour à chaque sélection</span>
@@ -259,15 +273,21 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
 
             {/* Variantes — visibles uniquement quand un métier est choisi */}
             {selectedProfession && (
-              <div className="mb-4 inline-flex w-full rounded-lg border border-border bg-muted/40 p-0.5 text-xs">
+              <div
+                role="radiogroup"
+                aria-label="Variante de mise en page"
+                className="mb-4 inline-flex w-full rounded-lg border border-border bg-muted/40 p-0.5 text-xs"
+              >
                 {VARIANTS.map((v) => {
                   const active = variant === v.id;
                   return (
                     <button
                       key={v.id}
                       type="button"
+                      role="radio"
+                      aria-checked={active}
                       onClick={() => setVariant(v.id)}
-                      className={`flex-1 px-2.5 py-1.5 rounded-md transition text-center ${
+                      className={`flex-1 px-2.5 py-1.5 rounded-md transition text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
                         active ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                       }`}
                       title={v.hint}
@@ -301,42 +321,69 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
         <button
           type="button"
           onClick={() => setCompareOpen(true)}
-          className="lg:hidden fixed bottom-24 right-4 z-30 inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-4 py-2.5 text-xs font-medium shadow-lg"
+          aria-haspopup="dialog"
+          aria-expanded={compareOpen}
+          aria-label="Comparer les 3 variantes en plein écran"
+          className="lg:hidden fixed bottom-24 right-4 z-30 inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-4 py-2.5 text-xs font-medium shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          <Maximize2 className="h-3.5 w-3.5" /> Comparer les 3
+          <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" /> Comparer les 3
         </button>
       )}
 
-      {/* Overlay plein écran : comparaison des 3 variantes */}
-      {compareOpen && selectedProfession && (
-        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex flex-col">
+      {/* Overlay plein écran : comparaison des 3 variantes — Dialog Radix
+          gère focus trap, restauration de focus, Escape, scroll lock et ARIA. */}
+      <Dialog open={compareOpen && !!selectedProfession} onOpenChange={setCompareOpen}>
+        <DialogContent
+          aria-labelledby="compare-title"
+          aria-describedby="compare-desc"
+          onKeyDown={handleCompareKeyDown}
+          className="
+            max-w-none w-screen h-dvh top-0 left-0 translate-x-0 translate-y-0
+            rounded-none border-0 p-0 gap-0 grid-rows-[auto_1fr_auto]
+            bg-background/95 backdrop-blur-xl
+            data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0
+            data-[state=open]:zoom-in-100 data-[state=closed]:zoom-out-100
+            [&>button:last-child]:hidden
+          "
+        >
           {/* halo */}
           <div
             className="absolute inset-0 -z-10 blur-3xl opacity-30 pointer-events-none"
             style={{ background: activeTheme.palette.gradient }}
-            aria-hidden
+            aria-hidden="true"
           />
 
           {/* Header */}
-          <header className="flex items-center justify-between px-5 py-4 border-b border-border/60">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-border/60">
             <div className="min-w-0">
               <p className="text-[10px] uppercase tracking-[0.18em] text-primary flex items-center gap-1.5">
-                <Sparkles className="h-3 w-3" /> Comparer les mises en page
+                <Sparkles className="h-3 w-3" aria-hidden="true" /> Comparer les mises en page
               </p>
-              <h2 className="font-display text-lg truncate">{selectedProfession.label}</h2>
+              <DialogTitle id="compare-title" className="font-display text-lg truncate">
+                {selectedProfession?.label}
+              </DialogTitle>
+              <DialogDescription id="compare-desc" className="sr-only">
+                Comparez les trois variantes de mise en page. Utilisez les flèches gauche et droite
+                pour naviguer entre les variantes, Entrée pour en choisir une, Échap pour fermer.
+              </DialogDescription>
             </div>
             <button
               type="button"
               onClick={() => setCompareOpen(false)}
-              className="h-9 w-9 inline-flex items-center justify-center rounded-full border border-border bg-background hover:bg-muted transition"
-              aria-label="Fermer"
+              className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-border bg-background hover:bg-muted transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label="Fermer la comparaison"
             >
-              <X className="h-4 w-4" />
+              <span aria-hidden="true" className="text-lg leading-none">×</span>
             </button>
-          </header>
+          </div>
 
           {/* Comparaison — grille fluide sur desktop, snap-carousel sur mobile */}
-          <div className="flex-1 overflow-x-auto overflow-y-auto overscroll-contain">
+          <div
+            ref={compareGridRef}
+            role="radiogroup"
+            aria-label="Choisir une mise en page"
+            className="overflow-x-auto overflow-y-auto overscroll-contain"
+          >
             <div
               className="
                 min-h-full h-full
@@ -352,12 +399,22 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
               {compareCards.map((v) => {
                 const active = variant === v.id;
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={v.id}
+                    data-variant-card="true"
+                    role="radio"
+                    aria-checked={active}
+                    aria-label={`${v.label} — ${v.hint}. ${active ? "Variante sélectionnée." : "Appuyez sur Entrée pour choisir."}`}
+                    tabIndex={active ? 0 : -1}
+                    onClick={() => { setVariant(v.id); setCompareOpen(false); }}
                     className="
                       snap-center shrink-0 lg:shrink
                       flex flex-col items-center justify-between
                       w-[306px] lg:w-full
+                      bg-transparent border-0 cursor-pointer text-left
+                      rounded-2xl p-2
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-background
                     "
                   >
                     {/* Header row — hauteur fixe pour alignement parfait entre colonnes */}
@@ -370,6 +427,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
 
                     {/* Téléphone scalé — hauteur réservée par breakpoint */}
                     <div
+                      aria-hidden="true"
                       className={`
                         my-3 rounded-[44px] transition
                         ${active ? "ring-2 ring-primary ring-offset-4 ring-offset-background" : ""}
@@ -391,38 +449,42 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
                       </div>
                     </div>
 
-                    {/* CTA — hauteur fixe pour alignement */}
+                    {/* CTA visuel — l'action est portée par la carte entière (role=radio) */}
                     <div className="h-10 flex items-center">
-                      <Button
-                        size="sm"
-                        variant={active ? "default" : "outline"}
-                        onClick={() => { setVariant(v.id); setCompareOpen(false); }}
+                      <span
+                        className={`
+                          inline-flex items-center text-xs font-medium px-3 py-1.5 rounded-md transition
+                          ${active
+                            ? "bg-primary text-primary-foreground"
+                            : "border border-border text-foreground"}
+                        `}
                       >
                         {active ? (
                           <>
-                            <Check className="h-3.5 w-3.5 mr-1" strokeWidth={3} />
+                            <Check className="h-3.5 w-3.5 mr-1" strokeWidth={3} aria-hidden="true" />
                             Continuer avec celle-ci
                           </>
                         ) : (
                           <>
                             Choisir
-                            <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                            <ArrowRight className="h-3.5 w-3.5 ml-1" aria-hidden="true" />
                           </>
                         )}
-                      </Button>
+                      </span>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
           </div>
 
-          <footer className="px-5 py-3 border-t border-border/60 text-center text-[11px] text-muted-foreground">
-            <span className="lg:hidden">Glissez horizontalement pour comparer · </span>
+          <div className="px-5 py-3 border-t border-border/60 text-center text-[11px] text-muted-foreground">
+            <span className="lg:hidden">Glissez ou utilisez ← → · </span>
+            <span className="hidden lg:inline">Flèches ← → pour naviguer · Entrée pour choisir · </span>
             Échap pour fermer
-          </footer>
-        </div>
-      )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
