@@ -45,6 +45,7 @@ interface SectionDef {
   label: string;
   description: string;
   recommended?: boolean;
+  popular?: boolean;
 }
 
 const ESSENTIALS: SectionDef[] = [
@@ -56,15 +57,15 @@ const ESSENTIALS: SectionDef[] = [
 ];
 
 const EXTRAS: SectionDef[] = [
-  { key: "servicesEnabled",     brick: "services",     label: "Services",                     description: "Liste de vos prestations ou spécialités." },
+  { key: "socialsEnabled",      brick: "socials",      label: "Réseaux sociaux",              description: "LinkedIn, Instagram, WhatsApp public.",                popular: true },
+  { key: "servicesEnabled",     brick: "services",     label: "Services",                     description: "Liste de vos prestations ou spécialités.",             popular: true },
+  { key: "testimonialsEnabled", brick: "testimonials", label: "Témoignages",                  description: "Avis clients pour rassurer.",                          popular: true },
   { key: "statsEnabled",        brick: "stats",        label: "Chiffres clés",                description: "Années d'expérience, projets, note clients." },
   { key: "listingsEnabled",     brick: "listings",     label: "Réalisations / biens",         description: "Vitrine visuelle de vos projets ou produits." },
-  { key: "testimonialsEnabled", brick: "testimonials", label: "Témoignages",                  description: "Avis clients pour rassurer." },
   { key: "videoEnabled",        brick: "video",        label: "Vidéo de présentation",        description: "Une vidéo YouTube intégrée." },
   { key: "calendarEnabled",     brick: "calendar",     label: "Prise de rendez-vous",         description: "Lien Calendly ou équivalent." },
   { key: "ctaEnabled",          brick: "cta",          label: "Bannière d'appel à l'action",  description: "Message + bouton pour convertir." },
   { key: "languagesEnabled",    brick: "languages",    label: "Langues parlées",              description: "Pratique pour un public international." },
-  { key: "socialsEnabled",      brick: "socials",      label: "Réseaux sociaux",              description: "LinkedIn, Instagram, WhatsApp public." },
 ];
 
 function isEnabled(data: CardData, key: SectionKey): boolean {
