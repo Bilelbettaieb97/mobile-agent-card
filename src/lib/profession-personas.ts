@@ -979,8 +979,74 @@ export const PERSONAS: Record<string, Persona> = {
   },
 };
 
+/* ============================================================
+   SECTION PROFILES — chaque catégorie métier a une composition
+   visuelle distincte pour inspirer le visiteur (pas les mêmes
+   briques pour tout le monde).
+   ============================================================ */
+
+type SectionFlags = Partial<Pick<CardData,
+  | "vcardEnabled" | "statsEnabled" | "aboutEnabled" | "videoEnabled"
+  | "servicesEnabled" | "listingsEnabled" | "testimonialsEnabled"
+  | "calendarEnabled" | "languagesEnabled" | "ctaEnabled"
+  | "contactEnabled" | "socialsEnabled"
+>>;
+
+const ALL_OFF: Required<SectionFlags> = {
+  vcardEnabled: false, statsEnabled: false, aboutEnabled: false, videoEnabled: false,
+  servicesEnabled: false, listingsEnabled: false, testimonialsEnabled: false,
+  calendarEnabled: false, languagesEnabled: false, ctaEnabled: false,
+  contactEnabled: false, socialsEnabled: false,
+};
+
+/** Active uniquement les sections listées + contact/vcard par défaut. */
+function profile(...keys: (keyof SectionFlags)[]): Required<SectionFlags> {
+  const f = { ...ALL_OFF, contactEnabled: true, vcardEnabled: true };
+  for (const k of keys) f[k] = true;
+  return f;
+}
+
+const SECTION_PROFILES: Record<string, Required<SectionFlags>> = {
+  // Immobilier : vitrine de biens, chiffres, appel à l'action
+  Immobilier: profile("aboutEnabled", "statsEnabled", "listingsEnabled", "ctaEnabled"),
+  // Juridique : légitimité, expertise, langues parlées, témoignages
+  Juridique: profile("aboutEnabled", "servicesEnabled", "languagesEnabled", "testimonialsEnabled"),
+  // Finance : chiffres clés, services, rendez-vous, langues
+  Finance: profile("aboutEnabled", "statsEnabled", "servicesEnabled", "calendarEnabled"),
+  // Tech : portfolio de projets, stack, socials, dispo
+  Tech: profile("statsEnabled", "servicesEnabled", "listingsEnabled", "socialsEnabled", "calendarEnabled"),
+  // Santé : prise de RDV, services médicaux, langues
+  Santé: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "languagesEnabled"),
+  // Beauté : galerie réalisations, RDV, socials, services
+  Beauté: profile("listingsEnabled", "servicesEnabled", "calendarEnabled", "socialsEnabled"),
+  // Coaching : vidéo, témoignages, CTA fort, RDV
+  Coaching: profile("aboutEnabled", "videoEnabled", "testimonialsEnabled", "ctaEnabled", "calendarEnabled"),
+  // Sport : stats perf, vidéo démo, CTA, témoignages
+  Sport: profile("statsEnabled", "videoEnabled", "servicesEnabled", "testimonialsEnabled", "ctaEnabled"),
+  // Restauration : photos de plats, socials, contact direct
+  Restauration: profile("listingsEnabled", "videoEnabled", "socialsEnabled", "aboutEnabled"),
+  // Artisanat : réalisations, services, témoignages
+  Artisanat: profile("listingsEnabled", "servicesEnabled", "testimonialsEnabled", "aboutEnabled"),
+  // Mode : lookbook visuel, socials, vidéo
+  Mode: profile("listingsEnabled", "videoEnabled", "socialsEnabled"),
+  // Créatif / Photo / Vidéo : portfolio massif, vidéo, socials
+  Créatif: profile("listingsEnabled", "videoEnabled", "socialsEnabled", "testimonialsEnabled"),
+  // Éducation : services, RDV, témoignages parents
+  Éducation: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled"),
+  // Voyage / Hôtellerie : visuel, vidéo, langues, socials
+  Voyage: profile("listingsEnabled", "videoEnabled", "languagesEnabled", "socialsEnabled"),
+  // Événementiel : portfolio, vidéo, témoignages
+  Événementiel: profile("listingsEnabled", "videoEnabled", "testimonialsEnabled", "socialsEnabled"),
+  // Média / Podcast : vidéo, socials, stats audience
+  Média: profile("statsEnabled", "videoEnabled", "socialsEnabled", "aboutEnabled"),
+};
+
+const DEFAULT_PROFILE: Required<SectionFlags> = profile(
+  "aboutEnabled", "servicesEnabled", "statsEnabled",
+);
+
 /** Build a complete CardData for preview using DEFAULT_CARD as the base
- *  and overlaying the profession's persona. */
+ *  and overlaying the profession's persona + sa composition de sections. */
 export function buildPreviewCard(profession: Profession): CardData {
   const persona = PERSONAS[profession.id];
   if (!persona) {
@@ -988,7 +1054,11 @@ export function buildPreviewCard(profession: Profession): CardData {
   }
 
   const photo = `https://i.pravatar.cc/400?img=${persona.pravatarId}`;
-  const listings: Listing[] = persona.withListings
+  const sections = SECTION_PROFILES[profession.category] ?? DEFAULT_PROFILE;
+
+  // Listings : on n'affiche que si le profil métier active la brique ET que la persona a un visuel pertinent
+  const listingsActive = !!(sections.listingsEnabled && persona.withListings);
+  const listings: Listing[] = listingsActive
     ? [
         { id: "l1", img: `https://picsum.photos/seed/${profession.id}-1/800/600`, title: "Réalisation 1", meta: "Aperçu", price: "" },
         { id: "l2", img: `https://picsum.photos/seed/${profession.id}-2/800/600`, title: "Réalisation 2", meta: "Aperçu", price: "" },
@@ -996,8 +1066,13 @@ export function buildPreviewCard(profession: Profession): CardData {
       ]
     : [];
 
+  const ctaEnabled = sections.ctaEnabled && !!(persona.ctaTitle && persona.ctaText);
+
   return {
     ...DEFAULT_CARD,
+    ...sections,
+    listingsEnabled: listingsActive,
+    ctaEnabled,
     accent: profession.themeId as CardData["accent"],
     profession: profession.id,
     name: persona.name,
@@ -1010,8 +1085,6 @@ export function buildPreviewCard(profession: Profession): CardData {
     badges: persona.badges,
     photo,
     listings,
-    listingsEnabled: listings.length > 0,
-    ctaEnabled: !!(persona.ctaTitle && persona.ctaText),
     ctaTitle: persona.ctaTitle ?? DEFAULT_CARD.ctaTitle,
     ctaText: persona.ctaText ?? DEFAULT_CARD.ctaText,
     email: persona.email ?? DEFAULT_CARD.email,
