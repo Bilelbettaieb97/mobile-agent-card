@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
-  Upload, Plus, Trash2, RotateCcw, Eye, X, ExternalLink, Sparkles, GripVertical,
+  Upload, Plus, Trash2, RotateCcw, Eye, X, ExternalLink, Sparkles, GripVertical, Grid3x3,
 } from "lucide-react";
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
