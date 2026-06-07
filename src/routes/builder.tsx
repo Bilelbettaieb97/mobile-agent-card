@@ -1,19 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  RotateCcw, Eye, X, ExternalLink, Grid3x3, Palette, LayoutDashboard,
-} from "lucide-react";
+import { CheckCircle2, Sparkles, Rocket, ArrowRight } from "lucide-react";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
-import { ShareDialog } from "@/components/card/ShareDialog";
 import { useCardStore } from "@/lib/card-store";
 import type { CardData } from "@/lib/card-types";
 import { BuilderWelcome } from "@/components/builder/BuilderWelcome";
 import { BuilderSections } from "@/components/builder/BuilderSections";
 import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
-import { StepFooter } from "@/components/builder/StepFooter";
-import { BrickList } from "@/components/builder/BrickList";
 import { buildPreviewCard, buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
 
 
