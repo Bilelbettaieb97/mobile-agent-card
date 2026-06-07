@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Sparkles, Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
+import { StepHeader } from "@/components/builder/StepHeader";
 import { THEMES_BY_ID, type Profession } from "@/lib/card-themes";
 import { buildPreviewCard, VARIANTS, type VariantId } from "@/lib/profession-personas";
 import type { CardData } from "@/lib/card-types";
