@@ -7,7 +7,17 @@ export const Route = createFileRoute("/dashboard/account")({
   component: AccountPage,
 });
 
-const PLANS = [
+type Plan = {
+  id: string;
+  label: string;
+  price: string;
+  description: string;
+  features: string[];
+  current?: boolean;
+  highlight?: boolean;
+};
+
+const PLANS: Plan[] = [
   {
     id: "essentielle",
     label: "Essentielle",
@@ -28,7 +38,7 @@ const PLANS = [
     ],
     highlight: true,
   },
-] as const;
+];
 
 function AccountPage() {
   return (
