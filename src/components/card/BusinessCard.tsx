@@ -71,6 +71,24 @@ export function BusinessCard({ data }: { data: CardData }) {
         <IdentitySection data={data} />
         {data.sectionOrder
           .filter((id) => id !== "identity" && id !== "theme")
+          .filter((id) => {
+            switch (id) {
+              case "actions":      return data.actions.call || data.actions.whatsapp || data.actions.email || data.actions.website;
+              case "vcard":        return data.vcardEnabled;
+              case "stats":        return data.statsEnabled;
+              case "about":        return data.aboutEnabled;
+              case "video":        return data.videoEnabled;
+              case "services":     return data.servicesEnabled;
+              case "listings":     return data.listingsEnabled;
+              case "testimonials": return data.testimonialsEnabled;
+              case "calendar":     return data.calendarEnabled;
+              case "languages":    return data.languagesEnabled;
+              case "cta":          return data.ctaEnabled;
+              case "contact":      return data.contactEnabled;
+              case "socials":      return data.socialsEnabled;
+              default:             return false;
+            }
+          })
           .map((id) => {
             const node = (() => {
               switch (id) {
