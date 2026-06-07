@@ -14,9 +14,41 @@ interface Props {
   onChoose: (variant: VariantId, data: CardData) => void;
 }
 
+const SECTION_FLAGS: (keyof CardData)[] = [
+  "vcardEnabled", "statsEnabled", "aboutEnabled", "videoEnabled",
+  "servicesEnabled", "listingsEnabled", "testimonialsEnabled",
+  "calendarEnabled", "languagesEnabled", "ctaEnabled",
+  "contactEnabled", "socialsEnabled",
+];
+
+function countSections(data: CardData): number {
+  return SECTION_FLAGS.reduce((n, k) => n + (data[k] ? 1 : 0), 0);
+}
+
+const VARIANT_BULLETS: Record<VariantId, string[]> = {
+  essentielle: [
+    "Identité + contact rapide",
+    "Ajout au répertoire (vCard)",
+    "À propos court",
+  ],
+  vitrine: [
+    "Tout d'Essentielle + Pro",
+    "Services, témoignages, galerie",
+    "Réseaux, agenda, langues",
+  ],
+  pro: [
+    "Essentielle + crédibilité",
+    "Témoignages & certifications",
+    "Réseaux pro",
+  ],
+};
+
 export function BuilderCompare({ profession, onBack, onChoose }: Props) {
   const cards = useMemo(
-    () => VARIANTS.map((v) => ({ ...v, data: buildPreviewCard(profession, v.id) })),
+    () => VARIANTS.map((v) => {
+      const data = buildPreviewCard(profession, v.id);
+      return { ...v, data, sectionCount: countSections(data) };
+    }),
     [profession],
   );
 
