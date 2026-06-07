@@ -1,11 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Nfc, Sparkles, Check, ArrowRight, Zap, Shield, Smartphone,
   Crown, Star, Quote, ChevronDown, Infinity as InfinityIcon,
-  Leaf, Truck, Award, Hexagon,
+  Leaf, Truck, Award, Hexagon, Play, X, Flame, MapPin, RefreshCw,
+  ShieldCheck, PackageCheck, Clock, BadgeCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
 
 export const Route = createFileRoute("/carte-nfc")({
   head: () => ({
