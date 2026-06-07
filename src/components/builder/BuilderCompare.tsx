@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ArrowLeft, ArrowRight, Check, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronDown, Star, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
@@ -14,9 +14,41 @@ interface Props {
   onChoose: (variant: VariantId, data: CardData) => void;
 }
 
+const SECTION_FLAGS: (keyof CardData)[] = [
+  "vcardEnabled", "statsEnabled", "aboutEnabled", "videoEnabled",
+  "servicesEnabled", "listingsEnabled", "testimonialsEnabled",
+  "calendarEnabled", "languagesEnabled", "ctaEnabled",
+  "contactEnabled", "socialsEnabled",
+];
+
+function countSections(data: CardData): number {
+  return SECTION_FLAGS.reduce((n, k) => n + (data[k] ? 1 : 0), 0);
+}
+
+const VARIANT_BULLETS: Record<VariantId, string[]> = {
+  essentielle: [
+    "Identité + contact rapide",
+    "Ajout au répertoire (vCard)",
+    "À propos court",
+  ],
+  vitrine: [
+    "Tout d'Essentielle + Pro",
+    "Services, témoignages, galerie",
+    "Réseaux, agenda, langues",
+  ],
+  pro: [
+    "Essentielle + crédibilité",
+    "Témoignages & certifications",
+    "Réseaux pro",
+  ],
+};
+
 export function BuilderCompare({ profession, onBack, onChoose }: Props) {
   const cards = useMemo(
-    () => VARIANTS.map((v) => ({ ...v, data: buildPreviewCard(profession, v.id) })),
+    () => VARIANTS.map((v) => {
+      const data = buildPreviewCard(profession, v.id);
+      return { ...v, data, sectionCount: countSections(data) };
+    }),
     [profession],
   );
 
@@ -31,11 +63,16 @@ export function BuilderCompare({ profession, onBack, onChoose }: Props) {
       />
 
       <div className="mx-auto max-w-7xl px-5 pb-10">
-        <div className="flex justify-end mb-4">
-          <Button variant="ghost" size="sm" onClick={onBack}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+          <p className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+            <Layers className="h-4 w-4 text-primary shrink-0" />
+            La différence entre les 3 mises en page&nbsp;: <span className="text-foreground font-medium">le nombre de sections activées</span>. Vous pourrez tout ajuster ensuite.
+          </p>
+          <Button variant="ghost" size="sm" onClick={onBack} className="self-end sm:self-auto">
             <ArrowLeft className="h-4 w-4 mr-1.5" /> Changer de métier
           </Button>
         </div>
+
 
 
 
@@ -78,20 +115,40 @@ export function BuilderCompare({ profession, onBack, onChoose }: Props) {
                       )}
                     </div>
 
-                    {/* Titre */}
+                    {/* Titre + nombre de sections */}
                     <div className="text-center">
                       <div className="font-display text-lg">{v.label}</div>
                       <div className="text-xs text-muted-foreground mt-0.5">{v.hint}</div>
+                      <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-full px-2 py-0.5">
+                        <Layers className="h-3 w-3" /> {v.sectionCount} sections incluses
+                      </div>
                     </div>
+
+                    {/* Puces différenciantes */}
+                    <ul className="w-full space-y-1.5 text-xs text-foreground/80">
+                      {VARIANT_BULLETS[v.id].map((b) => (
+                        <li key={b} className="flex items-start gap-1.5">
+                          <Check className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
 
                     {/* Phone preview */}
                     <div className="origin-top">
                       <div className="scale-[0.88] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-100 -mx-4">
-                        <PhoneFrame>
+                        <PhoneFrame scrollHint>
                           <BusinessCard data={v.data} />
                         </PhoneFrame>
                       </div>
                     </div>
+
+                    {/* Indice scroll */}
+                    <div className="-mt-2 inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <ChevronDown className="h-3 w-3 animate-bounce" />
+                      Faites défiler l'aperçu
+                    </div>
+
 
                     {/* CTA */}
                     <Button

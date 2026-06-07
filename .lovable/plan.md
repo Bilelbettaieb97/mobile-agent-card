@@ -1,84 +1,53 @@
-# Plan : ergonomie guidée du Builder (5 étapes)
+# Étape 2 — Mieux guider la comparaison
 
-## Objectif
-Transformer le `/builder` en parcours fluide et guidé où chaque étape est immédiatement compréhensible, avec un CTA toujours visible et des repères visuels clairs.
+Deux ajouts ciblés sur `src/components/builder/BuilderCompare.tsx` (+ petit toggle sur `PhoneFrame`).
 
-## État actuel identifié
-- Le header d'étape est aligné à gauche, peu visible.
-- Le CTA "Choisir ce template" est en bas, compact, pas suffisamment mis en avant.
-- Les étapes 3/4 ont le même pattern de header à gauche.
-- Pas de barre de progression globale.
+## 1. Indice "scrollable" sur l'aperçu téléphone
 
-## Décisions de design
-- **Header centré** sur chaque étape : badge "Étape X / 5", titre H1, sous-titre explicatif. Centré horizontalement avec un max-width lisible.
-- **CTA double** sur l'étape 1 : un bouton principal "Choisir ce template" flottant sticky en **haut** de la zone de contenu (desktop) / en bas de l'écran (mobile), ET un second bouton identique en bas de la liste de métiers. Cela évite le scroll infini pour trouver le bouton.
-- **Boutons plus visibles** : taille `size="lg"`, icône, style plein avec `shadow-glow`, possiblement un `transform scale` subtil au hover.
-- **Barre de progression** fine en haut de page pour montrer visuellement où on en est dans les 5 étapes.
-- **Indicateurs de sélection** renforcés sur les cartes métier (bordure plus épaisse, fond plus contrasté).
+Aujourd'hui le `PhoneFrame` a un viewport scrollable de 720px de haut, mais rien n'indique visuellement qu'on peut faire défiler la carte. Résultat : l'utilisateur croit voir tout le contenu, surtout sur la variante Vitrine qui contient bien plus de sections.
 
-## Changements détaillés
+Ajouts :
+- Un **fondu en bas** du téléphone (gradient `from-transparent to-background`, h≈40px, `pointer-events-none`, absolu, dans le `PhoneFrame`) pour signaler que le contenu continue.
+- Un **petit badge "Faites défiler ↓"** sous chaque téléphone dans `BuilderCompare`, avec une légère animation `animate-bounce` (atténuée). Disparaît au premier scroll (état local par carte, optionnel — sinon on le laisse en permanence, c'est plus simple).
+- Option discrète : faire apparaître une **mini scrollbar visible** uniquement dans le contexte builder via une prop `showScrollHint` sur `PhoneFrame`, pour ne pas casser l'aperçu "vrai téléphone" ailleurs.
 
-### 1. `BuilderWelcome.tsx`
-- Refactor le header : centrer verticalement et horizontalement le bloc titre/badge/sous-titre au-dessus du contenu principal.
-- Ajouter une **barre de progression sticky** fine en haut de page (h-1, couleur primary, width = step/5).
-- Ajouter un **CTA sticky en haut** de la colonne gauche (ou bandeau flottant desktop) : "Choisir ce template" `size="lg"` avec icône `ArrowRight`, style `shadow-glow`.
-- Garder le CTA existant en bas de la liste, mais le rendre plus visible (pleine largeur sur mobile, plus grand).
-- Le bouton "Passer" devient un lien texte discret à côté du CTA principal plutôt qu'un bouton ghost isolé.
-- Renforcer le style de la carte métier sélectionnée : ajouter un fond `primary/10`, une bordure `primary/50`, et un badge "Sélectionné".
+Choix retenu : fondu + badge sous le téléphone (le plus lisible, zéro effet de bord).
 
-### 2. `BuilderCompare.tsx`
-- Uniformiser le header : centrer le titre/badge/sous-titre comme sur l'étape 1.
-- Conserver le CTA "Choisir cette mise en page" mais le rendre plus visible sur la variante Vitrine (badge + bouton plein + `shadow-glow`).
-- Ajouter la barre de progression sticky (2/5).
+## 2. Différencier clairement les 3 mises en page
 
-### 3. `BuilderSections.tsx`
-- Uniformiser le header : centrer le titre/badge/sous-titre.
-- Ajouter la barre de progression sticky (3/5 ou 4/5).
-- Renforcer le CTA "Continuer" / "Personnaliser ma carte" en bas (pleine largeur mobile, `size="lg"`, `shadow-glow`).
-- Ajouter un petit texte "X sections activées" plus visible (badge de statut).
+Les hints actuels ("L'indispensable", "Tout le potentiel", "Contact & crédibilité") sont trop abstraits. On ajoute, sous le titre de chaque carte, une **liste courte de 2–3 puces** qui dit explicitement *ce qui est inclus*, en insistant sur le fait que la différence = nombre de sections.
 
-### 4. `builder.tsx` (étape 5)
-- Uniformiser le header : centrer le titre/badge/sous-titre si applicable, ou ajouter le badge étape dans la topbar existante.
-- Ajouter la barre de progression sticky (5/5).
-- Renforcer le bouton "Activer ma carte" (`size="lg"`, `shadow-glow`).
+Exemples (à formuler en français court, puces avec `Check` icon) :
 
-### 5. `styles.css`
-- Ajouter si besoin un token `--shadow-glow-strong` pour les CTA principaux.
+- **Essentielle** — *~4 sections*
+  - Identité + contact rapide
+  - Ajout au répertoire (vCard)
+  - À propos court
+- **Vitrine** ⭐ — *toutes les sections (~10)*
+  - Tout d'Essentielle + Pro
+  - Services, témoignages, galerie
+  - Réseaux, agenda, langues
+- **Pro** — *~6 sections*
+  - Essentielle + crédibilité
+  - Témoignages & certifications
+  - Réseaux pro
 
-## Mise en page textuelle
+Les chiffres exacts sont calculés depuis `buildPreviewCard(profession, v.id)` en comptant les flags `*Enabled === true` → affiché dynamiquement (`{count} sections incluses`) pour rester honnête par métier.
 
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│ [==========●====]  ← barre de progression fine sticky          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│              ● Étape 1 / 5  (badge centré)                      │
-│            Choisissez votre univers  (H1 centré)                │
-│     Sélectionnez votre métier — votre carte sera…  (sous-titre) │
-│                                                                 │
-├────────────────────────────┬──────────────────────────────────────┤
-│ [CTA sticky] Choisir ce  │                                      │
-│  template  (Passer →)      │         Aperçu live                │
-│                            │         [PhoneFrame]               │
-│  [Tabs: Par métier /       │                                      │
-│   Par thème]               │                                      │
-│                            │                                      │
-│  [Rechercher…]             │                                      │
-│                            │                                      │
-│  ○ Agent immobilier        │                                      │
-│  ● Architecte   ← fond     │                                      │
-│    plus visible            │                                      │
-│  ○ …                       │                                      │
-│                            │                                      │
-│  [CTA bas] Choisir ce      │                                      │
-│   template  (Passer →)     │                                      │
-├────────────────────────────┴──────────────────────────────────────┤
-```
+Aussi : juste sous le sous-titre du `StepHeader` (ou en bandeau au-dessus de la grille), une ligne d'explication unique :
+> *La différence entre les 3 mises en page = le nombre de sections activées. Vous pourrez tout ajuster ensuite.*
 
-## Dépendances
-Aucun package supplémentaire. Tout est réalisable avec les composants existants (Button, Badge) et Tailwind.
+## Détails techniques
 
-## Non inclus dans ce plan
-- Refonte des couleurs ou thème global.
-- Ajout d'animations complexes (hors hover/focus standards).
-- Modification du contenu des briques d'édition.
+- `PhoneFrame` : nouvelle prop optionnelle `scrollHint?: boolean`. Si vraie, ajouter un `<div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background to-transparent pointer-events-none" />` à l'intérieur du conteneur `overflow-hidden`.
+- `BuilderCompare.tsx` :
+  - Passer `scrollHint` au `PhoneFrame`.
+  - Ajouter sous le bloc téléphone : `<div className="text-[11px] text-muted-foreground flex items-center gap-1"><ChevronDown className="h-3 w-3 animate-bounce" /> Faites défiler l'aperçu</div>`.
+  - Ajouter un helper `countSections(data: CardData): number` local (somme des flags `*Enabled`).
+  - Remplacer le bloc "Titre" par : titre + badge `{count} sections` + liste 2–3 puces différenciantes (texte statique par variante, pas par métier — c'est la promesse de la mise en page).
+  - Ajouter la ligne explicative globale juste sous le `StepHeader`.
+
+## Hors scope
+
+- Pas de changement aux variantes elles-mêmes ni à `profession-personas.ts`.
+- Pas de modif de l'étape 1, 3, 4, 5.

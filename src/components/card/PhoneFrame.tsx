@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 
 /** iPhone-style frame with a scrollable inner viewport. */
-export function PhoneFrame({ children, gridOverlay = false }: { children: ReactNode; gridOverlay?: boolean }) {
+export function PhoneFrame({ children, gridOverlay = false, scrollHint = false }: { children: ReactNode; gridOverlay?: boolean; scrollHint?: boolean }) {
   return (
     <div className="relative mx-auto" style={{ width: 360 }}>
       <div
@@ -17,6 +17,11 @@ export function PhoneFrame({ children, gridOverlay = false }: { children: ReactN
           <div className="h-full overflow-y-auto overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {children}
           </div>
+
+          {/* Scroll hint fade */}
+          {scrollHint && (
+            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent z-20" />
+          )}
 
           {/* GRID OVERLAY */}
           {gridOverlay && <GridOverlay />}
