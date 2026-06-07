@@ -1,10 +1,10 @@
 import { DEFAULT_VARIANTS, type BrickVariants } from "./brick-variants";
 
 export type ThemeAccent =
-  | "gold" | "emerald" | "copper"
-  | "navy" | "sapphire" | "teal" | "forest"
-  | "crimson" | "coral" | "rose" | "violet"
-  | "amber" | "slate" | "sky" | "magenta" | "graphite";
+  | "gold" | "noir" | "emerald" | "forest" | "navy" | "sapphire"
+  | "graphite" | "bordeaux" | "slate" | "violet" | "crimson" | "magenta"
+  | "copper" | "cream" | "sand" | "clay" | "rose" | "blush"
+  | "mint" | "sky" | "paper" | "sun";
 
 export type BrickId =
   | "identity"

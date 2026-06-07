@@ -20,7 +20,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
 import { useCardStore } from "@/lib/card-store";
-import type { CardData, Listing, Badge, Stat, ThemeAccent, BrickId, TestimonialsStyle } from "@/lib/card-types";
+import type { CardData, Listing, Badge, Stat, BrickId, TestimonialsStyle } from "@/lib/card-types";
 import { BRICK_VARIANTS } from "@/lib/brick-variants";
 
 export const Route = createFileRoute("/builder")({
@@ -500,37 +500,29 @@ function SocialsBrick({ data, update }: BrickProps) {
   );
 }
 
-const THEMES: { id: ThemeAccent; label: string; sector: string; color: string; gradient: string }[] = [
-  { id: "gold",     label: "Or",        sector: "Immobilier prestige", color: "oklch(0.82 0.13 85)",  gradient: "linear-gradient(135deg, oklch(0.88 0.1 90), oklch(0.75 0.14 75))" },
-  { id: "emerald",  label: "Émeraude",  sector: "Conseil / Finance",   color: "oklch(0.78 0.16 160)", gradient: "linear-gradient(135deg, oklch(0.85 0.14 165), oklch(0.65 0.16 155))" },
-  { id: "copper",   label: "Cuivre",    sector: "Artisanat",           color: "oklch(0.74 0.16 45)",  gradient: "linear-gradient(135deg, oklch(0.82 0.14 55), oklch(0.62 0.17 35))" },
-  { id: "navy",     label: "Marine",    sector: "Avocat / B2B",        color: "oklch(0.55 0.13 255)", gradient: "linear-gradient(135deg, oklch(0.65 0.14 255), oklch(0.42 0.14 260))" },
-  { id: "sapphire", label: "Saphir",    sector: "Tech / SaaS",         color: "oklch(0.65 0.18 245)", gradient: "linear-gradient(135deg, oklch(0.72 0.18 240), oklch(0.55 0.2 250))" },
-  { id: "teal",     label: "Lagon",     sector: "Santé / Bien-être",   color: "oklch(0.72 0.14 195)", gradient: "linear-gradient(135deg, oklch(0.8 0.12 190), oklch(0.6 0.15 200))" },
-  { id: "forest",   label: "Forêt",     sector: "Écologie / Outdoor",  color: "oklch(0.62 0.13 145)", gradient: "linear-gradient(135deg, oklch(0.7 0.13 140), oklch(0.5 0.14 150))" },
-  { id: "crimson",  label: "Cramoisi",  sector: "Restauration",        color: "oklch(0.6 0.2 25)",    gradient: "linear-gradient(135deg, oklch(0.7 0.2 30), oklch(0.5 0.22 20))" },
-  { id: "coral",    label: "Corail",    sector: "Coaching / Lifestyle",color: "oklch(0.74 0.17 35)",  gradient: "linear-gradient(135deg, oklch(0.82 0.15 50), oklch(0.66 0.2 25))" },
-  { id: "rose",     label: "Rose",      sector: "Beauté / Esthétique", color: "oklch(0.72 0.16 0)",   gradient: "linear-gradient(135deg, oklch(0.82 0.12 5), oklch(0.65 0.2 355))" },
-  { id: "violet",   label: "Violet",    sector: "Créatif / Design",    color: "oklch(0.65 0.2 295)",  gradient: "linear-gradient(135deg, oklch(0.72 0.18 290), oklch(0.55 0.22 300))" },
-  { id: "amber",    label: "Ambre",     sector: "Hôtellerie / Voyage", color: "oklch(0.78 0.16 70)",  gradient: "linear-gradient(135deg, oklch(0.85 0.14 80), oklch(0.7 0.17 60))" },
-  { id: "slate",    label: "Ardoise",   sector: "Industrie / BTP",     color: "oklch(0.62 0.04 240)", gradient: "linear-gradient(135deg, oklch(0.7 0.04 240), oklch(0.5 0.05 245))" },
-  { id: "sky",      label: "Azur",      sector: "Éducation / Enfance", color: "oklch(0.72 0.13 230)", gradient: "linear-gradient(135deg, oklch(0.8 0.11 225), oklch(0.62 0.15 235))" },
-  { id: "magenta",  label: "Magenta",   sector: "Mode / Événementiel", color: "oklch(0.65 0.24 330)", gradient: "linear-gradient(135deg, oklch(0.72 0.22 325), oklch(0.55 0.26 335))" },
-  { id: "graphite", label: "Graphite",  sector: "Éditorial / Minimal", color: "oklch(0.72 0.02 250)", gradient: "linear-gradient(135deg, oklch(0.78 0.02 250), oklch(0.55 0.02 250))" },
-];
+import { CARD_THEMES } from "@/lib/card-themes";
+
 function ThemeBrick({ data, update }: BrickProps) {
   return (
     <div className="grid grid-cols-2 gap-2">
-      {THEMES.map((t) => {
+      {CARD_THEMES.map((t) => {
         const active = data.accent === t.id;
+        const p = t.palette;
         return (
           <button
             key={t.id}
             type="button"
-            onClick={() => update("accent", t.id)}
-            className={`flex items-center gap-3 rounded-xl border p-2.5 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
+            onClick={() => update("accent", t.id as typeof data.accent)}
+            className={`flex items-center gap-2.5 rounded-xl border p-2 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
           >
-            <span className="h-9 w-9 rounded-lg shrink-0 border border-border" style={{ background: t.gradient }} />
+            <span
+              className="h-10 w-10 rounded-lg shrink-0 border overflow-hidden relative"
+              style={{ background: p.bg, borderColor: p.border }}
+              aria-hidden
+            >
+              <span className="absolute inset-1 rounded-md" style={{ background: p.surface, borderColor: p.border, borderWidth: 1, borderStyle: "solid" }} />
+              <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full" style={{ background: p.gradient }} />
+            </span>
             <span className="min-w-0 flex-1">
               <span className="block text-xs font-medium truncate">{t.label}</span>
               <span className="block text-[10px] text-muted-foreground truncate">{t.sector}</span>

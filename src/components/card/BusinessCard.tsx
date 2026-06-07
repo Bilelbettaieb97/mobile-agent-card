@@ -4,26 +4,8 @@ import {
   Share2, Download, BadgeCheck, Award, ChevronRight, Building2, ImageIcon,
   Star, Calendar, Languages as LangIcon, Sparkles, PlayCircle, ArrowRight, Quote, ExternalLink,
 } from "lucide-react";
-import type { CardData, ThemeAccent, Testimonial, TestimonialsStyle, Listing, Service, Language, Stat, Badge } from "@/lib/card-types";
-
-const ACCENTS: Record<ThemeAccent, { primary: string; gradient: string }> = {
-  gold:     { primary: "oklch(0.82 0.13 85)",  gradient: "linear-gradient(135deg, oklch(0.88 0.1 90), oklch(0.75 0.14 75))" },
-  emerald:  { primary: "oklch(0.78 0.16 160)", gradient: "linear-gradient(135deg, oklch(0.85 0.14 165), oklch(0.65 0.16 155))" },
-  copper:   { primary: "oklch(0.74 0.16 45)",  gradient: "linear-gradient(135deg, oklch(0.82 0.14 55), oklch(0.62 0.17 35))" },
-  navy:     { primary: "oklch(0.55 0.13 255)", gradient: "linear-gradient(135deg, oklch(0.65 0.14 255), oklch(0.42 0.14 260))" },
-  sapphire: { primary: "oklch(0.65 0.18 245)", gradient: "linear-gradient(135deg, oklch(0.72 0.18 240), oklch(0.55 0.2 250))" },
-  teal:     { primary: "oklch(0.72 0.14 195)", gradient: "linear-gradient(135deg, oklch(0.8 0.12 190), oklch(0.6 0.15 200))" },
-  forest:   { primary: "oklch(0.62 0.13 145)", gradient: "linear-gradient(135deg, oklch(0.7 0.13 140), oklch(0.5 0.14 150))" },
-  crimson:  { primary: "oklch(0.6 0.2 25)",    gradient: "linear-gradient(135deg, oklch(0.7 0.2 30), oklch(0.5 0.22 20))" },
-  coral:    { primary: "oklch(0.74 0.17 35)",  gradient: "linear-gradient(135deg, oklch(0.82 0.15 50), oklch(0.66 0.2 25))" },
-  rose:     { primary: "oklch(0.72 0.16 0)",   gradient: "linear-gradient(135deg, oklch(0.82 0.12 5), oklch(0.65 0.2 355))" },
-  violet:   { primary: "oklch(0.65 0.2 295)",  gradient: "linear-gradient(135deg, oklch(0.72 0.18 290), oklch(0.55 0.22 300))" },
-  amber:    { primary: "oklch(0.78 0.16 70)",  gradient: "linear-gradient(135deg, oklch(0.85 0.14 80), oklch(0.7 0.17 60))" },
-  slate:    { primary: "oklch(0.62 0.04 240)", gradient: "linear-gradient(135deg, oklch(0.7 0.04 240), oklch(0.5 0.05 245))" },
-  sky:      { primary: "oklch(0.72 0.13 230)", gradient: "linear-gradient(135deg, oklch(0.8 0.11 225), oklch(0.62 0.15 235))" },
-  magenta:  { primary: "oklch(0.65 0.24 330)", gradient: "linear-gradient(135deg, oklch(0.72 0.22 325), oklch(0.55 0.26 335))" },
-  graphite: { primary: "oklch(0.72 0.02 250)", gradient: "linear-gradient(135deg, oklch(0.78 0.02 250), oklch(0.55 0.02 250))" },
-};
+import type { CardData, Testimonial, TestimonialsStyle, Listing, Service, Language, Stat, Badge } from "@/lib/card-types";
+import { THEMES_BY_ID } from "@/lib/card-themes";
 
 function buildVCard(d: CardData) {
   return [
@@ -42,11 +24,21 @@ function buildVCard(d: CardData) {
 
 export function BusinessCard({ data }: { data: CardData }) {
   const [copied, setCopied] = useState(false);
-  const accent = ACCENTS[data.accent];
+  const theme = (THEMES_BY_ID[data.accent] ?? THEMES_BY_ID.gold).palette;
 
   const styleVars = {
-    "--card-accent": accent.primary,
-    "--card-accent-gradient": accent.gradient,
+    "--card-bg":               theme.bg,
+    "--card-surface":          theme.surface,
+    "--card-surface-alt":      theme.surfaceAlt,
+    "--card-border":           theme.border,
+    "--card-text":             theme.text,
+    "--card-text-muted":       theme.textMuted,
+    "--card-accent":           theme.accent,
+    "--card-accent-gradient":  theme.gradient,
+    "--card-header-bg":        theme.headerBg,
+    "--card-on-accent":        theme.onAccent,
+    background:                theme.bg,
+    color:                     theme.text,
   } as React.CSSProperties;
 
   const handleSave = () => {
@@ -76,19 +68,19 @@ export function BusinessCard({ data }: { data: CardData }) {
   };
 
   return (
-    <div className="w-full bg-background text-foreground" style={styleVars}>
+    <div className="w-full" style={styleVars}>
       {/* Top bar */}
       <div className="flex items-center justify-between px-5 pt-5">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-md grid place-items-center" style={{ background: "var(--card-accent-gradient)" }}>
-            <Building2 className="h-4 w-4 text-primary-foreground" strokeWidth={2.4} />
+            <Building2 className="h-4 w-4 text-card-on-accent" strokeWidth={2.4} />
           </div>
           <span className="font-display text-sm tracking-wide">{data.agency || "Agence"}</span>
         </div>
         <button
           onClick={handleShare}
           aria-label="Partager"
-          className="h-9 w-9 grid place-items-center rounded-full bg-card/80 backdrop-blur border border-border active:scale-95 transition"
+          className="h-9 w-9 grid place-items-center rounded-full bg-card-surface-surface/80 backdrop-blur border border-card-border active:scale-95 transition"
         >
           <Share2 className="h-4 w-4" />
         </button>
@@ -122,7 +114,7 @@ export function BusinessCard({ data }: { data: CardData }) {
 
 
       <footer className="px-5 pt-8 pb-10 text-center">
-        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {data.agency} · Carte digitale</p>
+        <p className="text-xs text-card-muted">© {new Date().getFullYear()} {data.agency} · Carte digitale</p>
       </footer>
     </div>
   );
@@ -137,27 +129,27 @@ function IdentitySection({ data }: { data: CardData }) {
   const Photo = ({ size }: { size: number }) => (
     data.photo
       ? <img src={data.photo} alt={data.name} className="h-full w-full object-cover" style={{ width: size, height: size }} />
-      : <div className="grid place-items-center bg-muted h-full w-full" style={{ width: size, height: size }}><ImageIcon className="h-6 w-6 text-muted-foreground" /></div>
+      : <div className="grid place-items-center bg-card-surface-alt h-full w-full" style={{ width: size, height: size }}><ImageIcon className="h-6 w-6 text-card-muted" /></div>
   );
 
   if (v === "horizontal") {
     return (
       <header className="px-5">
-        <div className="flex items-center gap-4 rounded-2xl bg-card border border-border p-4">
+        <div className="flex items-center gap-4 rounded-2xl bg-card-surface border border-card-border p-4">
           <div className="relative shrink-0">
-            <div className="h-20 w-20 rounded-2xl overflow-hidden border border-border">
+            <div className="h-20 w-20 rounded-2xl overflow-hidden border border-card-border">
               <Photo size={80} />
             </div>
-            <span className="absolute -bottom-1 -right-1 h-6 w-6 grid place-items-center rounded-full border-2 border-card"
+            <span className="absolute -bottom-1 -right-1 h-6 w-6 grid place-items-center rounded-full border-2 border-card-surface"
               style={{ background: "var(--card-accent-gradient)" }}>
-              <BadgeCheck className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={2.6} />
+              <BadgeCheck className="h-3.5 w-3.5 text-card-on-accent" strokeWidth={2.6} />
             </span>
           </div>
           <div className="min-w-0">
             <h1 className="font-display text-xl leading-tight truncate">{data.name || "Votre nom"}</h1>
-            <p className="text-xs text-muted-foreground truncate">{data.title || "Votre titre"}</p>
+            <p className="text-xs text-card-muted truncate">{data.title || "Votre titre"}</p>
             {data.area && (
-              <div className="mt-1.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+              <div className="mt-1.5 flex items-center gap-1 text-[11px] text-card-muted">
                 <MapPin className="h-3 w-3" style={{ color: "var(--card-accent)" }} />
                 <span className="truncate">{data.area}</span>
               </div>
@@ -170,7 +162,7 @@ function IdentitySection({ data }: { data: CardData }) {
 
   if (v === "cover") {
     return (
-      <header className="mx-5 rounded-3xl overflow-hidden border border-border">
+      <header className="mx-5 rounded-3xl overflow-hidden border border-card-border">
         <div className="relative h-36 w-full" style={{ background: "var(--card-accent-gradient)" }}>
           {data.coverPhoto ? (
             <img src={data.coverPhoto} alt="" aria-hidden
@@ -179,22 +171,22 @@ function IdentitySection({ data }: { data: CardData }) {
             <img src={data.photo} alt="" aria-hidden
               className="absolute inset-0 h-full w-full object-cover opacity-40 blur-[2px] scale-110" />
           ) : null}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 0%, oklch(0.16 0.018 250 / 0.6) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 0%, var(--card-bg) 100%)", opacity: 0.6 }} />
         </div>
-        <div className="relative bg-card px-5 pb-5 pt-0 -mt-12 flex flex-col items-center text-center">
+        <div className="relative bg-card-surface px-5 pb-5 pt-0 -mt-12 flex flex-col items-center text-center">
           <div className="relative">
-            <div className="h-24 w-24 rounded-full overflow-hidden border-4 border-card shadow-xl">
+            <div className="h-24 w-24 rounded-full overflow-hidden border-4 border-card-surface shadow-xl">
               <Photo size={96} />
             </div>
-            <span className="absolute bottom-0 right-0 h-6 w-6 grid place-items-center rounded-full border-2 border-card"
+            <span className="absolute bottom-0 right-0 h-6 w-6 grid place-items-center rounded-full border-2 border-card-surface"
               style={{ background: "var(--card-accent-gradient)" }}>
-              <BadgeCheck className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={2.6} />
+              <BadgeCheck className="h-3.5 w-3.5 text-card-on-accent" strokeWidth={2.6} />
             </span>
           </div>
           <h1 className="mt-3 text-xl font-display font-medium leading-tight">{data.name || "Votre nom"}</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">{data.title || "Votre titre"}</p>
+          <p className="mt-0.5 text-sm text-card-muted">{data.title || "Votre titre"}</p>
           {data.area && (
-            <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <div className="mt-2 flex items-center gap-1.5 text-xs text-card-muted">
               <MapPin className="h-3.5 w-3.5" style={{ color: "var(--card-accent)" }} />
               <span>{data.area}</span>
             </div>
@@ -207,22 +199,22 @@ function IdentitySection({ data }: { data: CardData }) {
   // default: centered
   return (
     <header className="relative overflow-hidden pt-3 pb-7 px-5"
-      style={{ background: "radial-gradient(120% 80% at 50% 0%, oklch(0.28 0.05 250) 0%, oklch(0.16 0.018 250) 60%)" }}>
+      style={{ background: "var(--card-header-bg)" }}>
       <div className="flex flex-col items-center text-center">
         <div className="relative">
           <div className="absolute -inset-1 rounded-full opacity-60 blur-md" style={{ background: "var(--card-accent-gradient)" }} />
-          <div className="relative h-28 w-28 rounded-full overflow-hidden border-2 border-background">
+          <div className="relative h-28 w-28 rounded-full overflow-hidden border-2 border-card-bg">
             <Photo size={112} />
           </div>
-          <span className="absolute bottom-1 right-1 h-6 w-6 grid place-items-center rounded-full border-2 border-background"
+          <span className="absolute bottom-1 right-1 h-6 w-6 grid place-items-center rounded-full border-2 border-card-bg"
             style={{ background: "var(--card-accent-gradient)" }}>
-            <BadgeCheck className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={2.6} />
+            <BadgeCheck className="h-3.5 w-3.5 text-card-on-accent" strokeWidth={2.6} />
           </span>
         </div>
         <h1 className="mt-4 text-2xl font-display font-medium leading-tight">{data.name || "Votre nom"}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{data.title || "Votre titre"}</p>
+        <p className="mt-1 text-sm text-card-muted">{data.title || "Votre titre"}</p>
         {data.area && (
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-card-muted">
             <MapPin className="h-3.5 w-3.5" style={{ color: "var(--card-accent)" }} />
             <span>{data.area}</span>
           </div>
@@ -253,12 +245,12 @@ function ActionsSection({ data }: { data: CardData }) {
       <section className="px-5 space-y-2">
         {items.map((it, i) => (
           <a key={i} href={it.href} target={it.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-            className="flex items-center gap-3 rounded-2xl bg-card border border-border px-4 py-3 active:scale-[0.99] transition">
+            className="flex items-center gap-3 rounded-2xl bg-card-surface border border-card-border px-4 py-3 active:scale-[0.99] transition">
             <span className="h-9 w-9 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-              <it.icon className="h-4 w-4 text-primary-foreground" />
+              <it.icon className="h-4 w-4 text-card-on-accent" />
             </span>
             <span className="text-sm font-medium flex-1">{it.label}</span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <ChevronRight className="h-4 w-4 text-card-muted" />
           </a>
         ))}
       </section>
@@ -270,9 +262,9 @@ function ActionsSection({ data }: { data: CardData }) {
       <section className="px-5 grid grid-cols-2 gap-2">
         {items.map((it, i) => (
           <a key={i} href={it.href} target={it.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-            className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-card border border-border py-5 active:scale-[0.99] transition">
+            className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-card-surface border border-card-border py-5 active:scale-[0.99] transition">
             <span className="h-10 w-10 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-              <it.icon className="h-5 w-5 text-primary-foreground" />
+              <it.icon className="h-5 w-5 text-card-on-accent" />
             </span>
             <span className="text-xs font-medium">{it.label}</span>
           </a>
@@ -297,12 +289,12 @@ function QuickActionIcon({ icon: Icon, label, href, primary }: { icon: any; labe
   return (
     <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="flex flex-col items-center gap-1.5">
       <span
-        className={`h-12 w-12 grid place-items-center rounded-2xl border border-border active:scale-95 transition ${primary ? "" : "bg-card"}`}
+        className={`h-12 w-12 grid place-items-center rounded-2xl border border-card-border active:scale-95 transition ${primary ? "" : "bg-card-surface"}`}
         style={primary ? { background: "var(--card-accent-gradient)" } : undefined}
       >
-        <Icon className={`h-4.5 w-4.5 ${primary ? "text-primary-foreground" : "text-foreground"}`} strokeWidth={2} />
+        <Icon className={`h-4.5 w-4.5 ${primary ? "text-card-on-accent" : ""}`} strokeWidth={2} />
       </span>
-      <span className="text-[10px] text-muted-foreground">{label}</span>
+      <span className="text-[10px] text-card-muted">{label}</span>
     </a>
   );
 }
@@ -333,15 +325,15 @@ function VCardSection({ data, onSave, copied }: { data: CardData; onSave: () => 
     return (
       <section className="px-5">
         <button onClick={onSave}
-          className="w-full flex items-center gap-3 rounded-2xl bg-card border border-border p-4 active:scale-[0.99] transition text-left">
+          className="w-full flex items-center gap-3 rounded-2xl bg-card-surface border border-card-border p-4 active:scale-[0.99] transition text-left">
           <span className="h-11 w-11 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-            <Download className="h-5 w-5 text-primary-foreground" />
+            <Download className="h-5 w-5 text-card-on-accent" />
           </span>
           <span className="flex-1 min-w-0">
             <span className="block text-sm font-medium">Enregistrer le contact</span>
-            <span className="block text-[11px] text-muted-foreground">Ajouter à votre carnet d'adresses</span>
+            <span className="block text-[11px] text-card-muted">Ajouter à votre carnet d'adresses</span>
           </span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          <ChevronRight className="h-4 w-4 text-card-muted" />
         </button>
         {copied && <p className="mt-2 text-center text-xs" style={{ color: "var(--card-accent)" }}>Lien copié ✓</p>}
       </section>
@@ -351,7 +343,7 @@ function VCardSection({ data, onSave, copied }: { data: CardData; onSave: () => 
   return (
     <section className="px-5">
       <button onClick={onSave}
-        className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-primary-foreground active:scale-[0.99] transition"
+        className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-card-on-accent active:scale-[0.99] transition"
         style={{ background: "var(--card-accent-gradient)", boxShadow: "0 0 40px -8px var(--card-accent)" }}>
         <Download className="h-4 w-4" strokeWidth={2.4} />
         Enregistrer le contact
@@ -373,8 +365,8 @@ function StatsSection({ data }: { data: CardData }) {
     return (
       <section className="px-5 space-y-2">
         {data.stats.map((s, i) => (
-          <div key={i} className="flex items-end justify-between rounded-2xl bg-card border border-border px-4 py-3">
-            <span className="text-[11px] uppercase tracking-wider text-muted-foreground">{s.label}</span>
+          <div key={i} className="flex items-end justify-between rounded-2xl bg-card-surface border border-card-border px-4 py-3">
+            <span className="text-[11px] uppercase tracking-wider text-card-muted">{s.label}</span>
             <span className="font-display text-3xl leading-none" style={{ color: "var(--card-accent)" }}>{s.value}</span>
           </div>
         ))}
@@ -386,9 +378,9 @@ function StatsSection({ data }: { data: CardData }) {
     return (
       <section className="px-5 flex flex-wrap gap-2">
         {data.stats.map((s, i) => (
-          <span key={i} className="inline-flex items-baseline gap-1.5 rounded-full bg-card border border-border px-3.5 py-2">
+          <span key={i} className="inline-flex items-baseline gap-1.5 rounded-full bg-card-surface border border-card-border px-3.5 py-2">
             <span className="font-display text-base" style={{ color: "var(--card-accent)" }}>{s.value}</span>
-            <span className="text-[11px] text-muted-foreground">{s.label}</span>
+            <span className="text-[11px] text-card-muted">{s.label}</span>
           </span>
         ))}
       </section>
@@ -397,11 +389,11 @@ function StatsSection({ data }: { data: CardData }) {
 
   return (
     <section className="px-5">
-      <div className="grid rounded-2xl bg-card border border-border overflow-hidden" style={{ gridTemplateColumns: `repeat(${data.stats.length}, minmax(0,1fr))` }}>
+      <div className="grid rounded-2xl bg-card-surface border border-card-border overflow-hidden" style={{ gridTemplateColumns: `repeat(${data.stats.length}, minmax(0,1fr))` }}>
         {data.stats.map((s, i) => (
-          <div key={i} className={`py-4 px-2 text-center ${i < data.stats.length - 1 ? "border-r border-border" : ""}`}>
+          <div key={i} className={`py-4 px-2 text-center ${i < data.stats.length - 1 ? "border-r border-card-border" : ""}`}>
             <div className="font-display text-2xl" style={{ color: "var(--card-accent)" }}>{s.value}</div>
-            <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</div>
+            <div className="mt-0.5 text-[10px] uppercase tracking-wider text-card-muted">{s.label}</div>
           </div>
         ))}
       </div>
@@ -421,7 +413,7 @@ function AboutSection({ data }: { data: CardData }) {
     return (
       <section className="px-5">
         <SectionTitle>À propos</SectionTitle>
-        <div className="mt-3 relative rounded-2xl bg-card border border-border p-5">
+        <div className="mt-3 relative rounded-2xl bg-card-surface border border-card-border p-5">
           <Quote className="absolute top-3 right-3 h-6 w-6 opacity-30" style={{ color: "var(--card-accent)" }} />
           <p className="text-sm leading-relaxed italic">« {data.bio} »</p>
           {data.badges.length > 0 && (
@@ -437,14 +429,14 @@ function AboutSection({ data }: { data: CardData }) {
   if (v === "card") {
     return (
       <section className="px-5">
-        <div className="rounded-2xl bg-card border border-border p-5">
+        <div className="rounded-2xl bg-card-surface border border-card-border p-5">
           <div className="flex items-center gap-3 mb-3">
             <span className="h-9 w-9 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
+              <Sparkles className="h-4 w-4 text-card-on-accent" />
             </span>
             <h2 className="font-display text-base">À propos</h2>
           </div>
-          <p className="text-sm leading-relaxed text-muted-foreground">{data.bio}</p>
+          <p className="text-sm leading-relaxed text-card-muted">{data.bio}</p>
           {data.badges.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {data.badges.map((b) => <Chip key={b.id}>{b.label}</Chip>)}
@@ -458,11 +450,11 @@ function AboutSection({ data }: { data: CardData }) {
   return (
     <section className="px-5">
       <SectionTitle>À propos</SectionTitle>
-      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{data.bio}</p>
+      <p className="mt-3 text-sm leading-relaxed text-card-muted">{data.bio}</p>
       {data.badges.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
           {data.badges.map((b) => (
-            <span key={b.id} className="inline-flex items-center gap-1.5 rounded-full bg-card border border-border px-3 py-1.5 text-xs">
+            <span key={b.id} className="inline-flex items-center gap-1.5 rounded-full bg-card-surface border border-card-border px-3 py-1.5 text-xs">
               <Award className="h-3.5 w-3.5" style={{ color: "var(--card-accent)" }} />
               {b.label}
             </span>
@@ -475,7 +467,7 @@ function AboutSection({ data }: { data: CardData }) {
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-background border border-border px-3 py-1.5 text-xs">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-card-bg border border-card-border px-3 py-1.5 text-xs">
       <Award className="h-3.5 w-3.5" style={{ color: "var(--card-accent)" }} />
       {children}
     </span>
@@ -495,7 +487,7 @@ function VideoSection({ data }: { data: CardData }) {
     return (
       <section className="px-5">
         <SectionTitle>{data.videoTitle || "Vidéo"}</SectionTitle>
-        <div className="mt-3 rounded-2xl border border-border bg-card p-4 text-xs text-muted-foreground">
+        <div className="mt-3 rounded-2xl border border-card-border bg-card-surface p-4 text-xs text-card-muted">
           URL YouTube invalide.
         </div>
       </section>
@@ -514,7 +506,7 @@ function VideoSection({ data }: { data: CardData }) {
   if (v === "cinema") {
     return (
       <section className="px-5">
-        <div className="relative rounded-3xl overflow-hidden border border-border bg-black aspect-video">
+        <div className="relative rounded-3xl overflow-hidden border border-card-border bg-black aspect-video">
           <iframe
             className="absolute inset-0 h-full w-full"
             src={`https://www.youtube.com/embed/${id}?rel=0`}
@@ -535,7 +527,7 @@ function VideoSection({ data }: { data: CardData }) {
   return (
     <section className="px-5">
       <SectionTitle>{data.videoTitle || "Vidéo"}</SectionTitle>
-      <div className="mt-3 relative rounded-2xl overflow-hidden border border-border bg-black aspect-video">
+      <div className="mt-3 relative rounded-2xl overflow-hidden border border-card-border bg-black aspect-video">
         <iframe
           className="absolute inset-0 h-full w-full"
           src={`https://www.youtube.com/embed/${id}?rel=0`}
@@ -553,7 +545,7 @@ function YoutubeLite({ id, title }: { id: string; title?: string }) {
   const [loaded, setLoaded] = useState(false);
   if (loaded) {
     return (
-      <div className="mt-3 relative rounded-2xl overflow-hidden border border-border bg-black aspect-video">
+      <div className="mt-3 relative rounded-2xl overflow-hidden border border-card-border bg-black aspect-video">
         <iframe
           className="absolute inset-0 h-full w-full"
           src={`https://www.youtube.com/embed/${id}?autoplay=1&rel=0`}
@@ -566,7 +558,7 @@ function YoutubeLite({ id, title }: { id: string; title?: string }) {
   }
   return (
     <button type="button" onClick={() => setLoaded(true)}
-      className="mt-3 group relative block w-full rounded-2xl overflow-hidden border border-border bg-black aspect-video">
+      className="mt-3 group relative block w-full rounded-2xl overflow-hidden border border-card-border bg-black aspect-video">
       <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt={title || "Vidéo"} className="absolute inset-0 h-full w-full object-cover opacity-90 group-hover:opacity-100 transition" />
       <div className="absolute inset-0 grid place-items-center">
         <span className="h-14 w-14 grid place-items-center rounded-full bg-black/60 backdrop-blur border border-white/20">
@@ -591,13 +583,13 @@ function ServicesSection({ data }: { data: CardData }) {
         <SectionTitle>Services</SectionTitle>
         <ul className="mt-3 space-y-2">
           {data.services.map((s, i) => (
-            <li key={s.id} className="rounded-2xl bg-card border border-border p-4 flex gap-3">
+            <li key={s.id} className="rounded-2xl bg-card-surface border border-card-border p-4 flex gap-3">
               <span className="font-display text-2xl shrink-0 w-9 text-right" style={{ color: "var(--card-accent)" }}>
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <div className="min-w-0 border-l border-border pl-3">
+              <div className="min-w-0 border-l border-card-border pl-3">
                 <h3 className="text-sm font-medium">{s.title}</h3>
-                {s.description && <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">{s.description}</p>}
+                {s.description && <p className="mt-0.5 text-xs text-card-muted leading-relaxed">{s.description}</p>}
               </div>
             </li>
           ))}
@@ -612,12 +604,12 @@ function ServicesSection({ data }: { data: CardData }) {
         <div className="px-5"><SectionTitle>Services</SectionTitle></div>
         <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {data.services.map((s) => (
-            <article key={s.id} className="snap-start shrink-0 w-[72%] rounded-2xl bg-card border border-border p-4">
+            <article key={s.id} className="snap-start shrink-0 w-[72%] rounded-2xl bg-card-surface border border-card-border p-4">
               <span className="h-9 w-9 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-                <Sparkles className="h-4 w-4 text-primary-foreground" />
+                <Sparkles className="h-4 w-4 text-card-on-accent" />
               </span>
               <h3 className="mt-3 text-sm font-medium">{s.title}</h3>
-              {s.description && <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{s.description}</p>}
+              {s.description && <p className="mt-1 text-xs text-card-muted leading-relaxed">{s.description}</p>}
             </article>
           ))}
         </div>
@@ -630,13 +622,13 @@ function ServicesSection({ data }: { data: CardData }) {
       <SectionTitle>Services</SectionTitle>
       <ul className="mt-3 space-y-2">
         {data.services.map((s) => (
-          <li key={s.id} className="rounded-2xl bg-card border border-border p-4 flex gap-3">
+          <li key={s.id} className="rounded-2xl bg-card-surface border border-card-border p-4 flex gap-3">
             <span className="h-9 w-9 grid place-items-center rounded-xl shrink-0" style={{ background: "var(--card-accent-gradient)" }}>
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
+              <Sparkles className="h-4 w-4 text-card-on-accent" />
             </span>
             <div className="min-w-0">
               <h3 className="text-sm font-medium">{s.title}</h3>
-              {s.description && <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">{s.description}</p>}
+              {s.description && <p className="mt-0.5 text-xs text-card-muted leading-relaxed">{s.description}</p>}
             </div>
           </li>
         ))}
@@ -658,14 +650,14 @@ function ListingsSection({ data }: { data: CardData }) {
       <section className="px-5 space-y-3">
         <SectionTitle>Sélection en vente</SectionTitle>
         {data.listings.map((l) => (
-          <article key={l.id} className="rounded-2xl overflow-hidden bg-card border border-border">
-            <div className="aspect-[16/9] overflow-hidden bg-muted">
+          <article key={l.id} className="rounded-2xl overflow-hidden bg-card-surface border border-card-border">
+            <div className="aspect-[16/9] overflow-hidden bg-card-surface-alt">
               {l.img ? <img src={l.img} alt={l.title} className="h-full w-full object-cover" /> :
-                <div className="h-full w-full grid place-items-center"><ImageIcon className="h-8 w-8 text-muted-foreground" /></div>}
+                <div className="h-full w-full grid place-items-center"><ImageIcon className="h-8 w-8 text-card-muted" /></div>}
             </div>
             <div className="p-4">
               <h3 className="font-display text-lg leading-tight">{l.title || "Sans titre"}</h3>
-              {l.meta && <p className="mt-0.5 text-xs text-muted-foreground">{l.meta}</p>}
+              {l.meta && <p className="mt-0.5 text-xs text-card-muted">{l.meta}</p>}
               {l.price && <p className="mt-2 font-medium" style={{ color: "var(--card-accent)" }}>{l.price}</p>}
             </div>
           </article>
@@ -680,14 +672,14 @@ function ListingsSection({ data }: { data: CardData }) {
         <SectionTitle>Sélection en vente</SectionTitle>
         <ul className="mt-3 space-y-2">
           {data.listings.map((l) => (
-            <li key={l.id} className="flex gap-3 rounded-xl bg-card border border-border p-2 pr-3 items-center">
-              <div className="h-16 w-20 rounded-lg overflow-hidden bg-muted shrink-0">
+            <li key={l.id} className="flex gap-3 rounded-xl bg-card-surface border border-card-border p-2 pr-3 items-center">
+              <div className="h-16 w-20 rounded-lg overflow-hidden bg-card-surface-alt shrink-0">
                 {l.img ? <img src={l.img} alt={l.title} className="h-full w-full object-cover" /> :
-                  <div className="h-full w-full grid place-items-center"><ImageIcon className="h-5 w-5 text-muted-foreground" /></div>}
+                  <div className="h-full w-full grid place-items-center"><ImageIcon className="h-5 w-5 text-card-muted" /></div>}
               </div>
               <div className="min-w-0 flex-1">
                 <h3 className="text-sm font-medium truncate">{l.title || "Sans titre"}</h3>
-                {l.meta && <p className="text-[11px] text-muted-foreground truncate">{l.meta}</p>}
+                {l.meta && <p className="text-[11px] text-card-muted truncate">{l.meta}</p>}
               </div>
               {l.price && <span className="text-sm font-medium shrink-0" style={{ color: "var(--card-accent)" }}>{l.price}</span>}
             </li>
@@ -702,14 +694,14 @@ function ListingsSection({ data }: { data: CardData }) {
       <div className="px-5"><SectionTitle>Sélection en vente</SectionTitle></div>
       <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {data.listings.map((l) => (
-          <article key={l.id} className="snap-start shrink-0 w-[78%] rounded-2xl overflow-hidden bg-card border border-border">
-            <div className="aspect-[4/3] overflow-hidden bg-muted">
+          <article key={l.id} className="snap-start shrink-0 w-[78%] rounded-2xl overflow-hidden bg-card-surface border border-card-border">
+            <div className="aspect-[4/3] overflow-hidden bg-card-surface-alt">
               {l.img ? <img src={l.img} alt={l.title} className="h-full w-full object-cover" /> :
-                <div className="h-full w-full grid place-items-center"><ImageIcon className="h-8 w-8 text-muted-foreground" /></div>}
+                <div className="h-full w-full grid place-items-center"><ImageIcon className="h-8 w-8 text-card-muted" /></div>}
             </div>
             <div className="p-4">
               <h3 className="font-display text-lg leading-tight">{l.title || "Sans titre"}</h3>
-              {l.meta && <p className="mt-0.5 text-xs text-muted-foreground">{l.meta}</p>}
+              {l.meta && <p className="mt-0.5 text-xs text-card-muted">{l.meta}</p>}
               {l.price && <p className="mt-2 font-medium" style={{ color: "var(--card-accent)" }}>{l.price}</p>}
             </div>
           </article>
@@ -746,7 +738,7 @@ function CalendarSection({ data }: { data: CardData }) {
     return (
       <section className="px-5">
         <a href={data.calendarUrl} target="_blank" rel="noopener noreferrer"
-          className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-primary-foreground active:scale-[0.99] transition"
+          className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-card-on-accent active:scale-[0.99] transition"
           style={{ background: "var(--card-accent-gradient)" }}>
           <Calendar className="h-4 w-4" />
           {label}
@@ -759,12 +751,12 @@ function CalendarSection({ data }: { data: CardData }) {
     return (
       <section className="px-5">
         <a href={data.calendarUrl} target="_blank" rel="noopener noreferrer"
-          className="block rounded-2xl bg-card border border-border p-5 text-center active:scale-[0.99] transition">
+          className="block rounded-2xl bg-card-surface border border-card-border p-5 text-center active:scale-[0.99] transition">
           <span className="mx-auto h-12 w-12 grid place-items-center rounded-2xl" style={{ background: "var(--card-accent-gradient)" }}>
-            <Calendar className="h-6 w-6 text-primary-foreground" />
+            <Calendar className="h-6 w-6 text-card-on-accent" />
           </span>
           <div className="mt-3 font-display text-base">{label}</div>
-          <div className="mt-1 text-[11px] text-muted-foreground">Choisissez un créneau qui vous convient</div>
+          <div className="mt-1 text-[11px] text-card-muted">Choisissez un créneau qui vous convient</div>
         </a>
       </section>
     );
@@ -773,15 +765,15 @@ function CalendarSection({ data }: { data: CardData }) {
   return (
     <section className="px-5">
       <a href={data.calendarUrl} target="_blank" rel="noopener noreferrer"
-        className="flex items-center gap-3 rounded-2xl bg-card border border-border p-4 active:scale-[0.99] transition">
+        className="flex items-center gap-3 rounded-2xl bg-card-surface border border-card-border p-4 active:scale-[0.99] transition">
         <span className="h-11 w-11 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-          <Calendar className="h-5 w-5 text-primary-foreground" />
+          <Calendar className="h-5 w-5 text-card-on-accent" />
         </span>
         <div className="flex-1 min-w-0">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Agenda</div>
+          <div className="text-[10px] uppercase tracking-wider text-card-muted">Agenda</div>
           <div className="text-sm font-medium">{label}</div>
         </div>
-        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        <ChevronRight className="h-4 w-4 text-card-muted" />
       </a>
     </section>
   );
@@ -804,7 +796,7 @@ function LanguagesSection({ data }: { data: CardData }) {
     return (
       <section className="px-5">
         <SectionTitle>Langues parlées</SectionTitle>
-        <ul className="mt-3 rounded-2xl bg-card border border-border divide-y divide-border overflow-hidden">
+        <ul className="mt-3 rounded-2xl bg-card-surface border border-card-border divide-y divide-card-border overflow-hidden">
           {data.languages.map((l) => {
             const n = levelDots(l.level);
             return (
@@ -817,7 +809,7 @@ function LanguagesSection({ data }: { data: CardData }) {
                       style={{ background: i < n ? "var(--card-accent)" : "oklch(0.4 0 0 / 0.3)" }} />
                   ))}
                 </span>
-                <span className="text-[11px] text-muted-foreground w-16 text-right">{l.level}</span>
+                <span className="text-[11px] text-card-muted w-16 text-right">{l.level}</span>
               </li>
             );
           })}
@@ -832,12 +824,12 @@ function LanguagesSection({ data }: { data: CardData }) {
         <SectionTitle>Langues parlées</SectionTitle>
         <div className="mt-3 grid grid-cols-2 gap-2">
           {data.languages.map((l) => (
-            <div key={l.id} className="rounded-2xl bg-card border border-border p-3">
+            <div key={l.id} className="rounded-2xl bg-card-surface border border-card-border p-3">
               <div className="flex items-center gap-2">
                 <LangIcon className="h-4 w-4" style={{ color: "var(--card-accent)" }} />
                 <span className="text-sm font-medium truncate">{l.name}</span>
               </div>
-              {l.level && <div className="mt-1 text-[11px] text-muted-foreground">{l.level}</div>}
+              {l.level && <div className="mt-1 text-[11px] text-card-muted">{l.level}</div>}
             </div>
           ))}
         </div>
@@ -850,10 +842,10 @@ function LanguagesSection({ data }: { data: CardData }) {
       <SectionTitle>Langues parlées</SectionTitle>
       <div className="mt-3 flex flex-wrap gap-2">
         {data.languages.map((l) => (
-          <span key={l.id} className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-3 py-1.5 text-xs">
+          <span key={l.id} className="inline-flex items-center gap-2 rounded-full bg-card-surface border border-card-border px-3 py-1.5 text-xs">
             <LangIcon className="h-3.5 w-3.5" style={{ color: "var(--card-accent)" }} />
             <span className="font-medium">{l.name}</span>
-            {l.level && <span className="text-muted-foreground">· {l.level}</span>}
+            {l.level && <span className="text-card-muted">· {l.level}</span>}
           </span>
         ))}
       </div>
@@ -875,7 +867,7 @@ function CtaSection({ data }: { data: CardData }) {
       <section className="px-5">
         <div className="rounded-2xl border-2 p-5" style={{ borderColor: "var(--card-accent)" }}>
           <h3 className="font-display text-lg leading-tight">{data.ctaTitle}</h3>
-          {data.ctaText && <p className="mt-1.5 text-sm text-muted-foreground">{data.ctaText}</p>}
+          {data.ctaText && <p className="mt-1.5 text-sm text-card-muted">{data.ctaText}</p>}
           {hasBtn && (
             <a href={data.ctaButtonUrl} target="_blank" rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium" style={{ color: "var(--card-accent)" }}>
@@ -890,12 +882,12 @@ function CtaSection({ data }: { data: CardData }) {
   if (v === "bold") {
     return (
       <section className="px-5">
-        <div className="rounded-2xl p-5 text-primary-foreground" style={{ background: "var(--card-accent-gradient)" }}>
+        <div className="rounded-2xl p-5 text-card-on-accent" style={{ background: "var(--card-accent-gradient)" }}>
           <h3 className="font-display text-xl leading-tight">{data.ctaTitle}</h3>
           {data.ctaText && <p className="mt-1.5 text-sm opacity-90">{data.ctaText}</p>}
           {hasBtn && (
             <a href={data.ctaButtonUrl} target="_blank" rel="noopener noreferrer"
-              className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold bg-background text-foreground active:scale-[0.99] transition">
+              className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold bg-card-bg  active:scale-[0.99] transition">
               {data.ctaButtonLabel} <ArrowRight className="h-4 w-4" />
             </a>
           )}
@@ -906,13 +898,13 @@ function CtaSection({ data }: { data: CardData }) {
 
   return (
     <section className="px-5">
-      <div className="rounded-2xl p-5 border border-border"
-        style={{ background: "linear-gradient(135deg, oklch(0.22 0.02 250), oklch(0.14 0.02 250))" }}>
+      <div className="rounded-2xl p-5 border border-card-border"
+        style={{ background: "var(--card-surface)" }}>
         <h3 className="font-display text-lg leading-tight">{data.ctaTitle}</h3>
-        {data.ctaText && <p className="mt-1.5 text-sm text-muted-foreground">{data.ctaText}</p>}
+        {data.ctaText && <p className="mt-1.5 text-sm text-card-muted">{data.ctaText}</p>}
         {hasBtn && (
           <a href={data.ctaButtonUrl} target="_blank" rel="noopener noreferrer"
-            className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium text-primary-foreground active:scale-[0.99] transition"
+            className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium text-card-on-accent active:scale-[0.99] transition"
             style={{ background: "var(--card-accent-gradient)" }}>
             {data.ctaButtonLabel} <ArrowRight className="h-4 w-4" />
           </a>
@@ -943,11 +935,11 @@ function ContactSection({ data }: { data: CardData }) {
         <div className="mt-3 grid grid-cols-2 gap-2">
           {rows.map((r, i) => {
             const Inner = (
-              <div className="rounded-2xl bg-card border border-border p-3">
-                <span className="h-8 w-8 grid place-items-center rounded-xl bg-accent">
+              <div className="rounded-2xl bg-card-surface border border-card-border p-3">
+                <span className="h-8 w-8 grid place-items-center rounded-xl bg-card-surface-alt">
                   <r.icon className="h-4 w-4" style={{ color: "var(--card-accent)" }} />
                 </span>
-                <div className="mt-2 text-[10px] uppercase tracking-wider text-muted-foreground">{r.label}</div>
+                <div className="mt-2 text-[10px] uppercase tracking-wider text-card-muted">{r.label}</div>
                 <div className="text-xs font-medium truncate">{r.value}</div>
               </div>
             );
@@ -982,7 +974,7 @@ function ContactSection({ data }: { data: CardData }) {
   return (
     <section className="px-5">
       <SectionTitle>Coordonnées</SectionTitle>
-      <ul className="mt-3 rounded-2xl bg-card border border-border divide-y divide-border overflow-hidden">
+      <ul className="mt-3 rounded-2xl bg-card-surface border border-card-border divide-y divide-card-border overflow-hidden">
         <ContactRow icon={Phone}  label="Téléphone" value={data.phoneDisplay || data.phone} href={`tel:${data.phone}`} />
         <ContactRow icon={Mail}   label="Email"     value={data.email}   href={`mailto:${data.email}`} />
         <ContactRow icon={Globe}  label="Site web"  value={data.website} href={`https://${data.website}`} />
@@ -996,17 +988,17 @@ function ContactRow({ icon: Icon, label, value, href }: { icon: any; label: stri
   if (!value) return null;
   const Inner = (
     <div className="flex items-center gap-3 px-4 py-3">
-      <span className="h-9 w-9 grid place-items-center rounded-xl bg-accent">
+      <span className="h-9 w-9 grid place-items-center rounded-xl bg-card-surface-alt">
         <Icon className="h-4 w-4" style={{ color: "var(--card-accent)" }} />
       </span>
       <div className="flex-1 min-w-0">
-        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
+        <div className="text-[10px] uppercase tracking-wider text-card-muted">{label}</div>
         <div className="text-sm truncate">{value}</div>
       </div>
-      {href && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+      {href && <ChevronRight className="h-4 w-4 text-card-muted" />}
     </div>
   );
-  return <li>{href ? <a href={href} className="block active:bg-accent/60 transition">{Inner}</a> : Inner}</li>;
+  return <li>{href ? <a href={href} className="block active:bg-card-surface-alt/60 transition">{Inner}</a> : Inner}</li>;
 }
 
 /* ============================================================
@@ -1034,10 +1026,10 @@ function SocialsSection({ data }: { data: CardData }) {
       <section className="px-5 space-y-2">
         {items.map((it, i) => (
           <a key={i} href={it.href} target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-3 rounded-2xl bg-card border border-border px-4 py-3 active:scale-[0.99] transition">
+            className="flex items-center gap-3 rounded-2xl bg-card-surface border border-card-border px-4 py-3 active:scale-[0.99] transition">
             <it.icon className="h-4 w-4" style={{ color: "var(--card-accent)" }} />
             <span className="text-sm font-medium flex-1">{it.label}</span>
-            <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+            <ExternalLink className="h-3.5 w-3.5 text-card-muted" />
           </a>
         ))}
       </section>
@@ -1062,7 +1054,7 @@ function SocialsSection({ data }: { data: CardData }) {
     <section className="px-5 flex justify-center gap-3">
       {items.map((it, i) => (
         <a key={i} href={it.href} target="_blank" rel="noopener noreferrer" aria-label={it.label}
-          className="h-11 w-11 grid place-items-center rounded-full bg-card border border-border active:scale-95 transition">
+          className="h-11 w-11 grid place-items-center rounded-full bg-card-surface border border-card-border active:scale-95 transition">
           <it.icon className="h-5 w-5" style={{ color: "var(--card-accent)" }} />
         </a>
       ))}
@@ -1111,12 +1103,12 @@ function Avatar({ photo, name, size = 40 }: { photo: string; name: string; size?
   const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((s) => s[0]?.toUpperCase()).join("");
   return (
     <span
-      className="grid place-items-center rounded-full overflow-hidden bg-muted border border-border shrink-0 text-xs font-medium"
+      className="grid place-items-center rounded-full overflow-hidden bg-card-surface-alt border border-card-border shrink-0 text-xs font-medium"
       style={{ width: size, height: size }}
     >
       {photo
         ? <img src={photo} alt={name} className="h-full w-full object-cover" />
-        : <span className="text-muted-foreground">{initials || "?"}</span>}
+        : <span className="text-card-muted">{initials || "?"}</span>}
     </span>
   );
 }
@@ -1137,18 +1129,18 @@ function TestimonialsBlock({ testimonials, style }: { testimonials: Testimonial[
         {testimonials.map((t) => (
           <li key={t.id}>
             <TestimonialLinkWrap link={t.link}>
-              <article className="rounded-2xl bg-card border border-border p-4">
+              <article className="rounded-2xl bg-card-surface border border-card-border p-4">
                 <div className="flex items-start gap-3">
                   <Avatar photo={t.photo} name={t.name} size={44} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0">
                         <div className="text-sm font-medium truncate">{t.name}</div>
-                        <div className="text-[11px] text-muted-foreground truncate">{t.role}</div>
+                        <div className="text-[11px] text-card-muted truncate">{t.role}</div>
                       </div>
                       <Stars rating={t.rating} />
                     </div>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">« {t.text} »</p>
+                    <p className="mt-2 text-sm leading-relaxed text-card-muted">« {t.text} »</p>
                     {t.link && (
                       <div className="mt-2 inline-flex items-center gap-1 text-[11px]" style={{ color: "var(--card-accent)" }}>
                         Voir l'avis <ExternalLink className="h-3 w-3" />
@@ -1169,7 +1161,7 @@ function TestimonialsBlock({ testimonials, style }: { testimonials: Testimonial[
       <div className="mt-3 flex gap-2 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {testimonials.map((t) => (
           <TestimonialLinkWrap key={t.id} link={t.link}>
-            <article className="snap-start shrink-0 w-[68%] rounded-xl bg-card border border-border p-3">
+            <article className="snap-start shrink-0 w-[68%] rounded-xl bg-card-surface border border-card-border p-3">
               <div className="flex items-center gap-2">
                 <Avatar photo={t.photo} name={t.name} size={32} />
                 <div className="min-w-0 flex-1">
@@ -1177,7 +1169,7 @@ function TestimonialsBlock({ testimonials, style }: { testimonials: Testimonial[
                   <Stars rating={t.rating} />
                 </div>
               </div>
-              <p className="mt-2 text-xs leading-snug text-muted-foreground line-clamp-3">« {t.text} »</p>
+              <p className="mt-2 text-xs leading-snug text-card-muted line-clamp-3">« {t.text} »</p>
             </article>
           </TestimonialLinkWrap>
         ))}
@@ -1189,17 +1181,17 @@ function TestimonialsBlock({ testimonials, style }: { testimonials: Testimonial[
     <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {testimonials.map((t) => (
         <TestimonialLinkWrap key={t.id} link={t.link}>
-          <article className="snap-start shrink-0 w-[82%] rounded-2xl bg-card border border-border p-4 relative">
+          <article className="snap-start shrink-0 w-[82%] rounded-2xl bg-card-surface border border-card-border p-4 relative">
             <Quote className="absolute top-3 right-3 h-5 w-5 opacity-30" style={{ color: "var(--card-accent)" }} />
             <Stars rating={t.rating} />
             <p className="mt-3 text-sm leading-relaxed">« {t.text} »</p>
-            <div className="mt-4 pt-3 border-t border-border flex items-center gap-3">
+            <div className="mt-4 pt-3 border-t border-card-border flex items-center gap-3">
               <Avatar photo={t.photo} name={t.name} size={36} />
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-medium truncate">{t.name}</div>
-                <div className="text-[11px] text-muted-foreground truncate">{t.role}</div>
+                <div className="text-[11px] text-card-muted truncate">{t.role}</div>
               </div>
-              {t.link && <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />}
+              {t.link && <ExternalLink className="h-3.5 w-3.5 text-card-muted" />}
             </div>
           </article>
         </TestimonialLinkWrap>
