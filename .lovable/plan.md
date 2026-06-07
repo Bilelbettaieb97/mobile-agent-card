@@ -1,65 +1,100 @@
-# Champs de formulaire conditionnels par variante
+# Thèmes complets par secteur (pas juste l'accent)
 
-## Principe
+## Problème
 
-Quand une variante introduit un élément visuel nouveau (image, label, couleur…), le formulaire doit exposer un champ pour le piloter. Sinon la variante reste « cosmétique » et impossible à personnaliser.
+Aujourd'hui un « thème » ne change que `--card-accent` et `--card-accent-gradient`. Le fond, les surfaces (cartes/bordures) et les textes utilisent les tokens globaux (`bg-background`, `bg-card`, `border-border`, `text-muted-foreground`) — donc visuellement, seule la couleur autour de la photo bouge. C'est pour ça que tous les thèmes se ressemblent.
 
-## Audit des variantes
+## Objectif
 
-J'ai relu chaque variante existante. Une seule introduit un nouvel élément non géré :
+Un thème = **palette complète** appliquée à la carte (fond, surfaces, bordures, textes, accent, dégradé). Le reste de l'app (le builder, le shell) n'est pas touché.
 
-| Section | Variante | Nouvel élément | Statut actuel | Action |
-|---|---|---|---|---|
-| **Identité** | **Couverture** | Bandeau image en arrière-plan de l'en-tête | Réutilise `data.photo` flouté (donc pas de vrai contrôle séparé) | **Ajouter `coverPhoto`** |
-| Identité | Horizontal | — | OK | rien |
-| Actions | pills / grid / icons | — (même data) | OK | rien |
-| vCard | gradient / outline / card | — | OK | rien |
-| Stats | inline / stacked / pills | — | OK | rien |
-| About | standard / quote / card | — | OK | rien |
-| Vidéo | embed / thumb / cinema | — (même `videoUrl` / `videoTitle`) | OK | rien |
-| Services | list / numbered / carousel | — | OK | rien |
-| Listings | carousel / stacked / compact | — | OK | rien |
-| Calendar | row / cta / block | — | OK | rien |
-| Languages | chips / list / grid | — | OK | rien |
-| CTA | gradient / outline / bold | — | OK | rien |
-| Contact | list / grid / compact | — | OK | rien |
-| Socials | icons / pills / branded | — (couleurs câblées en interne) | OK | rien |
+## Architecture
 
-Seule **Identité Couverture** a besoin d'un champ supplémentaire pour le moment.
+### 1. Élargir le contrat de thème — `src/components/card/BusinessCard.tsx`
 
-## Changements
+Remplacer `ACCENTS` (record `accent → {primary, gradient}`) par `THEMES` (record `accent → palette complète`) :
 
-### 1. `src/lib/card-types.ts`
-- Ajouter `coverPhoto: string` à `CardData`.
-- `DEFAULT_CARD.coverPhoto = ""`.
+```ts
+type ThemePalette = {
+  mode: "light" | "dark";   // pour info / debug
+  bg: string;               // fond global de la carte
+  surface: string;          // fond des cartes/sections internes
+  surfaceAlt: string;       // fond accent doux (chips, tags, hover)
+  border: string;           // bordures
+  text: string;             // texte principal
+  textMuted: string;        // texte secondaire
+  accent: string;           // accent (icônes, prix, points forts)
+  gradient: string;         // dégradé bouton CTA + halo identité
+  headerBg: string;         // dégradé de l'en-tête centré
+};
+```
 
-### 2. `src/lib/card-store.ts`
-- Le merge avec `localStorage` reprend tous les champs manquants par défaut — vérifier qu'il prend bien `coverPhoto` (logique identique à `variants`).
+Le composant publie ces tokens en CSS variables sur la racine de la carte (`--card-bg`, `--card-surface`, `--card-surface-alt`, `--card-border`, `--card-text`, `--card-text-muted`, `--card-accent`, `--card-accent-gradient`, `--card-header-bg`).
 
-### 3. `src/components/card/BusinessCard.tsx` — `IdentitySection` variante `cover`
-- Bannière : si `data.coverPhoto` est défini → image plein cadre (object-cover, sans flou ni opacité 40%). Sinon → fallback dégradé actuel + photo floutée si dispo, puis dégradé plat si rien.
-- Avatar dans le rond : continue d'utiliser `data.photo`.
+### 2. Refactor des classes Tailwind → tokens carte
 
-### 4. `src/routes/builder.tsx` — `IdentityBrick`
-- Ajouter, **sous le champ « Secteur géographique »**, un bloc **conditionnel** qui n'apparaît que si `data.variants.identity === "cover"` :
-  - Label : « Photo de couverture »
-  - Hint : « Affichée en bannière derrière votre photo. »
-  - Bouton import (FileReader → `coverPhoto` en data-URL)
-  - Aperçu miniature 16/9 + bouton « Retirer »
-- Pattern identique à l'upload `photo` déjà en place.
+Dans `BusinessCard.tsx`, remplacer **uniquement à l'intérieur de la carte** :
 
-### 5. Règle pour le futur
-Ajouter un commentaire en tête de `BRICK_VARIANTS` dans `src/lib/brick-variants.ts` : « Si une nouvelle variante introduit un élément visuel pilotable (image, libellé, lien…), créer le champ correspondant dans `CardData` ET dans le `*Brick` du builder, avec affichage conditionnel sur la variante. »
+- `bg-background` → `style={{ background: "var(--card-bg)" }}` sur la racine
+- `bg-card` → `style={{ background: "var(--card-surface)" }}`
+- `bg-accent` → `style={{ background: "var(--card-surface-alt)" }}`
+- `border-border` / `divide-border` → `style={{ borderColor: "var(--card-border)" }}` (ou classes utilitaires)
+- `text-foreground` → couvert par `color: var(--card-text)` sur la racine
+- `text-muted-foreground` → `style={{ color: "var(--card-text-muted)" }}`
+- L'en-tête centré (radial gradient codé en dur) → `var(--card-header-bg)`
+
+Pour limiter la verbosité, j'ajoute en haut du fichier une ou deux classes utilitaires conventionnelles (ex. constants `SURFACE_STYLE`, `BORDER_STYLE`) et je les réutilise.
+
+### 3. Catalogue de thèmes — couvrir ~20 secteurs
+
+Plan de la palette : chaque thème choisit explicitement clair ou sombre, avec un accent qui s'accorde. Liste cible (~20 secteurs) :
+
+| ID | Nom | Secteur | Mode |
+|---|---|---|---|
+| `gold` | Or | Immobilier prestige | Sombre |
+| `noir` | Noir & Or | Luxe / Joaillerie | Sombre |
+| `emerald` | Émeraude | Finance / Conseil | Sombre |
+| `forest` | Forêt | Écologie / Outdoor | Sombre |
+| `navy` | Marine | Avocat / Notaire | Sombre |
+| `sapphire` | Saphir | Tech / SaaS | Sombre |
+| `graphite` | Graphite | Éditorial / Photographe | Sombre |
+| `bordeaux` | Bordeaux | Sommellerie / Gastronomie | Sombre |
+| `copper` | Cuivre | Artisanat | Clair chaud |
+| `cream` | Crème | Coach / Lifestyle | Clair chaud |
+| `sand` | Sable | Architecture / Déco | Clair chaud |
+| `clay` | Terracotta | Restauration / Café | Clair chaud |
+| `rose` | Rose poudré | Beauté / Esthétique | Clair |
+| `blush` | Pêche | Coiffure / Maquillage | Clair |
+| `mint` | Menthe | Santé / Bien-être | Clair |
+| `sky` | Azur | Éducation / Enfance | Clair |
+| `paper` | Papier | Avocat / Notaire (clair) | Clair |
+| `slate` | Ardoise | Industrie / BTP | Sombre froid |
+| `violet` | Violet | Créatif / Design | Sombre |
+| `crimson` | Cramoisi | Sport / Salle de sport | Sombre |
+| `magenta` | Magenta | Mode / Événementiel | Sombre |
+| `sun` | Soleil | Voyage / Hôtellerie | Clair chaud |
+
+≈ 22 thèmes. Chacun avec sa palette complète (bg, surface, surfaceAlt, border, text, textMuted, accent, gradient, headerBg).
+
+### 4. Sélecteur dans le builder — `src/routes/builder.tsx`
+
+- Remplacer le `THEMES` actuel par la même liste avec `{ id, label, sector }` (sans dupliquer les palettes — on importe juste les IDs depuis card-types/un fichier dédié).
+- Carte de prévisualisation : au lieu d'un dégradé seul, afficher une **mini-puce** combinant `bg` + bande `surface` + pastille `accent`, pour qu'on devine le rendu réel de la carte.
+- Grille en 2 colonnes, scroll vertical naturel (~22 items).
+
+### 5. Stockage
+
+`ThemeAccent` reste un union de string IDs. Pas de changement au store. Les anciens IDs (`gold`, `emerald`, `copper`) restent valides → pas de migration nécessaire.
 
 ## Hors scope
 
-- Pas de refonte des autres variantes.
-- Pas de système générique « schema → form » (overkill pour ce besoin).
+- Pas de thème « clair/sombre auto » du système.
+- Pas d'override par l'utilisateur des couleurs (custom picker).
+- Pas de typographie variable par thème (la font display reste globale).
+- Pas d'override de l'app builder / shell.
 
 ## Fichiers modifiés
 
-- `src/lib/card-types.ts`
-- `src/lib/card-store.ts` (vérif seulement, modif si nécessaire)
-- `src/components/card/BusinessCard.tsx`
-- `src/routes/builder.tsx`
-- `src/lib/brick-variants.ts` (commentaire de règle)
+- `src/lib/card-types.ts` — élargir `ThemeAccent` (union de ~22 IDs)
+- `src/components/card/BusinessCard.tsx` — définir `THEMES` (palettes complètes), publier les CSS vars sur la racine, remplacer les classes globales par les tokens carte dans tous les sous-composants
+- `src/routes/builder.tsx` — nouveau `THEMES_META` (id/label/sector + 3 swatches pour preview), grille 2 col
