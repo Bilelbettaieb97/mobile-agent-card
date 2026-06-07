@@ -157,7 +157,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
               </div>
             </>
           ) : (
-            <div className="flex-1 overflow-y-auto pr-1 max-h-[60vh] lg:max-h-none">
+            <div className="flex-1 min-h-0 overflow-y-auto pr-1">
               <div className="grid grid-cols-2 gap-2">
                 {CARD_THEMES.map((t) => {
                   const active = selectedThemeId === t.id && !selectedProfession;
