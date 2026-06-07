@@ -82,3 +82,13 @@
     letter-spacing: -0.02em;
   }
 }
+
+/* Card-scoped tokens — overridden per theme on the card root.
+   These utilities let the BusinessCard ignore global tokens. */
+@utility bg-card-bg          { background-color: var(--card-bg); }
+@utility bg-card-surface     { background-color: var(--card-surface); }
+@utility bg-card-surface-alt { background-color: var(--card-surface-alt); }
+@utility border-card-border  { border-color: var(--card-border); }
+@utility divide-card-border  { & > * + * { border-color: var(--card-border); } }
+@utility text-card-muted     { color: var(--card-text-muted); }
+
