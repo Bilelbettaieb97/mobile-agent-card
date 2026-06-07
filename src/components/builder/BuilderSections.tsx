@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Sparkles, ArrowRight, ArrowLeft, Check, ChevronDown, Lock, Crown, Zap } from "lucide-react";
+import { Sparkles, Check, ChevronDown, Lock, Crown, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -9,6 +9,7 @@ import {
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
 import { StepHeader } from "@/components/builder/StepHeader";
+import { StepFooter } from "@/components/builder/StepFooter";
 import { THEMES_BY_ID } from "@/lib/card-themes";
 import type { CardData, BrickId } from "@/lib/card-types";
 import { renderBrickBody } from "@/components/builder/bricks";
