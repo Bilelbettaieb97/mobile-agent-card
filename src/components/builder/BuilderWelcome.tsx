@@ -244,9 +244,17 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
               <p className="text-xs uppercase tracking-[0.18em] text-primary flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5" /> Aperçu live
               </p>
-              <span className="text-[10px] text-muted-foreground">
-                {selectedProfession ? "3 mises en page possibles" : "Met à jour à chaque sélection"}
-              </span>
+              {selectedProfession ? (
+                <button
+                  type="button"
+                  onClick={() => setCompareOpen(true)}
+                  className="text-[10px] inline-flex items-center gap-1 text-foreground/80 hover:text-foreground transition px-2 py-1 rounded-md border border-border bg-background"
+                >
+                  <Maximize2 className="h-3 w-3" /> Comparer les 3
+                </button>
+              ) : (
+                <span className="text-[10px] text-muted-foreground">Met à jour à chaque sélection</span>
+              )}
             </div>
 
             {/* Variantes — visibles uniquement quand un métier est choisi */}
@@ -287,6 +295,92 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
           </div>
         </aside>
       </div>
+
+      {/* Mobile: bouton flottant pour ouvrir la comparaison */}
+      {selectedProfession && (
+        <button
+          type="button"
+          onClick={() => setCompareOpen(true)}
+          className="lg:hidden fixed bottom-24 right-4 z-30 inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-4 py-2.5 text-xs font-medium shadow-lg"
+        >
+          <Maximize2 className="h-3.5 w-3.5" /> Comparer les 3
+        </button>
+      )}
+
+      {/* Overlay plein écran : comparaison des 3 variantes */}
+      {compareOpen && selectedProfession && (
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex flex-col">
+          {/* halo */}
+          <div
+            className="absolute inset-0 -z-10 blur-3xl opacity-30 pointer-events-none"
+            style={{ background: activeTheme.palette.gradient }}
+            aria-hidden
+          />
+
+          {/* Header */}
+          <header className="flex items-center justify-between px-5 py-4 border-b border-border/60">
+            <div className="min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-primary flex items-center gap-1.5">
+                <Sparkles className="h-3 w-3" /> Comparer les mises en page
+              </p>
+              <h2 className="font-display text-lg truncate">{selectedProfession.label}</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setCompareOpen(false)}
+              className="h-9 w-9 inline-flex items-center justify-center rounded-full border border-border bg-background hover:bg-muted transition"
+              aria-label="Fermer"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </header>
+
+          {/* Carrousel des 3 phones */}
+          <div className="flex-1 overflow-x-auto overflow-y-auto overscroll-contain">
+            <div className="min-w-full h-full flex items-start lg:items-center justify-start lg:justify-center gap-6 px-5 py-6 snap-x snap-mandatory">
+              {compareCards.map((v) => {
+                const active = variant === v.id;
+                return (
+                  <div
+                    key={v.id}
+                    className="snap-center shrink-0 flex flex-col items-center gap-3"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs font-medium ${active ? "text-foreground" : "text-muted-foreground"}`}>
+                        {v.label}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground/80">· {v.hint}</span>
+                      {active && (
+                        <span className="text-[9px] uppercase tracking-wider text-primary inline-flex items-center gap-1">
+                          <Check className="h-3 w-3" strokeWidth={3} /> sélectionnée
+                        </span>
+                      )}
+                    </div>
+                    <div className={`rounded-[42px] transition ${active ? "ring-2 ring-primary ring-offset-4 ring-offset-background" : ""}`}>
+                      <PhoneFrame>
+                        <BusinessCard data={v.data} />
+                      </PhoneFrame>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={active ? "default" : "outline"}
+                      onClick={() => { setVariant(v.id); setCompareOpen(false); }}
+                    >
+                      {active ? "Continuer avec celle-ci" : "Choisir"}
+                      <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <footer className="px-5 py-3 border-t border-border/60 text-center text-[11px] text-muted-foreground">
+            <span className="lg:hidden">Glissez horizontalement pour comparer · </span>
+            Échap pour fermer
+          </footer>
+        </div>
+      )}
     </main>
   );
 }
