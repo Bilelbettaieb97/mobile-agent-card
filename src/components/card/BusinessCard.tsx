@@ -2,9 +2,9 @@ import { useState } from "react";
 import {
   Phone, Mail, MessageCircle, MapPin, Globe, Linkedin, Instagram,
   Share2, Download, BadgeCheck, Award, ChevronRight, Building2, ImageIcon,
-  Star, Calendar, Languages as LangIcon, Sparkles, PlayCircle, ArrowRight,
+  Star, Calendar, Languages as LangIcon, Sparkles, PlayCircle, ArrowRight, Quote, ExternalLink,
 } from "lucide-react";
-import type { CardData, ThemeAccent } from "@/lib/card-types";
+import type { CardData, ThemeAccent, Testimonial, TestimonialsStyle } from "@/lib/card-types";
 
 const ACCENTS: Record<ThemeAccent, { primary: string; gradient: string }> = {
   gold:    { primary: "oklch(0.82 0.13 85)",  gradient: "linear-gradient(135deg, oklch(0.88 0.1 90), oklch(0.75 0.14 75))" },
