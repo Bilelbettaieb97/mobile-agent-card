@@ -1,81 +1,47 @@
-## Effet "waw" — Écran d'accueil du builder avec démo live
+## Objectif
 
-### Comportement
+Sur l'écran de bienvenue du builder, quand l'utilisateur sélectionne un métier, l'aperçu propose **3 variantes de mise en page** au lieu d'une seule. Il peut basculer entre elles via des mini onglets juste au-dessus du téléphone, pour voir concrètement les compositions possibles avant même de commencer à éditer.
 
-Quand on entre dans `/builder` sans avoir déjà choisi de métier, on tombe sur un **écran de bienvenue plein écran** en split-screen :
+## Les 3 variantes
 
-```
-+--------------------------------------+------------------+
-|  CHOISIR SON UNIVERS                 |                  |
-|                                      |   [iPhone live]  |
-|  [ Par métier ]  [ Par thème ]       |                  |
-|  ─────────────────────────           |   Carte démo     |
-|  🔍 Rechercher un métier…            |   du persona     |
-|                                      |   sélectionné    |
-|  ▸ Immobilier                        |   (transition    |
-|     · Agent prestige     [GOLD]      |    fluide entre  |
-|     · Chasseur           [NAVY]      |    palettes)     |
-|     · …                              |                  |
-|  ▸ Santé / …                         |                  |
-|                                      |                  |
-|  [ Commencer avec ce modèle → ]      |                  |
-+--------------------------------------+------------------+
-```
+Chaque variante active un sous-ensemble différent de briques. Le ton et l'intention sont distincts pour bien montrer la souplesse du produit.
 
-- **Hover/clic** sur un métier → la carte de droite **change immédiatement** de palette + de contenu (persona dédié).
-- **Bouton "Commencer"** → applique le persona au store + bascule sur l'écran d'édition existant (les bricks).
-- Si l'utilisateur a déjà sauvegardé une carte (profession existante en `localStorage`), on **saute** l'accueil et on va direct à l'édition. Un bouton **"Changer de thème"** dans la topbar permet de revenir à l'accueil à tout moment.
+| Variante | Intention | Briques typiques |
+|----------|-----------|------------------|
+| **Essentielle** | Carte de visite minimaliste, va à l'essentiel | Identité, contact, vCard, à propos, 1 brique métier |
+| **Vitrine** | Effet wow maximal, montre tout le potentiel visuel | Identité, contact, vCard, à propos, stats, services, listings, vidéo/CTA selon métier |
+| **Pro** | Orientée prise de contact et crédibilité | Identité, contact, vCard, à propos, services, témoignages, langues, RDV/calendrier |
 
-### Persona par métier (≈70)
+La composition exacte de chaque variante est adaptée par catégorie métier — la "Vitrine" d'un restaurateur met en avant les visuels et réseaux, celle d'un avocat met en avant l'expertise et les langues, celle d'un dev son portfolio et sa dispo. Le mapping suit la logique déjà en place dans `SECTION_PROFILES`.
 
-Nouveau fichier `src/lib/profession-personas.ts` exportant `PERSONAS: Record<string, Persona>` indexé par `profession.id`. Chaque persona = override partiel de `CardData` :
+## Navigation entre variantes
 
-- `name`, `title`, `agency`, `area`, `bio` (crédibles, FR, ton du métier)
-- `stats` (3 chiffres clés métier — ex. "1 200 patients", "98 % de satisfaction")
-- `services` (3 prestations réalistes)
-- `badges` (2-3 certifications / labels du métier)
-- `ctaTitle` / `ctaText` adaptés
-- `photo` : portrait via `https://i.pravatar.cc/400?img=N` (déterministe, fiable, libre)
-- `listings` : 1-3 photos via `https://picsum.photos/seed/<id>/800/600` (sinon vide pour les métiers sans portfolio visuel)
-- Réutilise le `themeId` déjà défini dans `PROFESSIONS` pour la palette.
+**Mini onglets** au-dessus du téléphone : `Essentielle · Vitrine · Pro`. Cliquables, l'aperçu se met à jour instantanément.
 
-Un helper `buildPreviewCard(professionId)` retourne `{ ...DEFAULT_CARD, ...persona, accent: theme, profession: id }` prêt à être passé à `<BusinessCard>`.
+- Choix par défaut à l'arrivée sur un métier : **Vitrine** (effet wow maximal).
+- Une bascule de variante ne change pas le métier sélectionné.
+- À l'étape suivante (sections essentielles puis complémentaires), la variante choisie pré-coche les bons interrupteurs — l'utilisateur peut tout modifier.
 
-### Composants à créer / modifier
+## Détails techniques
 
-**Nouveau : `src/components/builder/BuilderWelcome.tsx`**
-- Split-screen : gauche = panneau de sélection, droite = `PhoneFrame` + `BusinessCard` du preview.
-- Onglets **Par métier / Par thème** (logique reprise de l'actuel `ThemeBrick`, mais en pleine page).
-- Recherche + liste groupée par catégorie, scroll fluide, badge ✓ sur l'item actif.
-- Pied de panneau : bouton sticky **"Commencer avec ce modèle →"** (désactivé tant qu'aucun choix n'a été fait, sinon affiche le métier choisi).
-- Transition de palette : utilise `transition: background 400ms ease, color 400ms ease` sur la racine de la carte pour un fondu propre entre thèmes.
-- Touche "waw" : halo dégradé doux derrière le téléphone qui reprend la couleur d'accent du thème courant, badge "✨ Aperçu live" en haut à droite.
+### `src/lib/profession-personas.ts`
+- Remplacer `SECTION_PROFILES: Record<category, Profile>` par `SECTION_PROFILES: Record<category, { essentielle, vitrine, pro }>`.
+- Ajouter un type `VariantId = "essentielle" | "vitrine" | "pro"`.
+- Définir les 3 profils pour chaque catégorie existante (Immobilier, Juridique, Finance, Tech, Santé, Beauté, Coaching, Sport, Restauration, Artisanat, Mode, Créatif, Éducation, Voyage, Événementiel, Média) + un fallback par défaut.
+- Étendre `buildPreviewCard(profession, variant?: VariantId)` ; `variant` défaut = `"vitrine"`. Le profil sélectionné applique ses flags par-dessus `DEFAULT_CARD`.
 
-**Modifié : `src/routes/builder.tsx`**
-- Nouveau state local `step: "welcome" | "edit"`, initialisé à `"welcome"` si `!data.profession`, sinon `"edit"`.
-- Si `step === "welcome"` → rend `<BuilderWelcome onPick={...} onSkip={...} />` à la place du layout actuel.
-- Bouton **"Changer de thème"** dans la topbar de l'édition → `setStep("welcome")`.
-- Le ThemeBrick existant dans la colonne d'édition est conservé (toujours utile pour ajuster après coup).
+### `src/components/builder/BuilderWelcome.tsx`
+- Nouvel état `variant: VariantId` (défaut `"vitrine"`).
+- Réinitialiser à `"vitrine"` à chaque changement de métier.
+- `previewData` recalculé en fonction de `(selectedProfession, variant)`.
+- Au-dessus du `PhoneFrame` à droite, ajouter une barre de 3 mini onglets `Essentielle · Vitrine · Pro`. Visible uniquement quand un métier est sélectionné (sinon : variante implicite, onglets masqués).
+- `onConfirm` passe `buildPreviewCard(profession, variant)` au flux suivant pour que les étapes 2 et 3 démarrent avec la bonne composition pré-cochée.
 
-**Inchangé**
-- `BusinessCard`, `PhoneFrame`, store, vCard, ShareDialog : aucun changement.
-- Bricks d'édition : inchangées.
+### `src/routes/builder.tsx`
+- Aucune modification de structure : reçoit déjà un `CardData` complet via `onConfirm`. La variante est déjà résolue à ce moment-là.
 
-### Détails techniques
+## Hors scope
 
-- **Pré-chargement** des portraits du persona survolé pour éviter le flash (préfetch via `new Image()`).
-- **Accessibilité** : navigation clavier sur la liste (flèches haut/bas → preview, Entrée → commencer), focus visible.
-- **Mobile** : sur petit écran, l'aperçu passe en bas, en sticky réduite (180px), au-dessus de la liste — ou en drawer "Voir l'aperçu" comme aujourd'hui.
-- **`prefers-reduced-motion`** : pas d'auto-rotation, juste fondu de couleur instantané.
-
-### Fichiers touchés
-
-- ➕ `src/lib/profession-personas.ts` (nouveau, ≈70 personas + helper)
-- ➕ `src/components/builder/BuilderWelcome.tsx` (nouveau)
-- ✏️ `src/routes/builder.tsx` (state `step`, montage conditionnel, bouton "Changer de thème")
-
-### Hors scope
-
-- Pas de modification de la carte fictive elle-même ni des bricks.
-- Pas de cloud / auth / analytics.
-- Pas de nouveaux thèmes ou nouveaux métiers — on s'appuie sur ce qui existe.
+- Pas de changement de l'ordre des sections dans le rendu (le composant `BusinessCard` garde son ordre fixe). Les 3 variantes diffèrent par les briques activées et leur emphase, pas par leur position.
+- Pas de modification du composant `BusinessCard` ni du composant `BuilderSections`.
+- Pas d'animation de transition entre variantes (juste un changement de données, déjà fluide grâce au `transition-opacity` existant).
