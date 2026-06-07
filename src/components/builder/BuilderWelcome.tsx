@@ -63,7 +63,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
 
   const handleStart = () => {
     if (selectedProfession) {
-      onConfirm(buildPreviewCard(selectedProfession));
+      onConfirm(buildPreviewCard(selectedProfession, variant));
     } else {
       onConfirm(buildPreviewFromTheme(selectedThemeId));
     }
