@@ -141,7 +141,7 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
         scroller.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
         // Flash highlight
         target.classList.add("brick-flash");
-        window.setTimeout(() => target.classList.remove("brick-flash"), 1600);
+        window.setTimeout(() => target.classList.remove("brick-flash"), 2200);
       });
     });
   };
