@@ -327,11 +327,18 @@ type BrickProps = { data: CardData; update: <K extends keyof CardData>(k: K, v: 
 
 function IdentityBrick({ data, update }: BrickProps) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const coverRef = useRef<HTMLInputElement>(null);
   const onFile = (f: File) => {
     const reader = new FileReader();
     reader.onload = () => update("photo", String(reader.result));
     reader.readAsDataURL(f);
   };
+  const onCover = (f: File) => {
+    const reader = new FileReader();
+    reader.onload = () => update("coverPhoto", String(reader.result));
+    reader.readAsDataURL(f);
+  };
+  const isCover = data.variants.identity === "cover";
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4">
@@ -350,6 +357,29 @@ function IdentityBrick({ data, update }: BrickProps) {
       <Field label="Titre / poste"><Input value={data.title} onChange={(e) => update("title", e.target.value)} /></Field>
       <Field label="Agence"><Input value={data.agency} onChange={(e) => update("agency", e.target.value)} /></Field>
       <Field label="Secteur géographique"><Input value={data.area} onChange={(e) => update("area", e.target.value)} /></Field>
+
+      {isCover && (
+        <div className="space-y-2 rounded-lg border border-dashed border-border p-3">
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <div className="text-sm font-medium">Photo de couverture</div>
+              <div className="text-xs text-muted-foreground">Affichée en bannière derrière votre photo.</div>
+            </div>
+            <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onCover(f); }} />
+            <Button type="button" variant="outline" size="sm" onClick={() => coverRef.current?.click()}>
+              <Upload className="h-4 w-4 mr-1.5" /> Importer
+            </Button>
+          </div>
+          {data.coverPhoto && (
+            <div className="space-y-2">
+              <div className="aspect-[16/9] w-full rounded-md overflow-hidden bg-muted border border-border">
+                <img src={data.coverPhoto} alt="" className="h-full w-full object-cover" />
+              </div>
+              <Button type="button" variant="ghost" size="sm" onClick={() => update("coverPhoto", "")}>Retirer la couverture</Button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

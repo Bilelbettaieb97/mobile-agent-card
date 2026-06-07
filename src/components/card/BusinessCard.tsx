@@ -159,10 +159,13 @@ function IdentitySection({ data }: { data: CardData }) {
     return (
       <header className="mx-5 rounded-3xl overflow-hidden border border-border">
         <div className="relative h-36 w-full" style={{ background: "var(--card-accent-gradient)" }}>
-          {data.photo && (
+          {data.coverPhoto ? (
+            <img src={data.coverPhoto} alt="" aria-hidden
+              className="absolute inset-0 h-full w-full object-cover" />
+          ) : data.photo ? (
             <img src={data.photo} alt="" aria-hidden
               className="absolute inset-0 h-full w-full object-cover opacity-40 blur-[2px] scale-110" />
-          )}
+          ) : null}
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 0%, oklch(0.16 0.018 250 / 0.6) 100%)" }} />
         </div>
         <div className="relative bg-card px-5 pb-5 pt-0 -mt-12 flex flex-col items-center text-center">
