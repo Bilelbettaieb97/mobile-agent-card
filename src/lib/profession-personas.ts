@@ -1057,7 +1057,7 @@ export function buildPreviewCard(profession: Profession): CardData {
   const sections = SECTION_PROFILES[profession.category] ?? DEFAULT_PROFILE;
 
   // Listings : on n'affiche que si le profil métier active la brique ET que la persona a un visuel pertinent
-  const listingsActive = sections.listingsEnabled && persona.withListings;
+  const listingsActive = !!(sections.listingsEnabled && persona.withListings);
   const listings: Listing[] = listingsActive
     ? [
         { id: "l1", img: `https://picsum.photos/seed/${profession.id}-1/800/600`, title: "Réalisation 1", meta: "Aperçu", price: "" },
