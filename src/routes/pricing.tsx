@@ -222,9 +222,15 @@ function PricingPage() {
 
                 <div className="min-h-[36px] text-xs mb-4 space-y-0.5">
                   {billing === "yearly" ? (
-                    <div className="text-muted-foreground">
-                      Soit <span className="text-foreground font-medium">{yearlyTotal} € / an</span> · facturé une fois
-                    </div>
+                    <>
+                      <div className="text-muted-foreground">
+                        Soit <span className="text-foreground font-medium">{yearlyTotal} € / an</span> · facturé une fois
+                      </div>
+                      <div className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold">
+                        <Gift className="h-3 w-3" />
+                        2 mois offerts par rapport au mensuel
+                      </div>
+                    </>
                   ) : (
                     <div className="text-muted-foreground">Facturation mensuelle, sans engagement</div>
                   )}
