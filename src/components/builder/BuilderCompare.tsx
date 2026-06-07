@@ -182,6 +182,13 @@ export function BuilderCompare({ profession, completedThrough, onGoToStep, onBac
           </div>
         </div>
       </div>
+
+      <StepFooter
+        step={2}
+        onBack={onBack}
+        backLabel="Changer de métier"
+        centerInfo="Cliquez sur un modèle pour continuer"
+      />
     </main>
   );
 }
