@@ -158,9 +158,11 @@ export const DEFAULT_CARD: CardData = {
   listings: [],
   testimonialsEnabled: true,
   testimonials: [
-    { id: "t1", name: "Camille D.", role: "Vendeuse — Paris 7e", text: "Discret, efficace, à l'écoute. Vente conclue 8 % au-dessus de l'estimation initiale.", rating: 5 },
-    { id: "t2", name: "Julien R.", role: "Acquéreur — Neuilly", text: "Alexandre a trouvé exactement le bien que nous cherchions, en moins de 3 semaines.", rating: 5 },
+    { id: "t1", name: "Camille D.", role: "Vendeuse — Paris 7e", text: "Discret, efficace, à l'écoute. Vente conclue 8 % au-dessus de l'estimation initiale.", rating: 5, photo: "", link: "" },
+    { id: "t2", name: "Julien R.", role: "Acquéreur — Neuilly", text: "Alexandre a trouvé exactement le bien que nous cherchions, en moins de 3 semaines.", rating: 5, photo: "", link: "" },
   ],
+  testimonialsStyle: "cards",
+
   calendarEnabled: false,
   calendarLabel: "Réserver un rendez-vous",
   calendarUrl: "https://calendly.com/votre-lien",
