@@ -1,5 +1,28 @@
 export type ThemeAccent = "gold" | "emerald" | "copper";
 
+export type BrickId =
+  | "identity"
+  | "actions"
+  | "vcard"
+  | "stats"
+  | "about"
+  | "listings"
+  | "contact"
+  | "socials"
+  | "theme";
+
+export const DEFAULT_SECTION_ORDER: BrickId[] = [
+  "identity",
+  "actions",
+  "vcard",
+  "stats",
+  "about",
+  "listings",
+  "contact",
+  "socials",
+  "theme",
+];
+
 export interface Stat { label: string; value: string }
 export interface Listing { id: string; img: string; title: string; meta: string; price: string }
 export interface Badge { id: string; label: string }
