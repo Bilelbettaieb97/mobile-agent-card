@@ -194,4 +194,6 @@ export const DEFAULT_CARD: CardData = {
   whatsappSocial: "33612345678",
   accent: "gold",
   sectionOrder: DEFAULT_SECTION_ORDER,
+  variants: { ...DEFAULT_VARIANTS },
 };
+
