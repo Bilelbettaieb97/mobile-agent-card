@@ -181,14 +181,26 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
   const totalAllowed = allowedDefs.length;
 
   const stepNum: 3 | 4 = isEssentials ? 3 : 4;
-  const heading = isEssentials ? "Les sections essentielles" : "Sections complémentaires";
+  const heading = isEssentials ? "Remplissez les sections essentielles" : "Ajoutez des sections complémentaires";
   const intro = isEssentials
     ? "Ce que toute carte de visite digitale doit contenir. Activez et remplissez les champs — l'aperçu se met à jour en direct."
     : "Enrichissez votre carte avec ce qui vous différencie. Les sections grisées nécessitent un plan supérieur.";
+  const nextHint = isEssentials
+    ? "Après cette étape : ajouter des sections complémentaires."
+    : "Après cette étape : personnaliser et activer votre carte.";
+  const nextLabel = isEssentials ? "Continuer" : "Personnaliser ma carte";
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <StepHeader step={stepNum} title={heading} subtitle={intro} />
+      <StepHeader
+        step={stepNum}
+        title={heading}
+        subtitle={intro}
+        completedThrough={completedThrough}
+        onGoToStep={onGoToStep}
+        nextHint={nextHint}
+      />
+
 
       <div className="mx-auto max-w-7xl px-5 pb-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10">
         {/* LEFT — sections list */}
