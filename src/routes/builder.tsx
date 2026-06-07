@@ -35,6 +35,7 @@ export const Route = createFileRoute("/builder")({
 function BuilderPage() {
   const { data, setData, update, reset, hydrated } = useCardStore();
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [gridOn, setGridOn] = useState(false);
 
   if (!hydrated) {
     return <div className="min-h-screen bg-background grid place-items-center text-muted-foreground">Chargement…</div>;
