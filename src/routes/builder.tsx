@@ -28,7 +28,7 @@ import {
   renderBrickBody,
   type BrickProps,
 } from "@/components/builder/bricks";
-import { buildPreviewFromTheme } from "@/lib/profession-personas";
+import { buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
 import { PROFESSIONS } from "@/lib/card-themes";
 
 type Step = "welcome" | "compare" | "essentials" | "extras" | "edit";
