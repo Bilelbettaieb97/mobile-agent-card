@@ -373,7 +373,6 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
 
 function planIcon(p: VariantId) {
   if (p === "vitrine") return <Crown className="h-3.5 w-3.5" />;
-  if (p === "pro") return <Zap className="h-3.5 w-3.5" />;
   return <Check className="h-3.5 w-3.5" />;
 }
 
