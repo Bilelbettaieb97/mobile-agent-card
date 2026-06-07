@@ -85,10 +85,14 @@
 
 /* Card-scoped tokens — overridden per theme on the card root.
    These utilities let the BusinessCard ignore global tokens. */
-@utility bg-card-bg          { background-color: var(--card-bg); }
-@utility bg-card-surface     { background-color: var(--card-surface); }
-@utility bg-card-surface-alt { background-color: var(--card-surface-alt); }
-@utility border-card-border  { border-color: var(--card-border); }
-@utility divide-card-border  { & > * + * { border-color: var(--card-border); } }
-@utility text-card-muted     { color: var(--card-text-muted); }
+@utility bg-card-bg             { background-color: var(--card-bg); }
+@utility bg-card-surface        { background-color: var(--card-surface); }
+@utility bg-card-surface-alt    { background-color: var(--card-surface-alt); }
+@utility border-card-border     { border-color: var(--card-border); }
+@utility border-card-surface    { border-color: var(--card-surface); }
+@utility border-card-bg         { border-color: var(--card-bg); }
+@utility divide-card-border     { & > * + * { border-color: var(--card-border); } }
+@utility text-card-muted        { color: var(--card-text-muted); }
+@utility text-card-on-accent    { color: var(--card-on-accent); }
+
 
