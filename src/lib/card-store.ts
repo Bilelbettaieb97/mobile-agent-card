@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { DEFAULT_CARD, DEFAULT_SECTION_ORDER, type CardData, type BrickId } from "./card-types";
+import { THEMES_BY_ID, PROFESSIONS } from "./card-themes";
 
 const KEY = "lovable.card.v1";
 
@@ -8,6 +9,18 @@ function normalizeOrder(order: unknown): BrickId[] {
   const arr = Array.isArray(order) ? (order.filter((x) => valid.has(x as BrickId)) as BrickId[]) : [];
   for (const id of DEFAULT_SECTION_ORDER) if (!arr.includes(id)) arr.push(id);
   return arr;
+}
+
+function normalizeAccent(accent: unknown): CardData["accent"] {
+  if (typeof accent === "string" && THEMES_BY_ID[accent]) {
+    return accent as CardData["accent"];
+  }
+  return DEFAULT_CARD.accent;
+}
+
+function normalizeProfession(profession: unknown): string | undefined {
+  if (typeof profession !== "string") return undefined;
+  return PROFESSIONS.some((p) => p.id === profession) ? profession : undefined;
 }
 
 export function loadCard(): CardData {
@@ -19,6 +32,8 @@ export function loadCard(): CardData {
     return {
       ...DEFAULT_CARD,
       ...parsed,
+      accent: normalizeAccent(parsed.accent),
+      profession: normalizeProfession(parsed.profession),
       sectionOrder: normalizeOrder(parsed.sectionOrder),
       variants: { ...DEFAULT_CARD.variants, ...(parsed.variants ?? {}) },
     };
