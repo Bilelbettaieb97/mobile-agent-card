@@ -115,13 +115,22 @@ export function BuilderCompare({ profession, onBack, onChoose }: Props) {
                       )}
                     </div>
 
-                    {/* Titre + nombre de sections */}
-                    <div className="text-center">
+                    {/* Titre + nombre de sections + CTA rapide */}
+                    <div className="text-center w-full">
                       <div className="font-display text-lg">{v.label}</div>
                       <div className="text-xs text-muted-foreground mt-0.5">{v.hint}</div>
                       <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-primary bg-primary/10 border border-primary/20 rounded-full px-2 py-0.5">
                         <Layers className="h-3 w-3" /> {v.sectionCount} sections incluses
                       </div>
+                      <Button
+                        size="sm"
+                        variant={isVitrine ? "default" : "outline"}
+                        onClick={() => onChoose(v.id, v.data)}
+                        className="w-full mt-3 h-9 text-sm"
+                      >
+                        <Check className="h-3.5 w-3.5 mr-1" />
+                        Choisir cette mise en page
+                      </Button>
                     </div>
 
                     {/* Puces différenciantes */}
