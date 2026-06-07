@@ -177,6 +177,24 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
 
   const activeTheme = THEMES_BY_ID[data.accent] ?? THEMES_BY_ID.gold;
 
+  // À l'étape 2 (essentielles), on force l'aperçu à n'afficher que les briques
+  // essentielles activées. Les "extras" restent dans le state mais sont masqués
+  // pour que l'utilisateur voie clairement la différence en passant à l'étape 3.
+  const previewData: CardData = isEssentials
+    ? {
+        ...data,
+        statsEnabled: false,
+        videoEnabled: false,
+        servicesEnabled: false,
+        listingsEnabled: false,
+        testimonialsEnabled: false,
+        calendarEnabled: false,
+        languagesEnabled: false,
+        ctaEnabled: false,
+        socialsEnabled: false,
+      }
+    : data;
+
   // Compteur : sections actives / sections incluses dans le plan
   const allDefs = [...ESSENTIALS, ...EXTRAS];
   const allowedDefs = allDefs.filter((d) => sectionAllowed(plan, d.key));
