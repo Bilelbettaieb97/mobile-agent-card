@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
+import { StepHeader } from "@/components/builder/StepHeader";
 import { THEMES_BY_ID } from "@/lib/card-themes";
 import type { CardData, BrickId } from "@/lib/card-types";
 import { renderBrickBody } from "@/components/builder/bricks";
