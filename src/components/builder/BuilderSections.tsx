@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { Sparkles, Check, ChevronDown, Lock, Crown } from "lucide-react";
+import { Sparkles, Check, ChevronDown, Lock, Crown, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -45,6 +45,7 @@ interface SectionDef {
   label: string;
   description: string;
   recommended?: boolean;
+  popular?: boolean;
 }
 
 const ESSENTIALS: SectionDef[] = [
@@ -56,15 +57,15 @@ const ESSENTIALS: SectionDef[] = [
 ];
 
 const EXTRAS: SectionDef[] = [
-  { key: "servicesEnabled",     brick: "services",     label: "Services",                     description: "Liste de vos prestations ou spécialités." },
+  { key: "socialsEnabled",      brick: "socials",      label: "Réseaux sociaux",              description: "LinkedIn, Instagram, WhatsApp public.",                popular: true },
+  { key: "servicesEnabled",     brick: "services",     label: "Services",                     description: "Liste de vos prestations ou spécialités.",             popular: true },
+  { key: "testimonialsEnabled", brick: "testimonials", label: "Témoignages",                  description: "Avis clients pour rassurer.",                          popular: true },
   { key: "statsEnabled",        brick: "stats",        label: "Chiffres clés",                description: "Années d'expérience, projets, note clients." },
   { key: "listingsEnabled",     brick: "listings",     label: "Réalisations / biens",         description: "Vitrine visuelle de vos projets ou produits." },
-  { key: "testimonialsEnabled", brick: "testimonials", label: "Témoignages",                  description: "Avis clients pour rassurer." },
   { key: "videoEnabled",        brick: "video",        label: "Vidéo de présentation",        description: "Une vidéo YouTube intégrée." },
   { key: "calendarEnabled",     brick: "calendar",     label: "Prise de rendez-vous",         description: "Lien Calendly ou équivalent." },
   { key: "ctaEnabled",          brick: "cta",          label: "Bannière d'appel à l'action",  description: "Message + bouton pour convertir." },
   { key: "languagesEnabled",    brick: "languages",    label: "Langues parlées",              description: "Pratique pour un public international." },
-  { key: "socialsEnabled",      brick: "socials",      label: "Réseaux sociaux",              description: "LinkedIn, Instagram, WhatsApp public." },
 ];
 
 function isEnabled(data: CardData, key: SectionKey): boolean {
@@ -125,6 +126,26 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
   /** Quelle section est en train de proposer un upgrade (mini-modale inline). */
   const [pendingUpgrade, setPendingUpgrade] = useState<SectionKey | null>(null);
 
+  const phoneRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollPhoneToBrick = (brick: BrickId) => {
+    // Wait for the preview to re-render with the newly enabled brick.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const root = phoneRef.current;
+        if (!root) return;
+        const target = root.querySelector<HTMLElement>(`[data-brick="${brick}"]`);
+        const scroller = root.querySelector<HTMLElement>(".overflow-y-auto");
+        if (!target || !scroller) return;
+        const targetTop = target.offsetTop - 16;
+        scroller.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+        // Flash highlight
+        target.classList.add("brick-flash");
+        window.setTimeout(() => target.classList.remove("brick-flash"), 1600);
+      });
+    });
+  };
+
   const toggleEnabled = (key: SectionKey, value: boolean) => {
     setData(applyToggle(data, key, value));
     setOpenSet((prev) => {
@@ -133,6 +154,10 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
       else n.delete(key);
       return n;
     });
+    if (value) {
+      const brick = defs.find((d) => d.key === key)?.brick;
+      if (brick) scrollPhoneToBrick(brick);
+    }
   };
 
   const toggleOpen = (key: SectionKey) => {
@@ -151,8 +176,9 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
     setData(applyToggle(data, key, true));
     setOpenSet((prev) => new Set(prev).add(key));
     setPendingUpgrade(null);
-    const label = defs.find((d) => d.key === key)?.label ?? "Section";
-    toast.success(`Plan passé à ${PLAN_LABEL[tier]}. ${label} activée.`);
+    const def = defs.find((d) => d.key === key);
+    toast.success(`Plan passé à ${PLAN_LABEL[tier]}. ${def?.label ?? "Section"} activée.`);
+    if (def?.brick) scrollPhoneToBrick(def.brick);
   };
 
   const changePlan = (next: VariantId) => {
@@ -283,6 +309,11 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
                             Recommandé
                           </span>
                         )}
+                        {d.popular && (
+                          <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded">
+                            <Flame className="h-2.5 w-2.5" /> Populaire
+                          </span>
+                        )}
                         {locked && (
                           <span className="text-[9px] uppercase tracking-wider text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
                             Obligatoire
@@ -344,7 +375,7 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
               </p>
               <span className="text-[10px] text-muted-foreground">Met à jour à chaque saisie</span>
             </div>
-            <div className="relative">
+            <div className="relative" ref={phoneRef}>
               <div
                 className="absolute inset-0 -z-10 blur-3xl opacity-40 transition-all duration-500"
                 style={{ background: activeTheme.palette.gradient }}
@@ -443,11 +474,16 @@ function LockedSection({
         aria-expanded={expanded}
       >
         <div className="flex-1 min-w-0 opacity-70">
-          <div className="flex items-center gap-2 mb-0.5">
+          <div className="flex items-center gap-2 mb-0.5 flex-wrap">
             <span className="text-sm font-medium">{def.label}</span>
             <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-primary bg-primary/10 border border-primary/30 px-1.5 py-0.5 rounded">
               {planIcon(requiredPlan)} {PLAN_LABEL[requiredPlan]}
             </span>
+            {def.popular && (
+              <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded">
+                <Flame className="h-2.5 w-2.5" /> Populaire
+              </span>
+            )}
           </div>
           <p className="text-xs text-muted-foreground">{def.description}</p>
         </div>

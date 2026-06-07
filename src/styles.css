@@ -134,3 +134,14 @@
 
 
 
+
+/* Flash highlight when a brick is added to the live preview */
+@keyframes brick-flash-kf {
+  0%   { box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 0%, transparent); }
+  20%  { box-shadow: 0 0 0 6px color-mix(in oklab, var(--primary) 45%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 0%, transparent); }
+}
+.brick-flash {
+  border-radius: 1rem;
+  animation: brick-flash-kf 1.6s ease-out;
+}
