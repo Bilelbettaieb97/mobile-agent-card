@@ -30,7 +30,7 @@ import {
   type BrickProps,
 } from "@/components/builder/bricks";
 import { buildPreviewCard, buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
-import { PROFESSIONS } from "@/lib/card-themes";
+
 
 type Step = "welcome" | "essentials" | "extras" | "edit";
 
