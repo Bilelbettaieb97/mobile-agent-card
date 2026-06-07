@@ -1,53 +1,72 @@
-# Étape 2 — Mieux guider la comparaison
+# Sections verrouillées par plan + upgrade en un clic
 
-Deux ajouts ciblés sur `src/components/builder/BuilderCompare.tsx` (+ petit toggle sur `PhoneFrame`).
+## Pourquoi
 
-## 1. Indice "scrollable" sur l'aperçu téléphone
+Aujourd'hui, le visiteur choisit une mise en page à l'étape 2 mais peut ensuite activer **n'importe quelle** section à l'étape 3/4 — la promesse des 3 plans devient floue. On va verrouiller les sections selon le plan choisi et proposer un upgrade contextuel quand il clique sur une section non-incluse.
 
-Aujourd'hui le `PhoneFrame` a un viewport scrollable de 720px de haut, mais rien n'indique visuellement qu'on peut faire défiler la carte. Résultat : l'utilisateur croit voir tout le contenu, surtout sur la variante Vitrine qui contient bien plus de sections.
+## Le mapping section → plan minimum
 
-Ajouts :
-- Un **fondu en bas** du téléphone (gradient `from-transparent to-background`, h≈40px, `pointer-events-none`, absolu, dans le `PhoneFrame`) pour signaler que le contenu continue.
-- Un **petit badge "Faites défiler ↓"** sous chaque téléphone dans `BuilderCompare`, avec une légère animation `animate-bounce` (atténuée). Disparaît au premier scroll (état local par carte, optionnel — sinon on le laisse en permanence, c'est plus simple).
-- Option discrète : faire apparaître une **mini scrollbar visible** uniquement dans le contexte builder via une prop `showScrollHint` sur `PhoneFrame`, pour ne pas casser l'aperçu "vrai téléphone" ailleurs.
+Un seul mapping canonique, indépendant du métier (plus simple à comprendre que les variations actuelles par catégorie).
 
-Choix retenu : fondu + badge sous le téléphone (le plus lisible, zéro effet de bord).
+| Plan         | Sections incluses                                                                                  |
+| ------------ | -------------------------------------------------------------------------------------------------- |
+| **Essentielle** | Identité, Contact, Boutons d'action, vCard, À propos                                            |
+| **Pro**         | tout Essentielle + Services, Témoignages, Prise de rendez-vous, Langues, Réseaux sociaux       |
+| **Vitrine**     | tout Pro + Chiffres clés, Réalisations/biens, Vidéo, Bannière CTA                              |
 
-## 2. Différencier clairement les 3 mises en page
+Logique : Essentielle = se présenter, Pro = convertir/rassurer, Vitrine = tout montrer.
 
-Les hints actuels ("L'indispensable", "Tout le potentiel", "Contact & crédibilité") sont trop abstraits. On ajoute, sous le titre de chaque carte, une **liste courte de 2–3 puces** qui dit explicitement *ce qui est inclus*, en insistant sur le fait que la différence = nombre de sections.
+## Ce qu'on construit
 
-Exemples (à formuler en français court, puces avec `Check` icon) :
+### 1. État du builder : ajouter `plan`
 
-- **Essentielle** — *~4 sections*
-  - Identité + contact rapide
-  - Ajout au répertoire (vCard)
-  - À propos court
-- **Vitrine** ⭐ — *toutes les sections (~10)*
-  - Tout d'Essentielle + Pro
-  - Services, témoignages, galerie
-  - Réseaux, agenda, langues
-- **Pro** — *~6 sections*
-  - Essentielle + crédibilité
-  - Témoignages & certifications
-  - Réseaux pro
+Dans `src/routes/builder.tsx`, ajouter un champ `plan: VariantId` au state, défini quand l'utilisateur clique "Choisir cette mise en page" à l'étape 2. Persisté avec le reste (localStorage si déjà en place).
 
-Les chiffres exacts sont calculés depuis `buildPreviewCard(profession, v.id)` en comptant les flags `*Enabled === true` → affiché dynamiquement (`{count} sections incluses`) pour rester honnête par métier.
+### 2. Bandeau "Plan actuel" en haut des étapes 3 & 4
 
-Aussi : juste sous le sous-titre du `StepHeader` (ou en bandeau au-dessus de la grille), une ligne d'explication unique :
-> *La différence entre les 3 mises en page = le nombre de sections activées. Vous pourrez tout ajuster ensuite.*
+Au-dessus de la liste des sections, un bandeau compact, **toujours visible** :
 
-## Détails techniques
+```text
+[●] Plan actuel : Pro    5 / 9 sections débloquées    [Changer de plan ▾]
+```
 
-- `PhoneFrame` : nouvelle prop optionnelle `scrollHint?: boolean`. Si vraie, ajouter un `<div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background to-transparent pointer-events-none" />` à l'intérieur du conteneur `overflow-hidden`.
-- `BuilderCompare.tsx` :
-  - Passer `scrollHint` au `PhoneFrame`.
-  - Ajouter sous le bloc téléphone : `<div className="text-[11px] text-muted-foreground flex items-center gap-1"><ChevronDown className="h-3 w-3 animate-bounce" /> Faites défiler l'aperçu</div>`.
-  - Ajouter un helper `countSections(data: CardData): number` local (somme des flags `*Enabled`).
-  - Remplacer le bloc "Titre" par : titre + badge `{count} sections` + liste 2–3 puces différenciantes (texte statique par variante, pas par métier — c'est la promesse de la mise en page).
-  - Ajouter la ligne explicative globale juste sous le `StepHeader`.
+Le bouton "Changer de plan" ouvre un petit menu (3 options + nombre de sections + court descriptif) pour switcher sans repasser par l'étape 2.
+
+### 3. Sections verrouillées : visibles mais désactivées
+
+C'est la **best practice** pour ce genre de gating (Notion, Linear, Figma le font tous ainsi) — montrer la valeur de l'upgrade vaut mieux que cacher.
+
+Pour chaque section non-incluse dans le plan actuel :
+
+- La carte reste dans la liste, **opacité 60%**, le Switch est remplacé par un petit cadenas + badge `Pro` ou `Vitrine` (couleur du plan).
+- Toute la carte est cliquable et ouvre une **mini-modale inline** (pas un dialog plein écran, juste un encart qui se déplie) :
+
+  ```text
+  🔒 « Témoignages » fait partie du plan Pro
+
+  Passez à Pro pour activer cette section
+  (+ Services, Prise de RDV, Langues, Réseaux sociaux).
+
+  [Passer à Pro et activer]   [Annuler]
+  ```
+
+- Clic sur "Passer à Pro et activer" → on met à jour `plan` ET on active la section cliquée, puis on affiche un toast :  
+  *"Plan passé à Pro. Témoignages activé."*
+
+### 4. Compteur de sections actives, contextualisé
+
+Au lieu de "X sections actives", afficher :  
+*"5 / 5 sections du plan Essentielle actives — débloquez-en plus en passant à Pro"*
+
+## Fichiers touchés
+
+- `src/routes/builder.tsx` — ajouter `plan` au state, le passer aux composants enfants, l'initialiser quand `onChoose` est appelé dans `BuilderCompare`.
+- `src/lib/profession-personas.ts` — exporter une constante `SECTION_TIER: Record<EnabledKey | "actions" | "identity", VariantId>` (le mapping ci-dessus) + helper `isSectionAllowed(plan, key)` et `planRank(plan)`.
+- `src/components/builder/BuilderSections.tsx` — recevoir `plan` + `setPlan`, ajouter le bandeau "Plan actuel", remplacer le Switch par cadenas + mini-modale inline pour les sections verrouillées, brancher l'upgrade auto + toast.
+- `src/components/builder/BuilderCompare.tsx` — au `onChoose`, transmettre aussi le `variant` choisi pour qu'il devienne le `plan` du state (déjà le cas via la signature actuelle, juste à câbler côté `builder.tsx`).
 
 ## Hors scope
 
-- Pas de changement aux variantes elles-mêmes ni à `profession-personas.ts`.
-- Pas de modif de l'étape 1, 3, 4, 5.
+- Pas de changement au mapping persona/contenu existant (`SECTION_PROFILES` reste pour le **pré-remplissage** à l'étape 2, mais c'est `SECTION_TIER` qui gouverne le **verrouillage** à l'étape 3/4).
+- Pas de paiement réel — "Passer à Pro" change juste le plan en cours, c'est gratuit pour l'instant. Le hook est posé pour brancher Stripe/Paddle plus tard.
+- Pas de changement aux étapes 1 et 5.
