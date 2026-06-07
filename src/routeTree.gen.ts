@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardStyleRouteImport } from './routes/dashboard.style'
 import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
+import { Route as DashboardAccountRouteImport } from './routes/dashboard.account'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -46,11 +47,17 @@ const DashboardShareRoute = DashboardShareRouteImport.update({
   path: '/share',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardAccountRoute = DashboardAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -77,16 +86,24 @@ export interface FileRouteTypes {
     | '/'
     | '/builder'
     | '/dashboard'
+    | '/dashboard/account'
     | '/dashboard/share'
     | '/dashboard/style'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/builder' | '/dashboard/share' | '/dashboard/style' | '/dashboard'
+  to:
+    | '/'
+    | '/builder'
+    | '/dashboard/account'
+    | '/dashboard/share'
+    | '/dashboard/style'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
     | '/builder'
     | '/dashboard'
+    | '/dashboard/account'
     | '/dashboard/share'
     | '/dashboard/style'
     | '/dashboard/'
@@ -142,16 +159,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardShareRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/account': {
+      id: '/dashboard/account'
+      path: '/account'
+      fullPath: '/dashboard/account'
+      preLoaderRoute: typeof DashboardAccountRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
+  DashboardAccountRoute: typeof DashboardAccountRoute
   DashboardShareRoute: typeof DashboardShareRoute
   DashboardStyleRoute: typeof DashboardStyleRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAccountRoute: DashboardAccountRoute,
   DashboardShareRoute: DashboardShareRoute,
   DashboardStyleRoute: DashboardStyleRoute,
   DashboardIndexRoute: DashboardIndexRoute,
