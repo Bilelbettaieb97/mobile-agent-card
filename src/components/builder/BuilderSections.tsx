@@ -227,15 +227,8 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
         {/* LEFT — sections list */}
         <section className="flex flex-col min-h-0">
 
-          {/* Bandeau plan actuel — visible uniquement à l'étape 4 */}
-          {!isEssentials && (
-            <PlanBanner
-              plan={plan}
-              onChange={changePlan}
-              activeCount={activeAllowed}
-              totalCount={totalAllowed}
-            />
-          )}
+          {/* Un seul plan disponible (Vitrine) : pas de bandeau de switch. */}
+
 
           <div className="space-y-3 mt-4">
             {defs.map((d) => {
