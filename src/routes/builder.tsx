@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,13 +7,20 @@ import { Label } from "@/components/ui/label";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
-  Upload, Plus, Trash2, RotateCcw, Eye, X, ExternalLink, Sparkles,
+  Upload, Plus, Trash2, RotateCcw, Eye, X, ExternalLink, Sparkles, GripVertical,
 } from "lucide-react";
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy, arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
 import { useCardStore } from "@/lib/card-store";
-import type { CardData, Listing, Badge, Stat, ThemeAccent } from "@/lib/card-types";
-import { useState } from "react";
+import type { CardData, Listing, Badge, Stat, ThemeAccent, BrickId } from "@/lib/card-types";
 
 export const Route = createFileRoute("/builder")({
   head: () => ({
