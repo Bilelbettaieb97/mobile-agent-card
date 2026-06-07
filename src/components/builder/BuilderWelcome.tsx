@@ -64,8 +64,8 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground overflow-hidden">
-      <div className="mx-auto max-w-7xl px-5 py-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10 min-h-screen">
+    <main className="h-screen bg-background text-foreground overflow-hidden">
+      <div className="mx-auto max-w-7xl px-5 py-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10 h-screen">
         {/* LEFT — picker */}
         <section className="flex flex-col min-h-0">
           <div className="mb-6">
