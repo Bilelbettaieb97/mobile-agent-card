@@ -1,6 +1,5 @@
-import { useMemo, useState, useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent } from "react";
-import { Search, Check, ArrowRight, Sparkles, Maximize2 } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useEffect, useMemo, useState } from "react";
+import { Search, Check, ArrowRight, Sparkles, SkipForward } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BusinessCard } from "@/components/card/BusinessCard";
@@ -13,66 +12,45 @@ import {
   THEMES_BY_ID,
   type Profession,
 } from "@/lib/card-themes";
-import { buildPreviewCard, buildPreviewFromTheme, VARIANTS, type VariantId } from "@/lib/profession-personas";
+import { buildPreviewCard, buildPreviewFromTheme } from "@/lib/profession-personas";
 import type { CardData } from "@/lib/card-types";
 
 interface Props {
   initialProfessionId?: string;
-  initialAccent: CardData["accent"];
-  onConfirm: (data: CardData) => void;
+  initialAccent?: CardData["accent"];
+  /** Profession sélectionnée → étape "compare" (vue 3 mises en page). */
+  onChooseProfession: (profession: Profession) => void;
+  /** Thème seul (sans persona) ou "Passer" → étape "essentials" directe. */
+  onChooseTheme: (themeId: string) => void;
 }
 
-export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }: Props) {
-  const [tab, setTab] = useState<"profession" | "theme">(initialProfessionId ? "profession" : "profession");
+export function BuilderWelcome({
+  initialProfessionId,
+  initialAccent,
+  onChooseProfession,
+  onChooseTheme,
+}: Props) {
+  const [tab, setTab] = useState<"profession" | "theme">("profession");
   const [query, setQuery] = useState("");
   const [selectedProfession, setSelectedProfession] = useState<Profession | undefined>(
     () => PROFESSIONS.find((p) => p.id === initialProfessionId),
   );
   const [selectedThemeId, setSelectedThemeId] = useState<string>(
-    initialProfessionId ? PROFESSIONS.find((p) => p.id === initialProfessionId)?.themeId ?? initialAccent : initialAccent,
+    () =>
+      (initialProfessionId
+        ? (PROFESSIONS.find((p) => p.id === initialProfessionId)?.themeId ?? initialAccent)
+        : initialAccent) ?? "gold",
   );
-  const [variant, setVariant] = useState<VariantId>("vitrine");
-  const [compareOpen, setCompareOpen] = useState(false);
 
-  // Reset to the wow variant whenever the profession changes
-  useEffect(() => {
-    setVariant("vitrine");
-  }, [selectedProfession?.id]);
+  const activeTheme = THEMES_BY_ID[selectedThemeId] ?? THEMES_BY_ID.gold;
 
-  // Build all 3 variants once for the comparison view
-  const compareCards = useMemo(() => {
-    if (!selectedProfession) return [];
-    return VARIANTS.map((v) => ({ ...v, data: buildPreviewCard(selectedProfession, v.id) }));
-  }, [selectedProfession]);
-
-  // Keyboard navigation within the compare dialog: ←/→/Home/End move focus and selection
-  const compareGridRef = useRef<HTMLDivElement>(null);
-  const handleCompareKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
-    const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
-    if (!keys.includes(e.key)) return;
-    const buttons = compareGridRef.current?.querySelectorAll<HTMLButtonElement>(
-      'button[data-variant-card="true"]'
-    );
-    if (!buttons || buttons.length === 0) return;
-    const list = Array.from(buttons);
-    const current = list.findIndex((b) => b === document.activeElement);
-    let next = current;
-    if (e.key === "ArrowRight") next = current < 0 ? 0 : (current + 1) % list.length;
-    if (e.key === "ArrowLeft") next = current < 0 ? list.length - 1 : (current - 1 + list.length) % list.length;
-    if (e.key === "Home") next = 0;
-    if (e.key === "End") next = list.length - 1;
-    e.preventDefault();
-    list[next]?.focus();
-  };
-
-
-  // Preview data — derives from current selection + variant
+  // Live preview shows the "vitrine" variant (maximum potential).
   const previewData = useMemo<CardData>(() => {
-    if (selectedProfession) return buildPreviewCard(selectedProfession, variant);
+    if (selectedProfession) return buildPreviewCard(selectedProfession, "vitrine");
     return buildPreviewFromTheme(selectedThemeId);
-  }, [selectedProfession, selectedThemeId, variant]);
+  }, [selectedProfession, selectedThemeId]);
 
-  // Preload portrait of selected persona to avoid flash
+  // Preload portrait
   useEffect(() => {
     if (!selectedProfession) return;
     const img = new Image();
@@ -88,15 +66,12 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
     items: filtered.filter((p) => p.category === cat),
   })).filter((g) => g.items.length > 0);
 
-  const activeTheme = THEMES_BY_ID[selectedThemeId] ?? THEMES_BY_ID.gold;
-
-  const handleStart = () => {
-    if (selectedProfession) {
-      onConfirm(buildPreviewCard(selectedProfession, variant));
-    } else {
-      onConfirm(buildPreviewFromTheme(selectedThemeId));
-    }
+  const handleChoose = () => {
+    if (selectedProfession) onChooseProfession(selectedProfession);
+    else onChooseTheme(selectedThemeId);
   };
+
+  const handleSkip = () => onChooseTheme(selectedThemeId);
 
   return (
     <main className="h-screen bg-background text-foreground overflow-hidden">
@@ -105,7 +80,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
         <section className="flex flex-col min-h-0">
           <div className="mb-6">
             <p className="text-xs uppercase tracking-[0.18em] text-primary mb-2 flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" /> Étape 1 / 3
+              <Sparkles className="h-3.5 w-3.5" /> Étape 1 / 5
             </p>
             <h1 className="font-display text-4xl mb-2">Choisissez votre univers</h1>
             <p className="text-sm text-muted-foreground">
@@ -177,9 +152,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
                               <span className="block text-sm font-medium truncate">{p.label}</span>
                               <span className="block text-[10px] text-muted-foreground truncate">Thème {theme.label}</span>
                             </span>
-                            {active && (
-                              <Check className="h-4 w-4 text-primary shrink-0" strokeWidth={3} />
-                            )}
+                            {active && <Check className="h-4 w-4 text-primary shrink-0" strokeWidth={3} />}
                           </button>
                         );
                       })}
@@ -242,10 +215,15 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
                 {selectedProfession ? selectedProfession.label : `Thème ${activeTheme.label}`}
               </div>
             </div>
-            <Button size="lg" onClick={handleStart} className="shrink-0">
-              Continuer
-              <ArrowRight className="h-4 w-4 ml-1.5" />
-            </Button>
+            <div className="flex items-center gap-2 shrink-0">
+              <Button variant="ghost" size="sm" onClick={handleSkip} className="text-muted-foreground">
+                <SkipForward className="h-3.5 w-3.5 mr-1" /> Passer
+              </Button>
+              <Button size="lg" onClick={handleChoose}>
+                {selectedProfession ? "Choisir ce template" : "Continuer"}
+                <ArrowRight className="h-4 w-4 ml-1.5" />
+              </Button>
+            </div>
           </div>
         </section>
 
@@ -256,51 +234,12 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
               <p className="text-xs uppercase tracking-[0.18em] text-primary flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5" /> Aperçu live
               </p>
-              {selectedProfession ? (
-                <button
-                  type="button"
-                  onClick={() => setCompareOpen(true)}
-                  aria-haspopup="dialog"
-                  aria-expanded={compareOpen}
-                  className="text-[10px] inline-flex items-center gap-1 text-foreground/80 hover:text-foreground transition px-2 py-1 rounded-md border border-border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  <Maximize2 className="h-3 w-3" aria-hidden="true" /> Comparer les 3
-                </button>
-              ) : (
-                <span className="text-[10px] text-muted-foreground">Met à jour à chaque sélection</span>
-              )}
+              <span className="text-[10px] text-muted-foreground">
+                {selectedProfession ? "Variante Vitrine — tout le potentiel" : "Met à jour à chaque sélection"}
+              </span>
             </div>
 
-            {/* Variantes — visibles uniquement quand un métier est choisi */}
-            {selectedProfession && (
-              <div
-                role="radiogroup"
-                aria-label="Variante de mise en page"
-                className="mb-4 inline-flex w-full rounded-lg border border-border bg-muted/40 p-0.5 text-xs"
-              >
-                {VARIANTS.map((v) => {
-                  const active = variant === v.id;
-                  return (
-                    <button
-                      key={v.id}
-                      type="button"
-                      role="radio"
-                      aria-checked={active}
-                      onClick={() => setVariant(v.id)}
-                      className={`flex-1 px-2.5 py-1.5 rounded-md transition text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
-                        active ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
-                      }`}
-                      title={v.hint}
-                    >
-                      <span className={`block leading-tight ${active ? "font-medium" : ""}`}>{v.label}</span>
-                      <span className="block text-[9px] text-muted-foreground/80 leading-tight">{v.hint}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
             <div className="relative">
-              {/* halo */}
               <div
                 className="absolute inset-0 -z-10 blur-3xl opacity-40 transition-all duration-500"
                 style={{ background: activeTheme.palette.gradient }}
@@ -315,176 +254,6 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
           </div>
         </aside>
       </div>
-
-      {/* Mobile: bouton flottant pour ouvrir la comparaison */}
-      {selectedProfession && (
-        <button
-          type="button"
-          onClick={() => setCompareOpen(true)}
-          aria-haspopup="dialog"
-          aria-expanded={compareOpen}
-          aria-label="Comparer les 3 variantes en plein écran"
-          className="lg:hidden fixed bottom-24 right-4 z-30 inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-4 py-2.5 text-xs font-medium shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" /> Comparer les 3
-        </button>
-      )}
-
-      {/* Overlay plein écran : comparaison des 3 variantes — Dialog Radix
-          gère focus trap, restauration de focus, Escape, scroll lock et ARIA. */}
-      <Dialog open={compareOpen && !!selectedProfession} onOpenChange={setCompareOpen}>
-        <DialogContent
-          aria-labelledby="compare-title"
-          aria-describedby="compare-desc"
-          onKeyDown={handleCompareKeyDown}
-          className="
-            max-w-none w-screen h-dvh top-0 left-0 translate-x-0 translate-y-0
-            rounded-none border-0 p-0 gap-0 grid-rows-[auto_1fr_auto]
-            bg-background/95 backdrop-blur-xl
-            data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0
-            data-[state=open]:zoom-in-100 data-[state=closed]:zoom-out-100
-            [&>button:last-child]:hidden
-          "
-        >
-          {/* halo */}
-          <div
-            className="absolute inset-0 -z-10 blur-3xl opacity-30 pointer-events-none"
-            style={{ background: activeTheme.palette.gradient }}
-            aria-hidden="true"
-          />
-
-          {/* Header */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-border/60">
-            <div className="min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-primary flex items-center gap-1.5">
-                <Sparkles className="h-3 w-3" aria-hidden="true" /> Comparer les mises en page
-              </p>
-              <DialogTitle id="compare-title" className="font-display text-lg truncate">
-                {selectedProfession?.label}
-              </DialogTitle>
-              <DialogDescription id="compare-desc" className="sr-only">
-                Comparez les trois variantes de mise en page. Utilisez les flèches gauche et droite
-                pour naviguer entre les variantes, Entrée pour en choisir une, Échap pour fermer.
-              </DialogDescription>
-            </div>
-            <button
-              type="button"
-              onClick={() => setCompareOpen(false)}
-              className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-border bg-background hover:bg-muted transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              aria-label="Fermer la comparaison"
-            >
-              <span aria-hidden="true" className="text-lg leading-none">×</span>
-            </button>
-          </div>
-
-          {/* Comparaison — grille fluide sur desktop, snap-carousel sur mobile */}
-          <div
-            ref={compareGridRef}
-            role="radiogroup"
-            aria-label="Choisir une mise en page"
-            className="overflow-x-auto overflow-y-auto overscroll-contain"
-          >
-            <div
-              className="
-                min-h-full h-full
-                flex lg:grid lg:grid-cols-3
-                items-stretch justify-start lg:justify-items-center
-                gap-4 lg:gap-6 xl:gap-8
-                px-[max(env(safe-area-inset-left),1rem)] lg:px-8
-                py-6
-                snap-x snap-mandatory lg:snap-none
-                w-max lg:w-full mx-auto
-              "
-            >
-              {compareCards.map((v) => {
-                const active = variant === v.id;
-                return (
-                  <button
-                    type="button"
-                    key={v.id}
-                    data-variant-card="true"
-                    role="radio"
-                    aria-checked={active}
-                    aria-label={`${v.label} — ${v.hint}. ${active ? "Variante sélectionnée." : "Appuyez sur Entrée pour choisir."}`}
-                    tabIndex={active ? 0 : -1}
-                    onClick={() => { setVariant(v.id); setCompareOpen(false); }}
-                    className="
-                      snap-center shrink-0 lg:shrink
-                      flex flex-col items-center justify-between
-                      w-[306px] lg:w-full
-                      bg-transparent border-0 cursor-pointer text-left
-                      rounded-2xl p-2
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-background
-                    "
-                  >
-                    {/* Header row — hauteur fixe pour alignement parfait entre colonnes */}
-                    <div className="h-10 flex flex-col items-center justify-center text-center gap-0.5">
-                      <span className={`text-sm font-medium ${active ? "text-foreground" : "text-muted-foreground"}`}>
-                        {v.label}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground/80">{v.hint}</span>
-                    </div>
-
-                    {/* Téléphone scalé — hauteur réservée par breakpoint */}
-                    <div
-                      aria-hidden="true"
-                      className={`
-                        my-3 rounded-[44px] transition
-                        ${active ? "ring-2 ring-primary ring-offset-4 ring-offset-background" : ""}
-                        w-[306px] h-[629px]
-                        lg:w-[252px] lg:h-[518px]
-                        xl:w-[295px] xl:h-[607px]
-                        2xl:w-[342px] 2xl:h-[703px]
-                      `}
-                    >
-                      <div
-                        className="
-                          origin-top-left w-[360px]
-                          scale-[0.85] lg:scale-[0.70] xl:scale-[0.82] 2xl:scale-[0.95]
-                        "
-                      >
-                        <PhoneFrame>
-                          <BusinessCard data={v.data} />
-                        </PhoneFrame>
-                      </div>
-                    </div>
-
-                    {/* CTA visuel — l'action est portée par la carte entière (role=radio) */}
-                    <div className="h-10 flex items-center">
-                      <span
-                        className={`
-                          inline-flex items-center text-xs font-medium px-3 py-1.5 rounded-md transition
-                          ${active
-                            ? "bg-primary text-primary-foreground"
-                            : "border border-border text-foreground"}
-                        `}
-                      >
-                        {active ? (
-                          <>
-                            <Check className="h-3.5 w-3.5 mr-1" strokeWidth={3} aria-hidden="true" />
-                            Continuer avec celle-ci
-                          </>
-                        ) : (
-                          <>
-                            Choisir
-                            <ArrowRight className="h-3.5 w-3.5 ml-1" aria-hidden="true" />
-                          </>
-                        )}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="px-5 py-3 border-t border-border/60 text-center text-[11px] text-muted-foreground">
-            <span className="lg:hidden">Glissez ou utilisez ← → · </span>
-            <span className="hidden lg:inline">Flèches ← → pour naviguer · Entrée pour choisir · </span>
-            Échap pour fermer
-          </div>
-        </DialogContent>
-      </Dialog>
     </main>
   );
 }
