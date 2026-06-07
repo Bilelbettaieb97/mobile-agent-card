@@ -108,7 +108,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
                   className="pl-9"
                 />
               </div>
-              <div className="flex-1 overflow-y-auto pr-1 space-y-5 max-h-[60vh] lg:max-h-none">
+              <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-5">
                 {grouped.map(({ cat, items }) => (
                   <div key={cat}>
                     <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">{cat}</div>
