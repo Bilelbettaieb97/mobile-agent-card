@@ -46,7 +46,7 @@ const VARIANT_BULLETS: Record<VariantId, string[]> = {
   ],
 };
 
-export function BuilderCompare({ profession, onBack, onChoose }: Props) {
+export function BuilderCompare({ profession, completedThrough, onGoToStep, onBack, onChoose }: Props) {
   const cards = useMemo(
     () => VARIANTS.map((v) => {
       const data = buildPreviewCard(profession, v.id);
@@ -61,20 +61,21 @@ export function BuilderCompare({ profession, onBack, onChoose }: Props) {
     <main className="min-h-screen bg-background text-foreground">
       <StepHeader
         step={2}
-        title="Choisissez votre mise en page"
-        subtitle={`3 façons de présenter votre carte ${profession.label}. La Vitrine active toutes les briques — vous pourrez désactiver ce qui ne sert pas.`}
+        title="Choisissez un modèle"
+        subtitle={`3 façons de présenter votre carte ${profession.label}. Cliquez sur le modèle qui vous parle — vous pourrez tout ajuster après.`}
+        completedThrough={completedThrough}
+        onGoToStep={onGoToStep}
+        nextHint="Après cette étape : remplir les sections essentielles."
       />
 
       <div className="mx-auto max-w-7xl px-5 pb-10">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+        <div className="mb-4">
           <p className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
             <Layers className="h-4 w-4 text-primary shrink-0" />
-            La différence entre les 3 mises en page&nbsp;: <span className="text-foreground font-medium">le nombre de sections activées</span>. Vous pourrez tout ajuster ensuite.
+            La différence entre les 3 modèles&nbsp;: <span className="text-foreground font-medium">le nombre de sections activées</span>.
           </p>
-          <Button variant="ghost" size="sm" onClick={onBack} className="self-end sm:self-auto">
-            <ArrowLeft className="h-4 w-4 mr-1.5" /> Changer de métier
-          </Button>
         </div>
+
 
 
 
