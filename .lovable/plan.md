@@ -1,47 +1,92 @@
-## Objectif
+# Refonte du parcours /builder en 5 étapes
 
-Sur l'écran de bienvenue du builder, quand l'utilisateur sélectionne un métier, l'aperçu propose **3 variantes de mise en page** au lieu d'une seule. Il peut basculer entre elles via des mini onglets juste au-dessus du téléphone, pour voir concrètement les compositions possibles avant même de commencer à éditer.
+Aujourd'hui le parcours est en 3 étapes (welcome → essentials → extras → édition). La variante (essentielle/vitrine/pro) est cachée dans un panneau latéral et la sélection des sections est binaire (toggle puis "Continuer"), sans saisie en ligne. On le réorganise pour rendre le choix de mise en page central et le remplissage progressif.
 
-## Les 3 variantes
+## Nouveau flux
 
-Chaque variante active un sous-ensemble différent de briques. Le ton et l'intention sont distincts pour bien montrer la souplesse du produit.
+```
+Étape 1 — Choix du métier (ou thème) + aperçu live
+   [Choisir ce template]   [Passer →]
+        │                       │
+        ▼                       ▼
+Étape 2 — Comparaison 3 variantes plein écran (Vitrine mise en avant)
+   [Choisir cette mise en page]
+        │
+        ▼
+Étape 3 — Sections essentielles (toggle + formulaires inline)
+   Identité · Contact · Boutons d'action · vCard · À propos
+        │
+        ▼
+Étape 4 — Sections complémentaires (toggle ouvre le formulaire)
+   Services · Stats · Réalisations · Témoignages · Vidéo · RDV · CTA · Langues · Réseaux
+        │
+        ▼
+Étape 5 — Édition libre (liste complète des briques + design)
+   [Activer ma carte]
+```
 
-| Variante | Intention | Briques typiques |
-|----------|-----------|------------------|
-| **Essentielle** | Carte de visite minimaliste, va à l'essentiel | Identité, contact, vCard, à propos, 1 brique métier |
-| **Vitrine** | Effet wow maximal, montre tout le potentiel visuel | Identité, contact, vCard, à propos, stats, services, listings, vidéo/CTA selon métier |
-| **Pro** | Orientée prise de contact et crédibilité | Identité, contact, vCard, à propos, services, témoignages, langues, RDV/calendrier |
+## Détails par étape
 
-La composition exacte de chaque variante est adaptée par catégorie métier — la "Vitrine" d'un restaurateur met en avant les visuels et réseaux, celle d'un avocat met en avant l'expertise et les langues, celle d'un dev son portfolio et sa dispo. Le mapping suit la logique déjà en place dans `SECTION_PROFILES`.
+**Étape 1 — Choix du template**
+- Vue actuelle (BuilderWelcome), sans le panneau "variantes" à droite ni le bouton "Comparer les 3".
+- Le clic "Choisir ce template" → étape 2.
+- Lien secondaire "Passer cette étape" → applique un template par défaut (thème "gold" sans persona) et saute directement à l'étape 3.
 
-## Navigation entre variantes
+**Étape 2 — Comparaison des 3 mises en page**
+- Au lieu d'arriver sur l'édition directement, le mode plein écran "Comparer" s'ouvre automatiquement.
+- Présentation : 3 cartes côte à côte (Essentielle / Vitrine / Pro), Vitrine au centre, légèrement plus grande, avec un badge "Recommandée — tout le potentiel".
+- Chaque carte a un bouton "Choisir cette mise en page" → étape 3.
+- Bouton retour "Changer de métier" → étape 1.
 
-**Mini onglets** au-dessus du téléphone : `Essentielle · Vitrine · Pro`. Cliquables, l'aperçu se met à jour instantanément.
+**Garantir que "Vitrine" montre toutes les briques disponibles**
+Actuellement chaque catégorie active 4-5 sections seulement en variante Vitrine. On élargit `vitrine` pour activer la liste maximale (toutes les sections compatibles avec la persona) : about, stats, services, listings (si `withListings`), testimonials, video, calendar, languages, cta, socials. Seules les sections sans contenu cohérent dans la persona restent off. Ainsi le visiteur voit le potentiel maximal d'un coup d'œil dans l'aperçu Vitrine.
 
-- Choix par défaut à l'arrivée sur un métier : **Vitrine** (effet wow maximal).
-- Une bascule de variante ne change pas le métier sélectionné.
-- À l'étape suivante (sections essentielles puis complémentaires), la variante choisie pré-coche les bons interrupteurs — l'utilisateur peut tout modifier.
+**Étape 3 — Sections essentielles avec saisie inline**
+Réécriture de la vue actuelle "essentials" :
+- Chaque ligne devient une carte expansible. Toggle ON → la carte s'ouvre et affiche ses champs (réutilise les composants `IdentityBrick`, `ContactBrick`, `ActionsBrick`, `AboutBrick` déjà dans `builder.tsx`).
+- Identité reste verrouillée ON, ouverte par défaut.
+- Aperçu live à droite (déjà en place) qui suit chaque saisie.
+- Bouton "Continuer" → étape 4.
 
-## Détails techniques
+**Étape 4 — Sections complémentaires avec saisie inline**
+Même principe que l'étape 3 : toggle ON ouvre le formulaire de la brique correspondante (`ServicesBrick`, `StatsBrick`, `ListingsBrick`, etc.) directement dans la liste, l'utilisateur peut remplir avant de continuer.
+- Bouton "Continuer" → étape 5.
 
-### `src/lib/profession-personas.ts`
-- Remplacer `SECTION_PROFILES: Record<category, Profile>` par `SECTION_PROFILES: Record<category, { essentielle, vitrine, pro }>`.
-- Ajouter un type `VariantId = "essentielle" | "vitrine" | "pro"`.
-- Définir les 3 profils pour chaque catégorie existante (Immobilier, Juridique, Finance, Tech, Santé, Beauté, Coaching, Sport, Restauration, Artisanat, Mode, Créatif, Éducation, Voyage, Événementiel, Média) + un fallback par défaut.
-- Étendre `buildPreviewCard(profession, variant?: VariantId)` ; `variant` défaut = `"vitrine"`. Le profil sélectionné applique ses flags par-dessus `DEFAULT_CARD`.
+**Étape 5 — Édition libre + activation**
+La vue "édition" actuelle (liste complète DnD avec toutes les briques, panneau aperçu, header). Le bouton principal en haut à droite devient "Activer ma carte" (gros bouton primaire, ouvre la `ShareDialog` existante avec lien public + QR). Les boutons existants (Réinitialiser, Changer de thème, Aperçu mobile) restent.
 
-### `src/components/builder/BuilderWelcome.tsx`
-- Nouvel état `variant: VariantId` (défaut `"vitrine"`).
-- Réinitialiser à `"vitrine"` à chaque changement de métier.
-- `previewData` recalculé en fonction de `(selectedProfession, variant)`.
-- Au-dessus du `PhoneFrame` à droite, ajouter une barre de 3 mini onglets `Essentielle · Vitrine · Pro`. Visible uniquement quand un métier est sélectionné (sinon : variante implicite, onglets masqués).
-- `onConfirm` passe `buildPreviewCard(profession, variant)` au flux suivant pour que les étapes 2 et 3 démarrent avec la bonne composition pré-cochée.
+## Changements techniques
 
-### `src/routes/builder.tsx`
-- Aucune modification de structure : reçoit déjà un `CardData` complet via `onConfirm`. La variante est déjà résolue à ce moment-là.
+**`src/lib/profession-personas.ts`**
+- Reformuler `SECTION_PROFILES` : pour chaque catégorie, la variante `vitrine` active la liste maximale de sections supportées. Helper `vitrineAll()` qui active tout sauf ce qui n'a pas de contenu persona.
+- Garder `essentielle` (minimal) et `pro` (contact/crédibilité) inchangés.
 
-## Hors scope
+**`src/components/builder/BuilderWelcome.tsx`**
+- Retirer le mini-sélecteur de variantes et le bouton "Comparer les 3" (la comparaison devient une étape à part entière).
+- Le bouton principal "Choisir ce template" remplace l'actuel CTA.
+- Ajouter un lien discret "Passer cette étape →" sous le CTA.
+- `onConfirm` reçoit maintenant juste la sélection métier/thème, sans variant.
 
-- Pas de changement de l'ordre des sections dans le rendu (le composant `BusinessCard` garde son ordre fixe). Les 3 variantes diffèrent par les briques activées et leur emphase, pas par leur position.
-- Pas de modification du composant `BusinessCard` ni du composant `BuilderSections`.
-- Pas d'animation de transition entre variantes (juste un changement de données, déjà fluide grâce au `transition-opacity` existant).
+**Nouveau `src/components/builder/BuilderCompare.tsx`**
+- Vue plein écran dédiée (extraction du Dialog actuel).
+- Props : `data`, `selectedProfession`, `onBack`, `onChoose(variant)`.
+- Layout 3 colonnes desktop, carrousel mobile snap.
+- Vitrine au centre, plus grande (scale ~1.05), badge "Recommandée".
+- Chaque carte cliquable → `onChoose(v.id)`.
+
+**`src/components/builder/BuilderSections.tsx`**
+- Refonte : `<label>` simple devient `<div>` avec accordéon contrôlé par le toggle.
+- Quand `toggles[key] === true`, render le formulaire de la brique (les composants `*Brick` doivent être exportés depuis `builder.tsx` ou déplacés dans `src/components/builder/bricks/` pour être partagés).
+- Identité ouverte par défaut, toggle masqué.
+- Le compteur "X sections actives" reste, l'aperçu live à droite reste.
+
+**`src/routes/builder.tsx`**
+- `step` devient `"welcome" | "compare" | "essentials" | "extras" | "edit"`.
+- Après `welcome.onConfirm`, on passe à `"compare"` (au lieu d'`"essentials"`).
+- `compare.onChoose(variant)` : applique le profil de sections de la variante via `buildPreviewCard(profession, variant)` au store, puis passe à `"essentials"`.
+- Lien "Passer" depuis welcome → applique le thème seul → passe directement à `"essentials"`.
+- Refactor : extraire `IdentityBrick`, `ContactBrick`, `ActionsBrick`, `AboutBrick`, `ServicesBrick`, `StatsBrick`, `ListingsBrick`, `TestimonialsBrick`, `VideoBrick`, `CalendarBrick`, `LanguagesBrick`, `CtaBrick`, `SocialsBrick` vers `src/components/builder/bricks.tsx` (ou un dossier `bricks/`) pour être réutilisables par `BuilderSections` et la vue d'édition finale.
+- Bouton principal de la vue "edit" : "Activer ma carte" qui ouvre `ShareDialog`.
+
+**Compteur d'étapes**
+Étiquette "Étape N / 5" mise à jour dans Welcome (1), Compare (2), Essentials (3), Extras (4), Edit (5).
