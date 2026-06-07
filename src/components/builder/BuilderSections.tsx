@@ -126,6 +126,26 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
   /** Quelle section est en train de proposer un upgrade (mini-modale inline). */
   const [pendingUpgrade, setPendingUpgrade] = useState<SectionKey | null>(null);
 
+  const phoneRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollPhoneToBrick = (brick: BrickId) => {
+    // Wait for the preview to re-render with the newly enabled brick.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const root = phoneRef.current;
+        if (!root) return;
+        const target = root.querySelector<HTMLElement>(`[data-brick="${brick}"]`);
+        const scroller = root.querySelector<HTMLElement>(".overflow-y-auto");
+        if (!target || !scroller) return;
+        const targetTop = target.offsetTop - 16;
+        scroller.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+        // Flash highlight
+        target.classList.add("brick-flash");
+        window.setTimeout(() => target.classList.remove("brick-flash"), 1600);
+      });
+    });
+  };
+
   const toggleEnabled = (key: SectionKey, value: boolean) => {
     setData(applyToggle(data, key, value));
     setOpenSet((prev) => {
@@ -134,6 +154,10 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
       else n.delete(key);
       return n;
     });
+    if (value) {
+      const brick = defs.find((d) => d.key === key)?.brick;
+      if (brick) scrollPhoneToBrick(brick);
+    }
   };
 
   const toggleOpen = (key: SectionKey) => {
@@ -152,8 +176,9 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
     setData(applyToggle(data, key, true));
     setOpenSet((prev) => new Set(prev).add(key));
     setPendingUpgrade(null);
-    const label = defs.find((d) => d.key === key)?.label ?? "Section";
-    toast.success(`Plan passé à ${PLAN_LABEL[tier]}. ${label} activée.`);
+    const def = defs.find((d) => d.key === key);
+    toast.success(`Plan passé à ${PLAN_LABEL[tier]}. ${def?.label ?? "Section"} activée.`);
+    if (def?.brick) scrollPhoneToBrick(def.brick);
   };
 
   const changePlan = (next: VariantId) => {
