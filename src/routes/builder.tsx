@@ -33,13 +33,13 @@ import {
 import { buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
 import { PROFESSIONS } from "@/lib/card-themes";
 
-type Step = "welcome" | "compare" | "essentials" | "extras" | "edit";
+type Step = "welcome" | "compare" | "sections" | "edit";
 
 const STEP_NUM: Record<Step, StepNum> = {
-  welcome: 1, compare: 2, essentials: 3, extras: 4, edit: 5,
+  welcome: 1, compare: 2, sections: 3, edit: 4,
 };
 const NUM_STEP: Record<StepNum, Step> = {
-  1: "welcome", 2: "compare", 3: "essentials", 4: "extras", 5: "edit",
+  1: "welcome", 2: "compare", 3: "sections", 4: "edit",
 };
 
 export const Route = createFileRoute("/builder")({
@@ -95,7 +95,7 @@ function BuilderPage() {
         }}
         onChooseTheme={(themeId) => {
           setData(buildPreviewFromTheme(themeId));
-          advanceTo("essentials");
+          advanceTo("sections");
         }}
       />
     );
@@ -117,16 +117,15 @@ function BuilderPage() {
         onChoose={(variant, next) => {
           setData(next);
           setPlan(variant);
-          advanceTo("essentials");
+          advanceTo("sections");
         }}
       />
     );
   }
 
-  if (step === "essentials") {
+  if (step === "sections") {
     return (
       <BuilderSections
-        step="essentials"
         data={data}
         setData={setData}
         update={update}
@@ -135,33 +134,16 @@ function BuilderPage() {
         completedThrough={completedThrough}
         onGoToStep={goToStep}
         onBack={() => setStep(data.profession ? "compare" : "welcome")}
-        onNext={() => advanceTo("extras")}
-      />
-    );
-  }
-
-  if (step === "extras") {
-    return (
-      <BuilderSections
-        step="extras"
-        data={data}
-        setData={setData}
-        update={update}
-        plan={plan}
-        setPlan={setPlan}
-        completedThrough={completedThrough}
-        onGoToStep={goToStep}
-        onBack={() => setStep("essentials")}
         onNext={() => advanceTo("edit")}
       />
     );
   }
 
-  // Step 5 — edit
+  // Step 4 — edit
   return (
     <main className="min-h-screen bg-background text-foreground">
       <StepHeader
-        step={5}
+        step={4}
         title="Personnalisez et activez"
         subtitle="Réorganisez vos sections, ajustez le style — l'aperçu se met à jour en direct."
         completedThrough={completedThrough}
@@ -229,8 +211,8 @@ function BuilderPage() {
       </div>
 
       <StepFooter
-        step={5}
-        onBack={() => setStep("extras")}
+        step={4}
+        onBack={() => setStep("sections")}
         onNext={() => setShareOpen(true)}
         nextLabel="Activer ma carte"
         centerInfo="Votre carte est prête"
