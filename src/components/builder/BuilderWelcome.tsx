@@ -12,7 +12,7 @@ import {
   THEMES_BY_ID,
   type Profession,
 } from "@/lib/card-themes";
-import { buildPreviewCard, buildPreviewFromTheme } from "@/lib/profession-personas";
+import { buildPreviewCard, buildPreviewFromTheme, VARIANTS, type VariantId } from "@/lib/profession-personas";
 import type { CardData } from "@/lib/card-types";
 
 interface Props {
