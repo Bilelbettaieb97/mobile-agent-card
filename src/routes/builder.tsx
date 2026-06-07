@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Sparkles, Rocket, ArrowRight } from "lucide-react";
+import {
+  CheckCircle2, Sparkles, Rocket, ArrowRight, Lock, QrCode,
+  Clock, Users, Star, ShieldCheck,
+} from "lucide-react";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
 import { useCardStore } from "@/lib/card-store";
