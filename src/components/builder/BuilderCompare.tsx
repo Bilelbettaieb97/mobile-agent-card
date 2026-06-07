@@ -1,15 +1,18 @@
 import { useMemo } from "react";
-import { ArrowLeft, ArrowRight, Check, ChevronDown, Star, Layers } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Star, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
-import { StepHeader } from "@/components/builder/StepHeader";
+import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
+import { StepFooter } from "@/components/builder/StepFooter";
 import { THEMES_BY_ID, type Profession } from "@/lib/card-themes";
 import { buildPreviewCard, VARIANTS, type VariantId } from "@/lib/profession-personas";
 import type { CardData } from "@/lib/card-types";
 
 interface Props {
   profession: Profession;
+  completedThrough: StepNum;
+  onGoToStep: (n: StepNum) => void;
   onBack: () => void;
   onChoose: (variant: VariantId, data: CardData) => void;
 }
