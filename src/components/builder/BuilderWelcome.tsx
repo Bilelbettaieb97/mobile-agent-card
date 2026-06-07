@@ -47,6 +47,9 @@ export function BuilderWelcome({
         ? (PROFESSIONS.find((p) => p.id === initialProfessionId)?.themeId ?? initialAccent)
         : initialAccent) ?? "gold",
   );
+  const [openCategory, setOpenCategory] = useState<string | null>(
+    () => PROFESSIONS.find((p) => p.id === initialProfessionId)?.category ?? null,
+  );
 
   const activeTheme = THEMES_BY_ID[selectedThemeId] ?? THEMES_BY_ID.gold;
 
