@@ -48,6 +48,7 @@ const gold: ThemePalette = {
   accent: "oklch(0.82 0.13 85)",
   gradient: grad("oklch(0.88 0.1 90)", "oklch(0.75 0.14 75)"),
   headerBg: radial("oklch(0.28 0.05 250)", "oklch(0.16 0.018 250)"),
+  onAccent: "oklch(0.18 0.02 250)",
 };
 
 const noir: ThemePalette = {
@@ -61,6 +62,7 @@ const noir: ThemePalette = {
   accent: "oklch(0.85 0.12 88)",
   gradient: grad("oklch(0.9 0.1 92)", "oklch(0.74 0.14 78)"),
   headerBg: radial("oklch(0.2 0 0)", "oklch(0.1 0 0)"),
+  onAccent: "oklch(0.18 0.02 250)",
 };
 
 const emerald: ThemePalette = {
@@ -74,6 +76,7 @@ const emerald: ThemePalette = {
   accent: "oklch(0.78 0.16 160)",
   gradient: grad("oklch(0.85 0.14 165)", "oklch(0.6 0.16 155)"),
   headerBg: radial("oklch(0.28 0.06 165)", "oklch(0.15 0.025 165)"),
+  onAccent: "oklch(0.18 0.02 250)",
 };
 
 const forest: ThemePalette = {
@@ -87,6 +90,7 @@ const forest: ThemePalette = {
   accent: "oklch(0.7 0.14 140)",
   gradient: grad("oklch(0.78 0.13 140)", "oklch(0.55 0.15 150)"),
   headerBg: radial("oklch(0.3 0.06 145)", "oklch(0.17 0.03 145)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const navy: ThemePalette = {
@@ -100,6 +104,7 @@ const navy: ThemePalette = {
   accent: "oklch(0.7 0.14 250)",
   gradient: grad("oklch(0.75 0.13 245)", "oklch(0.5 0.15 260)"),
   headerBg: radial("oklch(0.3 0.08 260)", "oklch(0.16 0.04 260)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const sapphire: ThemePalette = {
@@ -113,6 +118,7 @@ const sapphire: ThemePalette = {
   accent: "oklch(0.7 0.18 245)",
   gradient: grad("oklch(0.75 0.18 240)", "oklch(0.55 0.22 255)"),
   headerBg: radial("oklch(0.3 0.1 250)", "oklch(0.15 0.04 250)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const graphite: ThemePalette = {
@@ -126,6 +132,7 @@ const graphite: ThemePalette = {
   accent: "oklch(0.78 0.01 250)",
   gradient: grad("oklch(0.82 0.005 250)", "oklch(0.55 0.01 250)"),
   headerBg: radial("oklch(0.28 0.008 250)", "oklch(0.16 0.005 250)"),
+  onAccent: "oklch(0.18 0.02 250)",
 };
 
 const bordeaux: ThemePalette = {
@@ -139,6 +146,7 @@ const bordeaux: ThemePalette = {
   accent: "oklch(0.68 0.18 20)",
   gradient: grad("oklch(0.75 0.18 25)", "oklch(0.5 0.2 15)"),
   headerBg: radial("oklch(0.32 0.1 20)", "oklch(0.17 0.05 20)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const slate: ThemePalette = {
@@ -152,6 +160,7 @@ const slate: ThemePalette = {
   accent: "oklch(0.75 0.13 230)",
   gradient: grad("oklch(0.8 0.12 225)", "oklch(0.6 0.15 235)"),
   headerBg: radial("oklch(0.32 0.04 240)", "oklch(0.18 0.015 240)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const violet: ThemePalette = {
@@ -165,6 +174,7 @@ const violet: ThemePalette = {
   accent: "oklch(0.72 0.2 295)",
   gradient: grad("oklch(0.78 0.18 290)", "oklch(0.55 0.22 300)"),
   headerBg: radial("oklch(0.3 0.1 295)", "oklch(0.16 0.05 295)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const crimson: ThemePalette = {
@@ -178,6 +188,7 @@ const crimson: ThemePalette = {
   accent: "oklch(0.7 0.21 25)",
   gradient: grad("oklch(0.75 0.2 30)", "oklch(0.55 0.24 20)"),
   headerBg: radial("oklch(0.3 0.1 25)", "oklch(0.15 0.04 25)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const magenta: ThemePalette = {
@@ -191,6 +202,7 @@ const magenta: ThemePalette = {
   accent: "oklch(0.7 0.24 330)",
   gradient: grad("oklch(0.75 0.22 325)", "oklch(0.55 0.26 335)"),
   headerBg: radial("oklch(0.3 0.1 330)", "oklch(0.16 0.05 330)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 /* ------------------------------- LIGHT --------------------------------- */
@@ -206,6 +218,7 @@ const copper: ThemePalette = {
   accent: "oklch(0.62 0.17 40)",
   gradient: grad("oklch(0.78 0.14 55)", "oklch(0.58 0.18 35)"),
   headerBg: grad("oklch(0.96 0.025 60)", "oklch(0.9 0.04 50)"),
+  onAccent: "oklch(0.22 0.03 40)",
 };
 
 const cream: ThemePalette = {
@@ -219,6 +232,7 @@ const cream: ThemePalette = {
   accent: "oklch(0.65 0.14 65)",
   gradient: grad("oklch(0.8 0.13 75)", "oklch(0.62 0.16 55)"),
   headerBg: grad("oklch(0.96 0.02 80)", "oklch(0.9 0.04 70)"),
+  onAccent: "oklch(0.24 0.02 80)",
 };
 
 const sand: ThemePalette = {
@@ -232,6 +246,7 @@ const sand: ThemePalette = {
   accent: "oklch(0.5 0.04 70)",
   gradient: grad("oklch(0.7 0.06 65)", "oklch(0.45 0.05 70)"),
   headerBg: grad("oklch(0.92 0.025 75)", "oklch(0.85 0.04 70)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const clay: ThemePalette = {
@@ -245,6 +260,7 @@ const clay: ThemePalette = {
   accent: "oklch(0.58 0.18 30)",
   gradient: grad("oklch(0.7 0.18 35)", "oklch(0.5 0.2 22)"),
   headerBg: grad("oklch(0.93 0.03 40)", "oklch(0.86 0.05 30)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const rose: ThemePalette = {
@@ -258,6 +274,7 @@ const rose: ThemePalette = {
   accent: "oklch(0.66 0.18 355)",
   gradient: grad("oklch(0.82 0.12 5)", "oklch(0.62 0.2 350)"),
   headerBg: grad("oklch(0.96 0.025 0)", "oklch(0.88 0.05 355)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const blush: ThemePalette = {
@@ -271,6 +288,7 @@ const blush: ThemePalette = {
   accent: "oklch(0.7 0.17 25)",
   gradient: grad("oklch(0.85 0.13 35)", "oklch(0.65 0.19 18)"),
   headerBg: grad("oklch(0.96 0.025 30)", "oklch(0.88 0.05 25)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const mint: ThemePalette = {
@@ -284,6 +302,7 @@ const mint: ThemePalette = {
   accent: "oklch(0.62 0.14 170)",
   gradient: grad("oklch(0.78 0.12 175)", "oklch(0.55 0.16 165)"),
   headerBg: grad("oklch(0.94 0.025 175)", "oklch(0.86 0.05 170)"),
+  onAccent: "oklch(0.22 0.03 175)",
 };
 
 const sky: ThemePalette = {
@@ -297,6 +316,7 @@ const sky: ThemePalette = {
   accent: "oklch(0.62 0.15 230)",
   gradient: grad("oklch(0.78 0.12 225)", "oklch(0.55 0.17 235)"),
   headerBg: grad("oklch(0.94 0.025 225)", "oklch(0.86 0.05 230)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const paper: ThemePalette = {
@@ -310,6 +330,7 @@ const paper: ThemePalette = {
   accent: "oklch(0.45 0.13 255)",
   gradient: grad("oklch(0.6 0.13 250)", "oklch(0.38 0.15 260)"),
   headerBg: grad("oklch(0.96 0.01 250)", "oklch(0.88 0.02 250)"),
+  onAccent: "oklch(0.98 0 0)",
 };
 
 const sun: ThemePalette = {
@@ -323,6 +344,7 @@ const sun: ThemePalette = {
   accent: "oklch(0.7 0.17 70)",
   gradient: grad("oklch(0.85 0.14 80)", "oklch(0.68 0.18 60)"),
   headerBg: grad("oklch(0.95 0.03 75)", "oklch(0.86 0.05 65)"),
+  onAccent: "oklch(0.22 0.03 60)",
 };
 
 /* ----------------------------- catalog --------------------------------- */
