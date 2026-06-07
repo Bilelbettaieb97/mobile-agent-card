@@ -223,12 +223,37 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
         {/* RIGHT — live preview */}
         <aside className="hidden lg:block h-full overflow-hidden">
           <div className="h-full flex flex-col justify-center">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <p className="text-xs uppercase tracking-[0.18em] text-primary flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5" /> Aperçu live
               </p>
-              <span className="text-[10px] text-muted-foreground">Met à jour à chaque sélection</span>
+              <span className="text-[10px] text-muted-foreground">
+                {selectedProfession ? "3 mises en page possibles" : "Met à jour à chaque sélection"}
+              </span>
             </div>
+
+            {/* Variantes — visibles uniquement quand un métier est choisi */}
+            {selectedProfession && (
+              <div className="mb-4 inline-flex w-full rounded-lg border border-border bg-muted/40 p-0.5 text-xs">
+                {VARIANTS.map((v) => {
+                  const active = variant === v.id;
+                  return (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => setVariant(v.id)}
+                      className={`flex-1 px-2.5 py-1.5 rounded-md transition text-center ${
+                        active ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                      title={v.hint}
+                    >
+                      <span className={`block leading-tight ${active ? "font-medium" : ""}`}>{v.label}</span>
+                      <span className="block text-[9px] text-muted-foreground/80 leading-tight">{v.hint}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <div className="relative">
               {/* halo */}
               <div
