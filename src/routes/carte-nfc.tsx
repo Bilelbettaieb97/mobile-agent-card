@@ -215,6 +215,71 @@ function SocialProofBar() {
 }
 
 /* ============================================================
+   PRODUCT GALLERY
+   ============================================================ */
+function Gallery() {
+  const shots = [
+    {
+      src: cardStudio,
+      title: "Studio noir",
+      caption: "La carte premium, posée comme un objet de statut.",
+      alt: "Carte NFC noire gravée sur fond noir en studio",
+      featured: true,
+    },
+    {
+      src: cardHand,
+      title: "Dans la main",
+      caption: "Le geste simple qui remplace les cartes papier.",
+      alt: "Carte NFC tenue dans une main près d'un smartphone",
+      featured: false,
+    },
+    {
+      src: cardMacro,
+      title: "Gravure macro",
+      caption: "Finition mate, détail précis, présence immédiate.",
+      alt: "Plan macro de la gravure et de la finition d'une carte NFC noire",
+      featured: false,
+    },
+  ];
+
+  return (
+    <section className="border-t border-border/50 bg-background">
+      <div className="mx-auto max-w-6xl px-5 py-16 md:py-24">
+        <div className="max-w-2xl mb-10">
+          <p className="text-xs uppercase tracking-[0.18em] text-primary mb-3">L'objet, en vrai</p>
+          <h2 className="font-display text-3xl md:text-5xl leading-tight tracking-tight">
+            Une carte qu'on remarque avant même de la toucher.
+          </h2>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3 md:auto-rows-[260px]">
+          {shots.map((shot) => (
+            <figure
+              key={shot.title}
+              className={`group relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-2xl shadow-primary/10 ${shot.featured ? "md:col-span-2 md:row-span-2" : ""}`}
+            >
+              <img
+                src={shot.src}
+                alt={shot.alt}
+                loading="lazy"
+                width={1280}
+                height={960}
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/10 to-transparent" />
+              <figcaption className="absolute inset-x-0 bottom-0 p-5 md:p-7">
+                <p className="text-xs uppercase tracking-[0.18em] text-primary mb-2">{shot.title}</p>
+                <p className="max-w-sm text-sm md:text-base text-foreground/90">{shot.caption}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
    PROBLEM
    ============================================================ */
 function ProblemSection() {
