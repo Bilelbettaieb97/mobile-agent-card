@@ -36,6 +36,7 @@ export function BusinessCard({ data }: { data: CardData }) {
     "--card-accent":           theme.accent,
     "--card-accent-gradient":  theme.gradient,
     "--card-header-bg":        theme.headerBg,
+    "--card-on-accent":        theme.onAccent,
     background:                theme.bg,
     color:                     theme.text,
   } as React.CSSProperties;
@@ -72,7 +73,7 @@ export function BusinessCard({ data }: { data: CardData }) {
       <div className="flex items-center justify-between px-5 pt-5">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-md grid place-items-center" style={{ background: "var(--card-accent-gradient)" }}>
-            <Building2 className="h-4 w-4 text-primary-foreground" strokeWidth={2.4} />
+            <Building2 className="h-4 w-4 text-card-on-accent" strokeWidth={2.4} />
           </div>
           <span className="font-display text-sm tracking-wide">{data.agency || "Agence"}</span>
         </div>
@@ -139,9 +140,9 @@ function IdentitySection({ data }: { data: CardData }) {
             <div className="h-20 w-20 rounded-2xl overflow-hidden border border-card-border">
               <Photo size={80} />
             </div>
-            <span className="absolute -bottom-1 -right-1 h-6 w-6 grid place-items-center rounded-full border-2 border-card"
+            <span className="absolute -bottom-1 -right-1 h-6 w-6 grid place-items-center rounded-full border-2 border-card-surface"
               style={{ background: "var(--card-accent-gradient)" }}>
-              <BadgeCheck className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={2.6} />
+              <BadgeCheck className="h-3.5 w-3.5 text-card-on-accent" strokeWidth={2.6} />
             </span>
           </div>
           <div className="min-w-0">
@@ -174,12 +175,12 @@ function IdentitySection({ data }: { data: CardData }) {
         </div>
         <div className="relative bg-card-surface px-5 pb-5 pt-0 -mt-12 flex flex-col items-center text-center">
           <div className="relative">
-            <div className="h-24 w-24 rounded-full overflow-hidden border-4 border-card shadow-xl">
+            <div className="h-24 w-24 rounded-full overflow-hidden border-4 border-card-surface shadow-xl">
               <Photo size={96} />
             </div>
-            <span className="absolute bottom-0 right-0 h-6 w-6 grid place-items-center rounded-full border-2 border-card"
+            <span className="absolute bottom-0 right-0 h-6 w-6 grid place-items-center rounded-full border-2 border-card-surface"
               style={{ background: "var(--card-accent-gradient)" }}>
-              <BadgeCheck className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={2.6} />
+              <BadgeCheck className="h-3.5 w-3.5 text-card-on-accent" strokeWidth={2.6} />
             </span>
           </div>
           <h1 className="mt-3 text-xl font-display font-medium leading-tight">{data.name || "Votre nom"}</h1>
@@ -202,12 +203,12 @@ function IdentitySection({ data }: { data: CardData }) {
       <div className="flex flex-col items-center text-center">
         <div className="relative">
           <div className="absolute -inset-1 rounded-full opacity-60 blur-md" style={{ background: "var(--card-accent-gradient)" }} />
-          <div className="relative h-28 w-28 rounded-full overflow-hidden border-2 border-background">
+          <div className="relative h-28 w-28 rounded-full overflow-hidden border-2 border-card-bg">
             <Photo size={112} />
           </div>
-          <span className="absolute bottom-1 right-1 h-6 w-6 grid place-items-center rounded-full border-2 border-background"
+          <span className="absolute bottom-1 right-1 h-6 w-6 grid place-items-center rounded-full border-2 border-card-bg"
             style={{ background: "var(--card-accent-gradient)" }}>
-            <BadgeCheck className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={2.6} />
+            <BadgeCheck className="h-3.5 w-3.5 text-card-on-accent" strokeWidth={2.6} />
           </span>
         </div>
         <h1 className="mt-4 text-2xl font-display font-medium leading-tight">{data.name || "Votre nom"}</h1>
@@ -246,7 +247,7 @@ function ActionsSection({ data }: { data: CardData }) {
           <a key={i} href={it.href} target={it.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
             className="flex items-center gap-3 rounded-2xl bg-card-surface border border-card-border px-4 py-3 active:scale-[0.99] transition">
             <span className="h-9 w-9 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-              <it.icon className="h-4 w-4 text-primary-foreground" />
+              <it.icon className="h-4 w-4 text-card-on-accent" />
             </span>
             <span className="text-sm font-medium flex-1">{it.label}</span>
             <ChevronRight className="h-4 w-4 text-card-muted" />
@@ -263,7 +264,7 @@ function ActionsSection({ data }: { data: CardData }) {
           <a key={i} href={it.href} target={it.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
             className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-card-surface border border-card-border py-5 active:scale-[0.99] transition">
             <span className="h-10 w-10 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-              <it.icon className="h-5 w-5 text-primary-foreground" />
+              <it.icon className="h-5 w-5 text-card-on-accent" />
             </span>
             <span className="text-xs font-medium">{it.label}</span>
           </a>
@@ -291,7 +292,7 @@ function QuickActionIcon({ icon: Icon, label, href, primary }: { icon: any; labe
         className={`h-12 w-12 grid place-items-center rounded-2xl border border-card-border active:scale-95 transition ${primary ? "" : "bg-card-surface"}`}
         style={primary ? { background: "var(--card-accent-gradient)" } : undefined}
       >
-        <Icon className={`h-4.5 w-4.5 ${primary ? "text-primary-foreground" : ""}`} strokeWidth={2} />
+        <Icon className={`h-4.5 w-4.5 ${primary ? "text-card-on-accent" : ""}`} strokeWidth={2} />
       </span>
       <span className="text-[10px] text-card-muted">{label}</span>
     </a>
@@ -326,7 +327,7 @@ function VCardSection({ data, onSave, copied }: { data: CardData; onSave: () => 
         <button onClick={onSave}
           className="w-full flex items-center gap-3 rounded-2xl bg-card-surface border border-card-border p-4 active:scale-[0.99] transition text-left">
           <span className="h-11 w-11 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-            <Download className="h-5 w-5 text-primary-foreground" />
+            <Download className="h-5 w-5 text-card-on-accent" />
           </span>
           <span className="flex-1 min-w-0">
             <span className="block text-sm font-medium">Enregistrer le contact</span>
@@ -342,7 +343,7 @@ function VCardSection({ data, onSave, copied }: { data: CardData; onSave: () => 
   return (
     <section className="px-5">
       <button onClick={onSave}
-        className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-primary-foreground active:scale-[0.99] transition"
+        className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-card-on-accent active:scale-[0.99] transition"
         style={{ background: "var(--card-accent-gradient)", boxShadow: "0 0 40px -8px var(--card-accent)" }}>
         <Download className="h-4 w-4" strokeWidth={2.4} />
         Enregistrer le contact
@@ -431,7 +432,7 @@ function AboutSection({ data }: { data: CardData }) {
         <div className="rounded-2xl bg-card-surface border border-card-border p-5">
           <div className="flex items-center gap-3 mb-3">
             <span className="h-9 w-9 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
+              <Sparkles className="h-4 w-4 text-card-on-accent" />
             </span>
             <h2 className="font-display text-base">À propos</h2>
           </div>
@@ -605,7 +606,7 @@ function ServicesSection({ data }: { data: CardData }) {
           {data.services.map((s) => (
             <article key={s.id} className="snap-start shrink-0 w-[72%] rounded-2xl bg-card-surface border border-card-border p-4">
               <span className="h-9 w-9 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-                <Sparkles className="h-4 w-4 text-primary-foreground" />
+                <Sparkles className="h-4 w-4 text-card-on-accent" />
               </span>
               <h3 className="mt-3 text-sm font-medium">{s.title}</h3>
               {s.description && <p className="mt-1 text-xs text-card-muted leading-relaxed">{s.description}</p>}
@@ -623,7 +624,7 @@ function ServicesSection({ data }: { data: CardData }) {
         {data.services.map((s) => (
           <li key={s.id} className="rounded-2xl bg-card-surface border border-card-border p-4 flex gap-3">
             <span className="h-9 w-9 grid place-items-center rounded-xl shrink-0" style={{ background: "var(--card-accent-gradient)" }}>
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
+              <Sparkles className="h-4 w-4 text-card-on-accent" />
             </span>
             <div className="min-w-0">
               <h3 className="text-sm font-medium">{s.title}</h3>
@@ -737,7 +738,7 @@ function CalendarSection({ data }: { data: CardData }) {
     return (
       <section className="px-5">
         <a href={data.calendarUrl} target="_blank" rel="noopener noreferrer"
-          className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-primary-foreground active:scale-[0.99] transition"
+          className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-card-on-accent active:scale-[0.99] transition"
           style={{ background: "var(--card-accent-gradient)" }}>
           <Calendar className="h-4 w-4" />
           {label}
@@ -752,7 +753,7 @@ function CalendarSection({ data }: { data: CardData }) {
         <a href={data.calendarUrl} target="_blank" rel="noopener noreferrer"
           className="block rounded-2xl bg-card-surface border border-card-border p-5 text-center active:scale-[0.99] transition">
           <span className="mx-auto h-12 w-12 grid place-items-center rounded-2xl" style={{ background: "var(--card-accent-gradient)" }}>
-            <Calendar className="h-6 w-6 text-primary-foreground" />
+            <Calendar className="h-6 w-6 text-card-on-accent" />
           </span>
           <div className="mt-3 font-display text-base">{label}</div>
           <div className="mt-1 text-[11px] text-card-muted">Choisissez un créneau qui vous convient</div>
@@ -766,7 +767,7 @@ function CalendarSection({ data }: { data: CardData }) {
       <a href={data.calendarUrl} target="_blank" rel="noopener noreferrer"
         className="flex items-center gap-3 rounded-2xl bg-card-surface border border-card-border p-4 active:scale-[0.99] transition">
         <span className="h-11 w-11 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
-          <Calendar className="h-5 w-5 text-primary-foreground" />
+          <Calendar className="h-5 w-5 text-card-on-accent" />
         </span>
         <div className="flex-1 min-w-0">
           <div className="text-[10px] uppercase tracking-wider text-card-muted">Agenda</div>
@@ -881,7 +882,7 @@ function CtaSection({ data }: { data: CardData }) {
   if (v === "bold") {
     return (
       <section className="px-5">
-        <div className="rounded-2xl p-5 text-primary-foreground" style={{ background: "var(--card-accent-gradient)" }}>
+        <div className="rounded-2xl p-5 text-card-on-accent" style={{ background: "var(--card-accent-gradient)" }}>
           <h3 className="font-display text-xl leading-tight">{data.ctaTitle}</h3>
           {data.ctaText && <p className="mt-1.5 text-sm opacity-90">{data.ctaText}</p>}
           {hasBtn && (
@@ -903,7 +904,7 @@ function CtaSection({ data }: { data: CardData }) {
         {data.ctaText && <p className="mt-1.5 text-sm text-card-muted">{data.ctaText}</p>}
         {hasBtn && (
           <a href={data.ctaButtonUrl} target="_blank" rel="noopener noreferrer"
-            className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium text-primary-foreground active:scale-[0.99] transition"
+            className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium text-card-on-accent active:scale-[0.99] transition"
             style={{ background: "var(--card-accent-gradient)" }}>
             {data.ctaButtonLabel} <ArrowRight className="h-4 w-4" />
           </a>
