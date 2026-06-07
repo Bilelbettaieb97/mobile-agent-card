@@ -4,7 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import {
-  RotateCcw, Eye, X, ExternalLink, Sparkles, GripVertical, Grid3x3, Share2, Palette, Rocket,
+  RotateCcw, Eye, X, ExternalLink, Sparkles, GripVertical, Grid3x3, Palette, Rocket,
 } from "lucide-react";
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
@@ -22,6 +22,8 @@ import type { CardData, BrickId } from "@/lib/card-types";
 import { BuilderWelcome } from "@/components/builder/BuilderWelcome";
 import { BuilderCompare } from "@/components/builder/BuilderCompare";
 import { BuilderSections } from "@/components/builder/BuilderSections";
+import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
+import { StepFooter } from "@/components/builder/StepFooter";
 import {
   BRICK_META,
   VariantPicker,
@@ -32,6 +34,13 @@ import { buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas
 import { PROFESSIONS } from "@/lib/card-themes";
 
 type Step = "welcome" | "compare" | "essentials" | "extras" | "edit";
+
+const STEP_NUM: Record<Step, StepNum> = {
+  welcome: 1, compare: 2, essentials: 3, extras: 4, edit: 5,
+};
+const NUM_STEP: Record<StepNum, Step> = {
+  1: "welcome", 2: "compare", 3: "essentials", 4: "extras", 5: "edit",
+};
 
 export const Route = createFileRoute("/builder")({
   head: () => ({
@@ -50,6 +59,23 @@ function BuilderPage() {
   const [shareOpen, setShareOpen] = useState(false);
   const [step, setStep] = useState<Step>("welcome");
   const [plan, setPlan] = useState<VariantId>("vitrine");
+  const [completedThrough, setCompletedThrough] = useState<StepNum>(1);
+
+  const advanceTo = (next: Step) => {
+    const n = STEP_NUM[next];
+    setCompletedThrough((c) => (n > c ? n : c));
+    setStep(next);
+  };
+
+  const goToStep = (n: StepNum) => {
+    if (n > completedThrough) return;
+    // L'étape 2 (compare) n'a de sens que si un métier a été choisi.
+    if (n === 2 && !data.profession) {
+      setStep("welcome");
+      return;
+    }
+    setStep(NUM_STEP[n]);
+  };
 
   if (!hydrated) {
     return <div className="min-h-screen bg-background grid place-items-center text-muted-foreground">Chargement…</div>;
@@ -60,15 +86,16 @@ function BuilderPage() {
       <BuilderWelcome
         initialProfessionId={data.profession}
         initialAccent={data.accent}
+        completedThrough={completedThrough}
+        onGoToStep={goToStep}
         onChooseProfession={(p) => {
-          // Stocke seulement métier + thème, le choix de variante se fait à l'étape compare.
           update("profession", p.id);
           update("accent", p.themeId as CardData["accent"]);
-          setStep("compare");
+          advanceTo("compare");
         }}
         onChooseTheme={(themeId) => {
           setData(buildPreviewFromTheme(themeId));
-          setStep("essentials");
+          advanceTo("essentials");
         }}
       />
     );
@@ -84,11 +111,13 @@ function BuilderPage() {
     return (
       <BuilderCompare
         profession={profession}
+        completedThrough={completedThrough}
+        onGoToStep={goToStep}
         onBack={() => setStep("welcome")}
         onChoose={(variant, next) => {
           setData(next);
           setPlan(variant);
-          setStep("essentials");
+          advanceTo("essentials");
         }}
       />
     );
@@ -103,8 +132,10 @@ function BuilderPage() {
         update={update}
         plan={plan}
         setPlan={setPlan}
+        completedThrough={completedThrough}
+        onGoToStep={goToStep}
         onBack={() => setStep(data.profession ? "compare" : "welcome")}
-        onNext={() => setStep("extras")}
+        onNext={() => advanceTo("extras")}
       />
     );
   }
@@ -118,68 +149,51 @@ function BuilderPage() {
         update={update}
         plan={plan}
         setPlan={setPlan}
+        completedThrough={completedThrough}
+        onGoToStep={goToStep}
         onBack={() => setStep("essentials")}
-        onNext={() => setStep("edit")}
+        onNext={() => advanceTo("edit")}
       />
     );
   }
 
+  // Step 5 — edit
   return (
     <main className="min-h-screen bg-background text-foreground">
-      {/* Progress bar */}
-      <div className="sticky top-0 z-30 h-1 bg-muted/40 backdrop-blur">
-        <div className="h-full bg-primary" style={{ width: "100%", boxShadow: "0 0 12px var(--ring)" }} />
+      <StepHeader
+        step={5}
+        title="Personnalisez et activez"
+        subtitle="Réorganisez vos sections, ajustez le style — l'aperçu se met à jour en direct."
+        completedThrough={completedThrough}
+        onGoToStep={goToStep}
+        nextHint="Dernière étape — votre carte sera prête à partager."
+      />
+
+      {/* Topbar d'actions utilitaires */}
+      <div className="border-b border-border bg-background/80">
+        <div className="mx-auto max-w-7xl px-5 h-12 flex items-center justify-end gap-2">
+          <Button variant="ghost" size="sm" onClick={() => setStep("welcome")}>
+            <Palette className="h-4 w-4 mr-1.5" /> Changer de thème
+          </Button>
+          <Button variant="ghost" size="sm" onClick={reset}>
+            <RotateCcw className="h-4 w-4 mr-1.5" /> Réinitialiser
+          </Button>
+          <Link to="/">
+            <Button variant="outline" size="sm">
+              <ExternalLink className="h-4 w-4 mr-1.5" /> Voir démo
+            </Button>
+          </Link>
+          <Button size="sm" className="lg:hidden" onClick={() => setPreviewOpen(true)}>
+            <Eye className="h-4 w-4 mr-1.5" /> Aperçu
+          </Button>
+        </div>
       </div>
 
-      {/* Topbar */}
-      <header className="sticky top-1 z-20 border-b border-border bg-background/85 backdrop-blur">
-        <div className="mx-auto max-w-7xl px-5 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-md grid place-items-center" style={{ background: "var(--gradient-gold)" }}>
-              <Sparkles className="h-4 w-4 text-primary-foreground" strokeWidth={2.4} />
-            </div>
-            <span className="font-display text-base">Builder</span>
-            <span className="text-[10px] uppercase tracking-wider text-primary ml-2 px-2 py-0.5 rounded-full border border-primary/30 bg-primary/5">
-              Étape 5 / 5
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setStep("welcome")}>
-              <Palette className="h-4 w-4 mr-1.5" /> Changer de thème
-            </Button>
-            <Button variant="ghost" size="sm" onClick={reset}>
-              <RotateCcw className="h-4 w-4 mr-1.5" /> Réinitialiser
-            </Button>
-            <Link to="/">
-              <Button variant="outline" size="sm">
-                <ExternalLink className="h-4 w-4 mr-1.5" /> Voir démo
-              </Button>
-            </Link>
-            <Button size="sm" className="lg:hidden" onClick={() => setPreviewOpen(true)}>
-              <Eye className="h-4 w-4 mr-1.5" /> Aperçu
-            </Button>
-            <Button size="sm" onClick={() => setShareOpen(true)} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[var(--shadow-glow)]">
-              <Rocket className="h-4 w-4 mr-1.5" /> Activer ma carte
-            </Button>
-          </div>
-        </div>
-      </header>
-
-
       <div className="mx-auto max-w-7xl px-5 py-8 grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-10">
-        {/* LEFT: editor */}
         <section>
-          <h1 className="font-display text-3xl mb-1">Composez votre carte</h1>
-          <p className="text-sm text-muted-foreground mb-6">
-            Réorganisez, ajustez le style ou activez d'autres briques — l'aperçu se met à jour en direct.
-          </p>
-
           <BrickList data={data} update={update} setData={setData} />
 
           <div className="mt-8 flex items-center gap-3">
-            <Button size="lg" onClick={() => setShareOpen(true)}>
-              <Rocket className="h-4 w-4 mr-1.5" /> Activer ma carte
-            </Button>
             <Button
               variant="outline"
               onClick={() => {
@@ -195,9 +209,8 @@ function BuilderPage() {
           </div>
         </section>
 
-        {/* RIGHT: preview (desktop) */}
         <aside className="hidden lg:block">
-          <div className="sticky top-20">
+          <div className="sticky top-24">
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs uppercase tracking-[0.18em] text-primary">Aperçu live</p>
               <Button
@@ -215,7 +228,14 @@ function BuilderPage() {
         </aside>
       </div>
 
-      {/* Mobile preview drawer */}
+      <StepFooter
+        step={5}
+        onBack={() => setStep("extras")}
+        onNext={() => setShareOpen(true)}
+        nextLabel="Activer ma carte"
+        centerInfo="Votre carte est prête"
+      />
+
       {previewOpen && (
         <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur flex flex-col">
           <div className="flex items-center justify-between p-4">

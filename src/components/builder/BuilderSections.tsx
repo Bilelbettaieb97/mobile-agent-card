@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Sparkles, ArrowRight, ArrowLeft, Check, ChevronDown, Lock, Crown, Zap } from "lucide-react";
+import { Sparkles, Check, ChevronDown, Lock, Crown, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -9,6 +9,7 @@ import {
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
 import { StepHeader } from "@/components/builder/StepHeader";
+import { StepFooter } from "@/components/builder/StepFooter";
 import { THEMES_BY_ID } from "@/lib/card-themes";
 import type { CardData, BrickId } from "@/lib/card-types";
 import { renderBrickBody } from "@/components/builder/bricks";
@@ -102,11 +103,13 @@ interface Props {
   update: <K extends keyof CardData>(k: K, v: CardData[K]) => void;
   plan: VariantId;
   setPlan: (p: VariantId) => void;
+  completedThrough: import("./StepHeader").StepNum;
+  onGoToStep: (n: import("./StepHeader").StepNum) => void;
   onBack: () => void;
   onNext: () => void;
 }
 
-export function BuilderSections({ step, data, setData, update, plan, setPlan, onBack, onNext }: Props) {
+export function BuilderSections({ step, data, setData, update, plan, setPlan, completedThrough, onGoToStep, onBack, onNext }: Props) {
   const isEssentials = step === "essentials";
   const defs = isEssentials ? ESSENTIALS : EXTRAS;
 
@@ -179,14 +182,26 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, on
   const totalAllowed = allowedDefs.length;
 
   const stepNum: 3 | 4 = isEssentials ? 3 : 4;
-  const heading = isEssentials ? "Les sections essentielles" : "Sections complémentaires";
+  const heading = isEssentials ? "Remplissez les sections essentielles" : "Ajoutez des sections complémentaires";
   const intro = isEssentials
     ? "Ce que toute carte de visite digitale doit contenir. Activez et remplissez les champs — l'aperçu se met à jour en direct."
     : "Enrichissez votre carte avec ce qui vous différencie. Les sections grisées nécessitent un plan supérieur.";
+  const nextHint = isEssentials
+    ? "Après cette étape : ajouter des sections complémentaires."
+    : "Après cette étape : personnaliser et activer votre carte.";
+  const nextLabel = isEssentials ? "Continuer" : "Personnaliser ma carte";
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <StepHeader step={stepNum} title={heading} subtitle={intro} />
+      <StepHeader
+        step={stepNum}
+        title={heading}
+        subtitle={intro}
+        completedThrough={completedThrough}
+        onGoToStep={onGoToStep}
+        nextHint={nextHint}
+      />
+
 
       <div className="mx-auto max-w-7xl px-5 pb-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10">
         {/* LEFT — sections list */}
@@ -291,17 +306,10 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, on
             })}
           </div>
 
-          <div className="mt-8 pt-4 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:justify-between">
-            <Button variant="ghost" onClick={onBack} className="sm:w-auto">
-              <ArrowLeft className="h-4 w-4 mr-1.5" /> Retour
-            </Button>
-            <Button size="lg" onClick={onNext} className="h-12 text-base shadow-[var(--shadow-glow)]">
-              {isEssentials ? "Continuer" : "Personnaliser ma carte"}
-              <ArrowRight className="h-5 w-5 ml-1.5" />
-            </Button>
-          </div>
+          <div className="mt-6" />
 
         </section>
+
 
         {/* RIGHT preview */}
         <aside className="hidden lg:block">
@@ -325,6 +333,14 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, on
           </div>
         </aside>
       </div>
+
+      <StepFooter
+        step={stepNum}
+        onBack={onBack}
+        onNext={onNext}
+        nextLabel={nextLabel}
+        centerInfo={`Plan ${PLAN_LABEL[plan]} — ${activeAllowed} / ${totalAllowed} sections actives`}
+      />
     </main>
   );
 }
