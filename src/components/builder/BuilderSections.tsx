@@ -207,13 +207,15 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
         {/* LEFT — sections list */}
         <section className="flex flex-col min-h-0">
 
-          {/* Bandeau plan actuel */}
-          <PlanBanner
-            plan={plan}
-            onChange={changePlan}
-            activeCount={activeAllowed}
-            totalCount={totalAllowed}
-          />
+          {/* Bandeau plan actuel — masqué à l'étape Essentiels si le plan est déjà Essentiel (rien à promouvoir) */}
+          {(!isEssentials || plan !== "essentielle") && (
+            <PlanBanner
+              plan={plan}
+              onChange={changePlan}
+              activeCount={activeAllowed}
+              totalCount={totalAllowed}
+            />
+          )}
 
           <div className="space-y-3 mt-4">
             {defs.map((d) => {
