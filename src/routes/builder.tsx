@@ -211,8 +211,8 @@ function BuilderPage() {
       </div>
 
       <StepFooter
-        step={5}
-        onBack={() => setStep("extras")}
+        step={4}
+        onBack={() => setStep("sections")}
         onNext={() => setShareOpen(true)}
         nextLabel="Activer ma carte"
         centerInfo="Votre carte est prête"
