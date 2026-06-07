@@ -17,6 +17,7 @@ export function UpsellSection({
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <CompactCard
+          to="/carte-nfc"
           icon={Nfc}
           tag="Carte physique NFC"
           title="Votre carte digitale dans votre poche"
