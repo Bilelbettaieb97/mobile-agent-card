@@ -21,11 +21,36 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Alexandre Moreau — Conseiller immobilier de prestige" },
-      { name: "description", content: "Carte de visite digitale d'un conseiller immobilier de prestige à Paris." },
+      { name: "description", content: "Carte de visite digitale d'Alexandre Moreau, conseiller immobilier de prestige à Paris. Contact, biens, prise de rendez-vous." },
+      { property: "og:title", content: "Alexandre Moreau — Conseiller immobilier de prestige" },
+      { property: "og:description", content: "Découvrez la carte de visite digitale et les biens d'exception à Paris." },
+      { property: "og:type", content: "profile" },
+      { property: "og:url", content: "/" },
+    ],
+    links: [
+      { rel: "canonical", href: "/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: DEMO.name,
+          jobTitle: DEMO.title,
+          worksFor: { "@type": "Organization", name: DEMO.agency },
+          areaServed: DEMO.area,
+          telephone: DEMO.phone,
+          email: DEMO.email,
+          url: DEMO.website ? `https://${DEMO.website}` : undefined,
+          sameAs: [DEMO.linkedin, DEMO.instagram].filter(Boolean),
+        }),
+      },
     ],
   }),
   component: Index,
 });
+
 
 function Index() {
   return (

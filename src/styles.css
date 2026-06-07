@@ -95,4 +95,42 @@
 @utility text-card-muted        { color: var(--card-text-muted); }
 @utility text-card-on-accent    { color: var(--card-on-accent); }
 
+/* Accessibility — visible keyboard focus everywhere */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+/* Respect users who ask for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print — clean, paper-friendly card. Hides app chrome. */
+@media print {
+  @page { margin: 12mm; }
+  html, body {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+  header, nav, aside, button, [role="dialog"], .no-print {
+    display: none !important;
+  }
+  main { display: block !important; }
+  a { color: inherit !important; text-decoration: none !important; }
+  /* Force a single-column card layout when printing */
+  .lg\:grid-cols-\[1fr_400px\] { grid-template-columns: 1fr !important; }
+}
+
+
 
