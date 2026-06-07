@@ -30,12 +30,18 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
   const [selectedThemeId, setSelectedThemeId] = useState<string>(
     initialProfessionId ? PROFESSIONS.find((p) => p.id === initialProfessionId)?.themeId ?? initialAccent : initialAccent,
   );
+  const [variant, setVariant] = useState<VariantId>("vitrine");
 
-  // Preview data — derives from current selection
+  // Reset to the wow variant whenever the profession changes
+  useEffect(() => {
+    setVariant("vitrine");
+  }, [selectedProfession?.id]);
+
+  // Preview data — derives from current selection + variant
   const previewData = useMemo<CardData>(() => {
-    if (selectedProfession) return buildPreviewCard(selectedProfession);
+    if (selectedProfession) return buildPreviewCard(selectedProfession, variant);
     return buildPreviewFromTheme(selectedThemeId);
-  }, [selectedProfession, selectedThemeId]);
+  }, [selectedProfession, selectedThemeId, variant]);
 
   // Preload portrait of selected persona to avoid flash
   useEffect(() => {
