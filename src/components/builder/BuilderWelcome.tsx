@@ -64,8 +64,8 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground overflow-hidden">
-      <div className="mx-auto max-w-7xl px-5 py-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10 min-h-screen">
+    <main className="h-screen bg-background text-foreground overflow-hidden">
+      <div className="mx-auto max-w-7xl px-5 py-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10 h-screen">
         {/* LEFT — picker */}
         <section className="flex flex-col min-h-0">
           <div className="mb-6">
@@ -108,7 +108,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
                   className="pl-9"
                 />
               </div>
-              <div className="flex-1 overflow-y-auto pr-1 space-y-5 max-h-[60vh] lg:max-h-none">
+              <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-5">
                 {grouped.map(({ cat, items }) => (
                   <div key={cat}>
                     <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">{cat}</div>
@@ -157,7 +157,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
               </div>
             </>
           ) : (
-            <div className="flex-1 overflow-y-auto pr-1 max-h-[60vh] lg:max-h-none">
+            <div className="flex-1 min-h-0 overflow-y-auto pr-1">
               <div className="grid grid-cols-2 gap-2">
                 {CARD_THEMES.map((t) => {
                   const active = selectedThemeId === t.id && !selectedProfession;
@@ -215,8 +215,8 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
         </section>
 
         {/* RIGHT — live preview */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-8">
+        <aside className="hidden lg:block h-full overflow-hidden">
+          <div className="h-full flex flex-col justify-center">
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs uppercase tracking-[0.18em] text-primary flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5" /> Aperçu live
