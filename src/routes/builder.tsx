@@ -20,7 +20,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
 import { useCardStore } from "@/lib/card-store";
-import type { CardData, Listing, Badge, Stat, ThemeAccent, BrickId } from "@/lib/card-types";
+import type { CardData, Listing, Badge, Stat, ThemeAccent, BrickId, TestimonialsStyle } from "@/lib/card-types";
 
 export const Route = createFileRoute("/builder")({
   head: () => ({
