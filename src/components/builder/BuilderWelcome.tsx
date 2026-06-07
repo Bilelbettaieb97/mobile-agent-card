@@ -321,9 +321,12 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
         <button
           type="button"
           onClick={() => setCompareOpen(true)}
-          className="lg:hidden fixed bottom-24 right-4 z-30 inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-4 py-2.5 text-xs font-medium shadow-lg"
+          aria-haspopup="dialog"
+          aria-expanded={compareOpen}
+          aria-label="Comparer les 3 variantes en plein écran"
+          className="lg:hidden fixed bottom-24 right-4 z-30 inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-4 py-2.5 text-xs font-medium shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          <Maximize2 className="h-3.5 w-3.5" /> Comparer les 3
+          <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" /> Comparer les 3
         </button>
       )}
 
