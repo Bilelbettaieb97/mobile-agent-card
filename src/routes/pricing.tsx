@@ -143,13 +143,18 @@ function PricingPage() {
             }`}
           >
             Annuel
-            <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
-              billing === "yearly" ? "bg-emerald-400/30 text-emerald-50" : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+              billing === "yearly" ? "bg-emerald-400 text-emerald-950" : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
             }`}>
               2 mois offerts
             </span>
           </button>
         </div>
+        {billing === "yearly" && (
+          <p className="mt-2 text-xs text-emerald-700 dark:text-emerald-400 font-medium">
+            Économisez 2 mois par an en payant à l'année — soit jusqu'à 31,60 € d'économie.
+          </p>
+        )}
       </section>
 
       {/* Plans */}
@@ -217,9 +222,15 @@ function PricingPage() {
 
                 <div className="min-h-[36px] text-xs mb-4 space-y-0.5">
                   {billing === "yearly" ? (
-                    <div className="text-muted-foreground">
-                      Soit <span className="text-foreground font-medium">{yearlyTotal} € / an</span> · facturé une fois
-                    </div>
+                    <>
+                      <div className="text-muted-foreground">
+                        Soit <span className="text-foreground font-medium">{yearlyTotal} € / an</span> · facturé une fois
+                      </div>
+                      <div className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold">
+                        <Gift className="h-3 w-3" />
+                        2 mois offerts par rapport au mensuel
+                      </div>
+                    </>
                   ) : (
                     <div className="text-muted-foreground">Facturation mensuelle, sans engagement</div>
                   )}
