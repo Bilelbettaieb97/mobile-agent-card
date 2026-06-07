@@ -63,11 +63,16 @@ export function BuilderCompare({ profession, onBack, onChoose }: Props) {
       />
 
       <div className="mx-auto max-w-7xl px-5 pb-10">
-        <div className="flex justify-end mb-4">
-          <Button variant="ghost" size="sm" onClick={onBack}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+          <p className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+            <Layers className="h-4 w-4 text-primary shrink-0" />
+            La différence entre les 3 mises en page&nbsp;: <span className="text-foreground font-medium">le nombre de sections activées</span>. Vous pourrez tout ajuster ensuite.
+          </p>
+          <Button variant="ghost" size="sm" onClick={onBack} className="self-end sm:self-auto">
             <ArrowLeft className="h-4 w-4 mr-1.5" /> Changer de métier
           </Button>
         </div>
+
 
 
 
