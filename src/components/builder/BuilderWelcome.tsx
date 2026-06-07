@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Check, Sparkles, SkipForward } from "lucide-react";
+import { Search, Check, Sparkles, SkipForward, ChevronDown } from "lucide-react";
 import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
 import { StepFooter } from "@/components/builder/StepFooter";
 import { Input } from "@/components/ui/input";
@@ -46,6 +46,9 @@ export function BuilderWelcome({
       (initialProfessionId
         ? (PROFESSIONS.find((p) => p.id === initialProfessionId)?.themeId ?? initialAccent)
         : initialAccent) ?? "gold",
+  );
+  const [openCategory, setOpenCategory] = useState<string | null>(
+    () => PROFESSIONS.find((p) => p.id === initialProfessionId)?.category ?? null,
   );
 
   const activeTheme = THEMES_BY_ID[selectedThemeId] ?? THEMES_BY_ID.gold;
@@ -126,47 +129,75 @@ export function BuilderWelcome({
                   className="pl-9"
                 />
               </div>
-              <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-5">
-                {grouped.map(({ cat, items }) => (
-                  <div key={cat}>
-                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">{cat}</div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {items.map((p) => {
-                        const theme = THEMES_BY_ID[p.themeId];
-                        const active = selectedProfession?.id === p.id;
-                        return (
-                          <button
-                            key={p.id}
-                            type="button"
-                            onClick={() => {
-                              setSelectedProfession(p);
-                              setSelectedThemeId(p.themeId);
-                            }}
-                            className={`relative flex items-center gap-2.5 rounded-lg border p-2.5 text-left transition ${
-                              active
-                                ? "border-primary bg-primary/5 ring-2 ring-primary ring-offset-2 ring-offset-background"
-                                : "border-border hover:border-foreground/30"
-                            }`}
-                          >
-                            <span
-                              className="h-8 w-8 rounded-md shrink-0 border relative overflow-hidden"
-                              style={{ background: theme.palette.bg, borderColor: theme.palette.border }}
-                              aria-hidden
-                            >
-                              <span className="absolute inset-1 rounded-sm" style={{ background: theme.palette.surface }} />
-                              <span className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full" style={{ background: theme.palette.gradient }} />
+              <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-2">
+                {grouped.map(({ cat, items }) => {
+                  const isOpen = q ? true : openCategory === cat;
+                  const selectedInCat = selectedProfession?.category === cat;
+                  return (
+                    <div key={cat} className="rounded-lg border border-border bg-card overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setOpenCategory(isOpen && !q ? null : cat)}
+                        className={`w-full flex items-center justify-between gap-3 px-3.5 py-3 text-left transition ${
+                          isOpen ? "bg-muted/40" : "hover:bg-muted/30"
+                        }`}
+                        aria-expanded={isOpen}
+                      >
+                        <span className="flex items-center gap-2 min-w-0">
+                          <span className="text-sm font-medium truncate">{cat}</span>
+                          <span className="text-[10px] text-muted-foreground shrink-0">
+                            {items.length} métier{items.length > 1 ? "s" : ""}
+                          </span>
+                          {selectedInCat && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium shrink-0">
+                              {selectedProfession?.label}
                             </span>
-                            <span className="min-w-0 flex-1">
-                              <span className="block text-sm font-medium truncate">{p.label}</span>
-                              <span className="block text-[10px] text-muted-foreground truncate">Thème {theme.label}</span>
-                            </span>
-                            {active && <Check className="h-4 w-4 text-primary shrink-0" strokeWidth={3} />}
-                          </button>
-                        );
-                      })}
+                          )}
+                        </span>
+                        <ChevronDown
+                          className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      {isOpen && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2.5 border-t border-border">
+                          {items.map((p) => {
+                            const theme = THEMES_BY_ID[p.themeId];
+                            const active = selectedProfession?.id === p.id;
+                            return (
+                              <button
+                                key={p.id}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedProfession(p);
+                                  setSelectedThemeId(p.themeId);
+                                }}
+                                className={`relative flex items-center gap-2.5 rounded-lg border p-2.5 text-left transition ${
+                                  active
+                                    ? "border-primary bg-primary/5 ring-2 ring-primary ring-offset-2 ring-offset-background"
+                                    : "border-border hover:border-foreground/30"
+                                }`}
+                              >
+                                <span
+                                  className="h-8 w-8 rounded-md shrink-0 border relative overflow-hidden"
+                                  style={{ background: theme.palette.bg, borderColor: theme.palette.border }}
+                                  aria-hidden
+                                >
+                                  <span className="absolute inset-1 rounded-sm" style={{ background: theme.palette.surface }} />
+                                  <span className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full" style={{ background: theme.palette.gradient }} />
+                                </span>
+                                <span className="min-w-0 flex-1">
+                                  <span className="block text-sm font-medium truncate">{p.label}</span>
+                                  <span className="block text-[10px] text-muted-foreground truncate">Thème {theme.label}</span>
+                                </span>
+                                {active && <Check className="h-4 w-4 text-primary shrink-0" strokeWidth={3} />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 {grouped.length === 0 && (
                   <div className="text-sm text-muted-foreground py-8 text-center">Aucun métier ne correspond.</div>
                 )}
