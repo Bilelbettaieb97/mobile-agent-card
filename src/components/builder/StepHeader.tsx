@@ -6,7 +6,7 @@ export const STEPS: { n: StepNum; label: string }[] = [
   { n: 1, label: "Métier" },
   { n: 2, label: "Essentiels" },
   { n: 3, label: "Sections en plus" },
-  { n: 4, label: "Finition" },
+  { n: 4, label: "C'est prêt" },
 ];
 
 interface Props {

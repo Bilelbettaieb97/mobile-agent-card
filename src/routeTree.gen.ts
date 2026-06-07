@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as DashboardStyleRouteImport } from './routes/dashboard.style'
 import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
 import { Route as DashboardAccountRouteImport } from './routes/dashboard.account'
 
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
+  '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
     | '/'
     | '/builder'
     | '/dashboard'
+    | '/pricing'
     | '/dashboard/account'
     | '/dashboard/share'
     | '/dashboard/style'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/builder'
+    | '/pricing'
     | '/dashboard/account'
     | '/dashboard/share'
     | '/dashboard/style'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/builder'
     | '/dashboard'
+    | '/pricing'
     | '/dashboard/account'
     | '/dashboard/share'
     | '/dashboard/style'
@@ -113,10 +125,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuilderRoute: typeof BuilderRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  PricingRoute: typeof PricingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -191,17 +211,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuilderRoute: BuilderRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  PricingRoute: PricingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
