@@ -49,10 +49,10 @@ interface SectionDef {
 
 const ESSENTIALS: SectionDef[] = [
   { key: "identity",       brick: "identity", label: "Identité",                       description: "Nom, titre, photo et couverture — toujours visible.",                 recommended: true },
-  { key: "contactEnabled", brick: "contact",  label: "Contact",                        description: "Téléphone, email et site web — l'essentiel pour être joignable.",     recommended: true },
   { key: "actions",        brick: "actions",  label: "Boutons d'action",               description: "Appeler, WhatsApp, email, site — accès rapide en un tap.",            recommended: true },
   { key: "vcardEnabled",   brick: "vcard",    label: "Ajouter au répertoire (vCard)",  description: "Un bouton pour s'enregistrer dans les contacts.",                     recommended: true },
   { key: "aboutEnabled",   brick: "about",    label: "À propos",                       description: "Bio courte et badges de certification.",                              recommended: true },
+  { key: "contactEnabled", brick: "contact",  label: "Contact",                        description: "Téléphone, email et site web — l'essentiel pour être joignable.",     recommended: true },
 ];
 
 const EXTRAS: SectionDef[] = [
