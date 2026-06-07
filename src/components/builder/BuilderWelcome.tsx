@@ -477,6 +477,3 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
     </main>
   );
 }
-    </main>
-  );
-}
