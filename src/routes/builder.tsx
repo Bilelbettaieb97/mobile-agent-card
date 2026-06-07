@@ -509,13 +509,29 @@ import {
 } from "@/lib/card-themes";
 
 function ThemeBrick({ data, update }: BrickProps) {
-  const [tab, setTab] = useState<"profession" | "theme">("profession");
+  const [tab, setTab] = useState<"profession" | "theme">(
+    data.profession ? "profession" : "theme",
+  );
   const [query, setQuery] = useState("");
+  const listRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef<HTMLButtonElement>(null);
+
+  const activeTheme = THEMES_BY_ID[data.accent];
+  const activeProfession = data.profession
+    ? PROFESSIONS.find((p) => p.id === data.profession)
+    : undefined;
 
   const applyProfession = (profId: string, themeId: string) => {
     update("profession", profId);
     update("accent", themeId as typeof data.accent);
   };
+
+  // Auto-scroll active profession into view when switching to that tab
+  useEffect(() => {
+    if (tab === "profession" && activeRef.current) {
+      activeRef.current.scrollIntoView({ block: "nearest" });
+    }
+  }, [tab]);
 
   const q = query.trim().toLowerCase();
   const filtered = q
@@ -533,6 +549,28 @@ function ThemeBrick({ data, update }: BrickProps) {
 
   return (
     <div className="space-y-3">
+      {/* Sélection courante */}
+      <div className="rounded-xl border-2 border-primary/40 bg-primary/5 p-3 flex items-center gap-3">
+        <span
+          className="h-11 w-11 rounded-lg shrink-0 border relative overflow-hidden ring-2 ring-primary/50 ring-offset-2 ring-offset-card"
+          style={{ background: activeTheme.palette.bg, borderColor: activeTheme.palette.border }}
+          aria-hidden
+        >
+          <span className="absolute inset-1 rounded-md" style={{ background: activeTheme.palette.surface }} />
+          <span className="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full animate-pulse" style={{ background: activeTheme.palette.gradient }} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="text-[10px] uppercase tracking-wider text-primary font-medium">Sélection actuelle</div>
+          <div className="text-sm font-medium truncate">
+            {activeProfession ? activeProfession.label : "Thème personnalisé"}
+          </div>
+          <div className="text-[11px] text-muted-foreground truncate">
+            Palette : {activeTheme.label}
+            {activeProfession && <span> · {activeProfession.category}</span>}
+          </div>
+        </div>
+      </div>
+
       {/* Tabs */}
       <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5 text-xs">
         <button
@@ -558,7 +596,7 @@ function ThemeBrick({ data, update }: BrickProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <div className="max-h-[420px] overflow-y-auto space-y-4 pr-1">
+          <div ref={listRef} className="max-h-[420px] overflow-y-auto space-y-4 pr-1">
             {grouped.map(({ cat, items }) => (
               <div key={cat}>
                 <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
@@ -571,9 +609,14 @@ function ThemeBrick({ data, update }: BrickProps) {
                     return (
                       <button
                         key={p.id}
+                        ref={active ? activeRef : undefined}
                         type="button"
                         onClick={() => applyProfession(p.id, p.themeId)}
-                        className={`flex items-center gap-2.5 rounded-lg border p-2 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
+                        className={`relative flex items-center gap-2.5 rounded-lg border p-2 text-left transition ${
+                          active
+                            ? "border-primary bg-primary/5 ring-2 ring-primary ring-offset-2 ring-offset-card"
+                            : "border-border hover:border-foreground/30"
+                        }`}
                       >
                         <span
                           className="h-7 w-7 rounded-md shrink-0 border relative overflow-hidden"
@@ -581,12 +624,18 @@ function ThemeBrick({ data, update }: BrickProps) {
                           aria-hidden
                         >
                           <span className="absolute inset-1 rounded-sm" style={{ background: theme.palette.surface }} />
-                          <span className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full" style={{ background: theme.palette.gradient }} />
+                          <span className={`absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full ${active ? "animate-pulse" : ""}`} style={{ background: theme.palette.gradient }} />
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="block text-xs font-medium truncate">{p.label}</span>
                           <span className="block text-[10px] text-muted-foreground truncate">Thème {theme.label}</span>
                         </span>
+                        {active && (
+                          <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-primary text-primary-foreground text-[10px] font-medium px-2 py-0.5">
+                            <Check className="h-3 w-3" strokeWidth={3} />
+                            Actif
+                          </span>
+                        )}
                       </button>
                     );
                   })}
@@ -613,7 +662,11 @@ function ThemeBrick({ data, update }: BrickProps) {
                   update("accent", t.id as typeof data.accent);
                   update("profession", undefined);
                 }}
-                className={`flex items-center gap-2.5 rounded-xl border p-2 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
+                className={`relative flex items-center gap-2.5 rounded-xl border p-2 text-left transition ${
+                  active
+                    ? "border-primary bg-primary/5 ring-2 ring-primary ring-offset-2 ring-offset-card"
+                    : "border-border hover:border-foreground/30"
+                }`}
               >
                 <span
                   className="h-10 w-10 rounded-lg shrink-0 border overflow-hidden relative"
@@ -621,12 +674,17 @@ function ThemeBrick({ data, update }: BrickProps) {
                   aria-hidden
                 >
                   <span className="absolute inset-1 rounded-md" style={{ background: p.surface, borderColor: p.border, borderWidth: 1, borderStyle: "solid" }} />
-                  <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full" style={{ background: p.gradient }} />
+                  <span className={`absolute bottom-1 right-1 h-3 w-3 rounded-full ${active ? "animate-pulse" : ""}`} style={{ background: p.gradient }} />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-xs font-medium truncate">{t.label}</span>
                   <span className="block text-[10px] text-muted-foreground truncate">{hint || t.sector}</span>
                 </span>
+                {active && (
+                  <span className="absolute top-1.5 right-1.5 h-5 w-5 rounded-full bg-primary text-primary-foreground grid place-items-center shadow">
+                    <Check className="h-3 w-3" strokeWidth={3} />
+                  </span>
+                )}
               </button>
             );
           })}
