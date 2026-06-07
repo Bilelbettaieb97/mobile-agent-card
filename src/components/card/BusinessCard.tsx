@@ -81,30 +81,32 @@ export function BusinessCard({ data }: { data: CardData }) {
         </button>
       </div>
 
-      {/* IDENTITY (always at top, variant-switched) */}
-      <IdentitySection data={data} />
+      {/* IDENTITY + ORDERED SECTIONS — spacing is centralized here.
+          Do NOT add vertical margins on section roots. */}
+      <div className="flex flex-col gap-6 pb-2">
+        <IdentitySection data={data} />
+        {data.sectionOrder
+          .filter((id) => id !== "identity" && id !== "theme")
+          .map((id) => {
+            switch (id) {
+              case "actions":      return <ActionsSection key={id} data={data} />;
+              case "vcard":        return <VCardSection key={id} data={data} onSave={handleSave} copied={copied} />;
+              case "stats":        return <StatsSection key={id} data={data} />;
+              case "about":        return <AboutSection key={id} data={data} />;
+              case "video":        return <VideoSection key={id} data={data} />;
+              case "services":     return <ServicesSection key={id} data={data} />;
+              case "listings":     return <ListingsSection key={id} data={data} />;
+              case "testimonials": return <TestimonialsSection key={id} data={data} />;
+              case "calendar":     return <CalendarSection key={id} data={data} />;
+              case "languages":    return <LanguagesSection key={id} data={data} />;
+              case "cta":          return <CtaSection key={id} data={data} />;
+              case "contact":      return <ContactSection key={id} data={data} />;
+              case "socials":      return <SocialsSection key={id} data={data} />;
+              default:             return null;
+            }
+          })}
+      </div>
 
-      {/* ORDERED SECTIONS */}
-      {data.sectionOrder
-        .filter((id) => id !== "identity" && id !== "theme")
-        .map((id) => {
-          switch (id) {
-            case "actions":      return <ActionsSection key={id} data={data} />;
-            case "vcard":        return <VCardSection key={id} data={data} onSave={handleSave} copied={copied} />;
-            case "stats":        return <StatsSection key={id} data={data} />;
-            case "about":        return <AboutSection key={id} data={data} />;
-            case "video":        return <VideoSection key={id} data={data} />;
-            case "services":     return <ServicesSection key={id} data={data} />;
-            case "listings":     return <ListingsSection key={id} data={data} />;
-            case "testimonials": return <TestimonialsSection key={id} data={data} />;
-            case "calendar":     return <CalendarSection key={id} data={data} />;
-            case "languages":    return <LanguagesSection key={id} data={data} />;
-            case "cta":          return <CtaSection key={id} data={data} />;
-            case "contact":      return <ContactSection key={id} data={data} />;
-            case "socials":      return <SocialsSection key={id} data={data} />;
-            default:             return null;
-          }
-        })}
 
       <footer className="px-5 pt-8 pb-10 text-center">
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {data.agency} · Carte digitale</p>
@@ -127,7 +129,7 @@ function IdentitySection({ data }: { data: CardData }) {
 
   if (v === "horizontal") {
     return (
-      <header className="mt-5 px-5">
+      <header className="px-5">
         <div className="flex items-center gap-4 rounded-2xl bg-card border border-border p-4">
           <div className="relative shrink-0">
             <div className="h-20 w-20 rounded-2xl overflow-hidden border border-border">
@@ -155,7 +157,7 @@ function IdentitySection({ data }: { data: CardData }) {
 
   if (v === "cover") {
     return (
-      <header className="mt-4 mx-5 rounded-3xl overflow-hidden border border-border">
+      <header className="mx-5 rounded-3xl overflow-hidden border border-border">
         <div className="relative h-36 w-full" style={{ background: "var(--card-accent-gradient)" }}>
           {data.photo && (
             <img src={data.photo} alt="" aria-hidden
@@ -188,7 +190,7 @@ function IdentitySection({ data }: { data: CardData }) {
 
   // default: centered
   return (
-    <header className="relative overflow-hidden pt-3 pb-7 px-5 mt-2"
+    <header className="relative overflow-hidden pt-3 pb-7 px-5"
       style={{ background: "radial-gradient(120% 80% at 50% 0%, oklch(0.28 0.05 250) 0%, oklch(0.16 0.018 250) 60%)" }}>
       <div className="flex flex-col items-center text-center">
         <div className="relative">
@@ -232,7 +234,7 @@ function ActionsSection({ data }: { data: CardData }) {
 
   if (v === "pills") {
     return (
-      <section className="px-5 mt-5 space-y-2">
+      <section className="px-5 space-y-2">
         {items.map((it, i) => (
           <a key={i} href={it.href} target={it.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
             className="flex items-center gap-3 rounded-2xl bg-card border border-border px-4 py-3 active:scale-[0.99] transition">
@@ -249,7 +251,7 @@ function ActionsSection({ data }: { data: CardData }) {
 
   if (v === "grid") {
     return (
-      <section className="px-5 mt-5 grid grid-cols-2 gap-2">
+      <section className="px-5 grid grid-cols-2 gap-2">
         {items.map((it, i) => (
           <a key={i} href={it.href} target={it.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
             className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-card border border-border py-5 active:scale-[0.99] transition">
@@ -265,7 +267,7 @@ function ActionsSection({ data }: { data: CardData }) {
 
   // default icons
   return (
-    <section className="px-5 -mt-4 relative z-10">
+    <section className="px-5 relative z-10">
       <div className="flex gap-2 justify-center">
         {items.map((it, i) => (
           <QuickActionIcon key={i} icon={it.icon} label={it.label} href={it.href} primary={it.label === "Appeler"} />
@@ -299,7 +301,7 @@ function VCardSection({ data, onSave, copied }: { data: CardData; onSave: () => 
 
   if (v === "outline") {
     return (
-      <section className="px-5 mt-3">
+      <section className="px-5">
         <button onClick={onSave}
           className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium border-2 active:scale-[0.99] transition"
           style={{ borderColor: "var(--card-accent)", color: "var(--card-accent)" }}>
@@ -313,7 +315,7 @@ function VCardSection({ data, onSave, copied }: { data: CardData; onSave: () => 
 
   if (v === "card") {
     return (
-      <section className="px-5 mt-3">
+      <section className="px-5">
         <button onClick={onSave}
           className="w-full flex items-center gap-3 rounded-2xl bg-card border border-border p-4 active:scale-[0.99] transition text-left">
           <span className="h-11 w-11 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
@@ -331,7 +333,7 @@ function VCardSection({ data, onSave, copied }: { data: CardData; onSave: () => 
   }
 
   return (
-    <section className="px-5 mt-3">
+    <section className="px-5">
       <button onClick={onSave}
         className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-primary-foreground active:scale-[0.99] transition"
         style={{ background: "var(--card-accent-gradient)", boxShadow: "0 0 40px -8px var(--card-accent)" }}>
@@ -353,7 +355,7 @@ function StatsSection({ data }: { data: CardData }) {
 
   if (v === "stacked") {
     return (
-      <section className="px-5 mt-6 space-y-2">
+      <section className="px-5 space-y-2">
         {data.stats.map((s, i) => (
           <div key={i} className="flex items-end justify-between rounded-2xl bg-card border border-border px-4 py-3">
             <span className="text-[11px] uppercase tracking-wider text-muted-foreground">{s.label}</span>
@@ -366,7 +368,7 @@ function StatsSection({ data }: { data: CardData }) {
 
   if (v === "pills") {
     return (
-      <section className="px-5 mt-6 flex flex-wrap gap-2">
+      <section className="px-5 flex flex-wrap gap-2">
         {data.stats.map((s, i) => (
           <span key={i} className="inline-flex items-baseline gap-1.5 rounded-full bg-card border border-border px-3.5 py-2">
             <span className="font-display text-base" style={{ color: "var(--card-accent)" }}>{s.value}</span>
@@ -378,7 +380,7 @@ function StatsSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="px-5 mt-6">
+    <section className="px-5">
       <div className="grid rounded-2xl bg-card border border-border overflow-hidden" style={{ gridTemplateColumns: `repeat(${data.stats.length}, minmax(0,1fr))` }}>
         {data.stats.map((s, i) => (
           <div key={i} className={`py-4 px-2 text-center ${i < data.stats.length - 1 ? "border-r border-border" : ""}`}>
@@ -401,7 +403,7 @@ function AboutSection({ data }: { data: CardData }) {
 
   if (v === "quote") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <SectionTitle>À propos</SectionTitle>
         <div className="mt-3 relative rounded-2xl bg-card border border-border p-5">
           <Quote className="absolute top-3 right-3 h-6 w-6 opacity-30" style={{ color: "var(--card-accent)" }} />
@@ -418,7 +420,7 @@ function AboutSection({ data }: { data: CardData }) {
 
   if (v === "card") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <div className="rounded-2xl bg-card border border-border p-5">
           <div className="flex items-center gap-3 mb-3">
             <span className="h-9 w-9 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
@@ -438,7 +440,7 @@ function AboutSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="px-5 mt-7">
+    <section className="px-5">
       <SectionTitle>À propos</SectionTitle>
       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{data.bio}</p>
       {data.badges.length > 0 && (
@@ -475,7 +477,7 @@ function VideoSection({ data }: { data: CardData }) {
 
   if (!id) {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <SectionTitle>{data.videoTitle || "Vidéo"}</SectionTitle>
         <div className="mt-3 rounded-2xl border border-border bg-card p-4 text-xs text-muted-foreground">
           URL YouTube invalide.
@@ -486,7 +488,7 @@ function VideoSection({ data }: { data: CardData }) {
 
   if (v === "thumb") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <SectionTitle>{data.videoTitle || "Vidéo"}</SectionTitle>
         <YoutubeLite id={id} title={data.videoTitle} />
       </section>
@@ -495,7 +497,7 @@ function VideoSection({ data }: { data: CardData }) {
 
   if (v === "cinema") {
     return (
-      <section className="mt-7 px-5">
+      <section className="px-5">
         <div className="relative rounded-3xl overflow-hidden border border-border bg-black aspect-video">
           <iframe
             className="absolute inset-0 h-full w-full"
@@ -515,7 +517,7 @@ function VideoSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="px-5 mt-7">
+    <section className="px-5">
       <SectionTitle>{data.videoTitle || "Vidéo"}</SectionTitle>
       <div className="mt-3 relative rounded-2xl overflow-hidden border border-border bg-black aspect-video">
         <iframe
@@ -569,7 +571,7 @@ function ServicesSection({ data }: { data: CardData }) {
 
   if (v === "numbered") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <SectionTitle>Services</SectionTitle>
         <ul className="mt-3 space-y-2">
           {data.services.map((s, i) => (
@@ -590,7 +592,7 @@ function ServicesSection({ data }: { data: CardData }) {
 
   if (v === "carousel") {
     return (
-      <section className="mt-7">
+      <section className="">
         <div className="px-5"><SectionTitle>Services</SectionTitle></div>
         <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {data.services.map((s) => (
@@ -608,7 +610,7 @@ function ServicesSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="px-5 mt-7">
+    <section className="px-5">
       <SectionTitle>Services</SectionTitle>
       <ul className="mt-3 space-y-2">
         {data.services.map((s) => (
@@ -637,7 +639,7 @@ function ListingsSection({ data }: { data: CardData }) {
 
   if (v === "stacked") {
     return (
-      <section className="px-5 mt-8 space-y-3">
+      <section className="px-5 space-y-3">
         <SectionTitle>Sélection en vente</SectionTitle>
         {data.listings.map((l) => (
           <article key={l.id} className="rounded-2xl overflow-hidden bg-card border border-border">
@@ -658,7 +660,7 @@ function ListingsSection({ data }: { data: CardData }) {
 
   if (v === "compact") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <SectionTitle>Sélection en vente</SectionTitle>
         <ul className="mt-3 space-y-2">
           {data.listings.map((l) => (
@@ -680,7 +682,7 @@ function ListingsSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="mt-8">
+    <section className="">
       <div className="px-5"><SectionTitle>Sélection en vente</SectionTitle></div>
       <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {data.listings.map((l) => (
@@ -708,7 +710,7 @@ function ListingsSection({ data }: { data: CardData }) {
 function TestimonialsSection({ data }: { data: CardData }) {
   if (!data.testimonialsEnabled || data.testimonials.length === 0) return null;
   return (
-    <section className="mt-8">
+    <section className="">
       <div className="px-5"><SectionTitle>Ils en parlent</SectionTitle></div>
       <TestimonialsBlock testimonials={data.testimonials} style={data.testimonialsStyle} />
     </section>
@@ -726,7 +728,7 @@ function CalendarSection({ data }: { data: CardData }) {
 
   if (v === "cta") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <a href={data.calendarUrl} target="_blank" rel="noopener noreferrer"
           className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-primary-foreground active:scale-[0.99] transition"
           style={{ background: "var(--card-accent-gradient)" }}>
@@ -739,7 +741,7 @@ function CalendarSection({ data }: { data: CardData }) {
 
   if (v === "block") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <a href={data.calendarUrl} target="_blank" rel="noopener noreferrer"
           className="block rounded-2xl bg-card border border-border p-5 text-center active:scale-[0.99] transition">
           <span className="mx-auto h-12 w-12 grid place-items-center rounded-2xl" style={{ background: "var(--card-accent-gradient)" }}>
@@ -753,7 +755,7 @@ function CalendarSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="px-5 mt-7">
+    <section className="px-5">
       <a href={data.calendarUrl} target="_blank" rel="noopener noreferrer"
         className="flex items-center gap-3 rounded-2xl bg-card border border-border p-4 active:scale-[0.99] transition">
         <span className="h-11 w-11 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
@@ -784,7 +786,7 @@ function LanguagesSection({ data }: { data: CardData }) {
 
   if (v === "list") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <SectionTitle>Langues parlées</SectionTitle>
         <ul className="mt-3 rounded-2xl bg-card border border-border divide-y divide-border overflow-hidden">
           {data.languages.map((l) => {
@@ -810,7 +812,7 @@ function LanguagesSection({ data }: { data: CardData }) {
 
   if (v === "grid") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <SectionTitle>Langues parlées</SectionTitle>
         <div className="mt-3 grid grid-cols-2 gap-2">
           {data.languages.map((l) => (
@@ -828,7 +830,7 @@ function LanguagesSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="px-5 mt-7">
+    <section className="px-5">
       <SectionTitle>Langues parlées</SectionTitle>
       <div className="mt-3 flex flex-wrap gap-2">
         {data.languages.map((l) => (
@@ -854,7 +856,7 @@ function CtaSection({ data }: { data: CardData }) {
 
   if (v === "outline") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <div className="rounded-2xl border-2 p-5" style={{ borderColor: "var(--card-accent)" }}>
           <h3 className="font-display text-lg leading-tight">{data.ctaTitle}</h3>
           {data.ctaText && <p className="mt-1.5 text-sm text-muted-foreground">{data.ctaText}</p>}
@@ -871,7 +873,7 @@ function CtaSection({ data }: { data: CardData }) {
 
   if (v === "bold") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <div className="rounded-2xl p-5 text-primary-foreground" style={{ background: "var(--card-accent-gradient)" }}>
           <h3 className="font-display text-xl leading-tight">{data.ctaTitle}</h3>
           {data.ctaText && <p className="mt-1.5 text-sm opacity-90">{data.ctaText}</p>}
@@ -887,7 +889,7 @@ function CtaSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="px-5 mt-7">
+    <section className="px-5">
       <div className="rounded-2xl p-5 border border-border"
         style={{ background: "linear-gradient(135deg, oklch(0.22 0.02 250), oklch(0.14 0.02 250))" }}>
         <h3 className="font-display text-lg leading-tight">{data.ctaTitle}</h3>
@@ -920,7 +922,7 @@ function ContactSection({ data }: { data: CardData }) {
 
   if (v === "grid") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <SectionTitle>Coordonnées</SectionTitle>
         <div className="mt-3 grid grid-cols-2 gap-2">
           {rows.map((r, i) => {
@@ -944,7 +946,7 @@ function ContactSection({ data }: { data: CardData }) {
 
   if (v === "compact") {
     return (
-      <section className="px-5 mt-7">
+      <section className="px-5">
         <SectionTitle>Coordonnées</SectionTitle>
         <ul className="mt-3 space-y-1.5">
           {rows.map((r, i) => {
@@ -962,7 +964,7 @@ function ContactSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="px-5 mt-7">
+    <section className="px-5">
       <SectionTitle>Coordonnées</SectionTitle>
       <ul className="mt-3 rounded-2xl bg-card border border-border divide-y divide-border overflow-hidden">
         <ContactRow icon={Phone}  label="Téléphone" value={data.phoneDisplay || data.phone} href={`tel:${data.phone}`} />
@@ -1013,7 +1015,7 @@ function SocialsSection({ data }: { data: CardData }) {
 
   if (v === "pills") {
     return (
-      <section className="px-5 mt-6 space-y-2">
+      <section className="px-5 space-y-2">
         {items.map((it, i) => (
           <a key={i} href={it.href} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-3 rounded-2xl bg-card border border-border px-4 py-3 active:scale-[0.99] transition">
@@ -1028,7 +1030,7 @@ function SocialsSection({ data }: { data: CardData }) {
 
   if (v === "branded") {
     return (
-      <section className="px-5 mt-6 flex justify-center gap-3">
+      <section className="px-5 flex justify-center gap-3">
         {items.map((it, i) => (
           <a key={i} href={it.href} target="_blank" rel="noopener noreferrer" aria-label={it.label}
             className="h-12 w-12 grid place-items-center rounded-2xl active:scale-95 transition"
@@ -1041,7 +1043,7 @@ function SocialsSection({ data }: { data: CardData }) {
   }
 
   return (
-    <section className="px-5 mt-6 flex justify-center gap-3">
+    <section className="px-5 flex justify-center gap-3">
       {items.map((it, i) => (
         <a key={i} href={it.href} target="_blank" rel="noopener noreferrer" aria-label={it.label}
           className="h-11 w-11 grid place-items-center rounded-full bg-card border border-border active:scale-95 transition">
