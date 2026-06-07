@@ -98,12 +98,13 @@ export function BuilderCompare({ profession, onBack, onChoose }: Props) {
                       size="lg"
                       variant={isVitrine ? "default" : "outline"}
                       onClick={() => onChoose(v.id, v.data)}
-                      className="w-full"
+                      className={`w-full h-12 text-base ${isVitrine ? "shadow-[var(--shadow-glow)]" : ""}`}
                     >
                       <Check className="h-4 w-4 mr-1.5" />
                       Choisir cette mise en page
                       <ArrowRight className="h-4 w-4 ml-1.5" />
                     </Button>
+
                   </article>
                 );
               })}
