@@ -1,5 +1,6 @@
-import { useMemo, useState, useEffect } from "react";
-import { Search, Check, ArrowRight, Sparkles, Maximize2, X } from "lucide-react";
+import { useMemo, useState, useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { Search, Check, ArrowRight, Sparkles, Maximize2 } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BusinessCard } from "@/components/card/BusinessCard";
