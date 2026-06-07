@@ -95,7 +95,7 @@ function BuilderPage() {
         }}
         onChooseTheme={(themeId) => {
           setData(buildPreviewFromTheme(themeId));
-          advanceTo("essentials");
+          advanceTo("sections");
         }}
       />
     );
