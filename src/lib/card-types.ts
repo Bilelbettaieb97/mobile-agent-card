@@ -1,5 +1,28 @@
 export type ThemeAccent = "gold" | "emerald" | "copper";
 
+export type BrickId =
+  | "identity"
+  | "actions"
+  | "vcard"
+  | "stats"
+  | "about"
+  | "listings"
+  | "contact"
+  | "socials"
+  | "theme";
+
+export const DEFAULT_SECTION_ORDER: BrickId[] = [
+  "identity",
+  "actions",
+  "vcard",
+  "stats",
+  "about",
+  "listings",
+  "contact",
+  "socials",
+  "theme",
+];
+
 export interface Stat { label: string; value: string }
 export interface Listing { id: string; img: string; title: string; meta: string; price: string }
 export interface Badge { id: string; label: string }
@@ -47,6 +70,9 @@ export interface CardData {
 
   // Theme
   accent: ThemeAccent;
+
+  // Order of bricks (editor + preview)
+  sectionOrder: BrickId[];
 }
 
 export const DEFAULT_CARD: CardData = {
@@ -83,4 +109,6 @@ export const DEFAULT_CARD: CardData = {
   instagram: "https://instagram.com",
   whatsappSocial: "33612345678",
   accent: "gold",
+  sectionOrder: DEFAULT_SECTION_ORDER,
 };
+

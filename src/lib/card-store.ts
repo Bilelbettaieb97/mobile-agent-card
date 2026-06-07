@@ -1,14 +1,22 @@
 import { useEffect, useState, useCallback } from "react";
-import { DEFAULT_CARD, type CardData } from "./card-types";
+import { DEFAULT_CARD, DEFAULT_SECTION_ORDER, type CardData, type BrickId } from "./card-types";
 
 const KEY = "lovable.card.v1";
+
+function normalizeOrder(order: unknown): BrickId[] {
+  const valid = new Set<BrickId>(DEFAULT_SECTION_ORDER);
+  const arr = Array.isArray(order) ? (order.filter((x) => valid.has(x as BrickId)) as BrickId[]) : [];
+  for (const id of DEFAULT_SECTION_ORDER) if (!arr.includes(id)) arr.push(id);
+  return arr;
+}
 
 export function loadCard(): CardData {
   if (typeof window === "undefined") return DEFAULT_CARD;
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return DEFAULT_CARD;
-    return { ...DEFAULT_CARD, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return { ...DEFAULT_CARD, ...parsed, sectionOrder: normalizeOrder(parsed.sectionOrder) };
   } catch {
     return DEFAULT_CARD;
   }
