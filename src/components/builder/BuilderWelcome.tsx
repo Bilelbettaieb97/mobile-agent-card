@@ -215,26 +215,19 @@ export function BuilderWelcome({
             </div>
           )}
 
-          {/* Bottom CTA — pleine largeur, très visible */}
-          <div className="mt-6 pt-4 border-t border-border space-y-3">
-            <Button
-              size="lg"
-              onClick={handleChoose}
-              className="w-full h-12 text-base shadow-[var(--shadow-glow)]"
-            >
-              {selectedProfession ? `Choisir « ${selectedProfession.label} »` : `Continuer avec ${activeTheme.label}`}
-              <ArrowRight className="h-5 w-5 ml-1.5" />
-            </Button>
+          {/* Lien discret "Passer cette étape" */}
+          <div className="mt-6 pt-4 border-t border-border">
             <button
               type="button"
               onClick={handleSkip}
               className="w-full text-xs text-muted-foreground hover:text-foreground transition flex items-center justify-center gap-1.5"
             >
-              <SkipForward className="h-3.5 w-3.5" /> Passer cette étape
+              <SkipForward className="h-3.5 w-3.5" /> Passer cette étape (commencer avec un thème vide)
             </button>
           </div>
 
         </section>
+
 
         {/* RIGHT — live preview */}
         <aside className="hidden lg:block">
