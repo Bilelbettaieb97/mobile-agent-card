@@ -3,6 +3,7 @@ import { Eye, MousePointerClick, Smartphone, QrCode, ArrowRight, Sparkles, Check
 import { useCardStore } from "@/lib/card-store";
 import { getCompletion } from "@/lib/card-completion";
 import { MetricCard } from "@/components/dashboard/MetricCard";
+import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 
@@ -122,6 +123,18 @@ function OverviewPage() {
           </div>
         </section>
       </div>
+
+      {/* Premium upsells — compact */}
+      <section className="pt-2">
+        <div className="flex items-end justify-between mb-3">
+          <div>
+            <h3 className="font-display text-xl">Allez plus loin</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Boostez votre carte avec ces add-ons premium.</p>
+          </div>
+          <Link to="/pricing" className="text-xs text-primary hover:underline">Tout voir →</Link>
+        </div>
+        <UpsellSection variant="compact" />
+      </section>
     </div>
   );
 }
