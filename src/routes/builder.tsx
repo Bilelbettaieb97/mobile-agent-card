@@ -98,8 +98,19 @@ function BuilderPage() {
         {/* RIGHT: preview (desktop) */}
         <aside className="hidden lg:block">
           <div className="sticky top-20">
-            <p className="text-xs uppercase tracking-[0.18em] text-primary mb-4 text-center">Aperçu live</p>
-            <PhoneFrame><BusinessCard data={data} /></PhoneFrame>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-primary">Aperçu live</p>
+              <Button
+                variant={gridOn ? "default" : "outline"}
+                size="sm"
+                onClick={() => setGridOn((v) => !v)}
+                aria-pressed={gridOn}
+              >
+                <Grid3x3 className="h-4 w-4 mr-1.5" />
+                Grille
+              </Button>
+            </div>
+            <PhoneFrame gridOverlay={gridOn}><BusinessCard data={data} /></PhoneFrame>
           </div>
         </aside>
       </div>
@@ -107,16 +118,26 @@ function BuilderPage() {
       {/* Mobile preview drawer */}
       {previewOpen && (
         <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur flex flex-col">
-          <div className="flex justify-end p-4">
+          <div className="flex items-center justify-between p-4">
+            <Button
+              variant={gridOn ? "default" : "outline"}
+              size="sm"
+              onClick={() => setGridOn((v) => !v)}
+              aria-pressed={gridOn}
+            >
+              <Grid3x3 className="h-4 w-4 mr-1.5" />
+              Grille
+            </Button>
             <button onClick={() => setPreviewOpen(false)} className="h-10 w-10 grid place-items-center rounded-full bg-card border border-border">
               <X className="h-5 w-5" />
             </button>
           </div>
           <div className="flex-1 overflow-y-auto pb-8">
-            <PhoneFrame><BusinessCard data={data} /></PhoneFrame>
+            <PhoneFrame gridOverlay={gridOn}><BusinessCard data={data} /></PhoneFrame>
           </div>
         </div>
       )}
+
     </main>
   );
 }
