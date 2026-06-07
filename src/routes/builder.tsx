@@ -90,7 +90,9 @@ function BuilderPage() {
         onChooseProfession={(p) => {
           update("profession", p.id);
           update("accent", p.themeId as CardData["accent"]);
-          advanceTo("compare");
+          setData(buildPreviewCard(p, "vitrine"));
+          setPlan("vitrine");
+          advanceTo("essentials");
         }}
         onChooseTheme={(themeId) => {
           setData(buildPreviewFromTheme(themeId));
@@ -100,27 +102,6 @@ function BuilderPage() {
     );
   }
 
-  if (step === "compare") {
-    const profession =
-      (data.profession && PROFESSIONS.find((p) => p.id === data.profession)) || undefined;
-    if (!profession) {
-      setStep("welcome");
-      return null;
-    }
-    return (
-      <BuilderCompare
-        profession={profession}
-        completedThrough={completedThrough}
-        onGoToStep={goToStep}
-        onBack={() => setStep("welcome")}
-        onChoose={(variant, next) => {
-          setData(next);
-          setPlan(variant);
-          advanceTo("essentials");
-        }}
-      />
-    );
-  }
 
   if (step === "essentials") {
     return (
@@ -133,7 +114,7 @@ function BuilderPage() {
         setPlan={setPlan}
         completedThrough={completedThrough}
         onGoToStep={goToStep}
-        onBack={() => setStep(data.profession ? "compare" : "welcome")}
+        onBack={() => setStep("welcome")}
         onNext={() => advanceTo("extras")}
       />
     );
