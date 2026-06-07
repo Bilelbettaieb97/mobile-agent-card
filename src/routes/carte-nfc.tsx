@@ -75,7 +75,7 @@ function Nav() {
           <span className="font-display text-sm tracking-tight">Ma carte · NFC</span>
         </Link>
         <Button asChild size="sm" className="h-9 bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_4px_20px_-4px_rgba(234,179,8,0.5)]">
-          <a href="#commander">Commander · 29 €</a>
+          <a href="#configurer">Commander · 29 €</a>
         </Button>
       </div>
     </header>
@@ -140,7 +140,7 @@ function Hero() {
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Button asChild size="lg" className="h-14 px-7 text-base bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]">
-              <a href="#commander">
+              <a href="#configurer">
                 Commander ma carte <ArrowRight className="h-4 w-4 ml-1.5" />
               </a>
             </Button>
@@ -440,7 +440,7 @@ function Models() {
             <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3">{m.mat}</p>
             <p className="text-sm text-foreground/80 mb-5">{m.desc}</p>
             <Button asChild className="w-full bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500">
-              <a href="#commander">Choisir {m.name}</a>
+              <a href="#configurer">Choisir {m.name}</a>
             </Button>
           </div>
         ))}
@@ -572,7 +572,7 @@ function Pricing() {
               ))}
             </ul>
             <Button asChild size="lg" className="w-full h-14 text-base bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]">
-              <a href="#">Commander ma carte · 29 € <ArrowRight className="h-4 w-4 ml-1.5" /></a>
+              <a href="#configurer">Commander ma carte · 29 € <ArrowRight className="h-4 w-4 ml-1.5" /></a>
             </Button>
             <p className="text-center text-xs text-muted-foreground mt-3">Paiement sécurisé · CB, Apple Pay, Google Pay</p>
           </div>
@@ -696,7 +696,7 @@ function FinalCTA() {
         </p>
         <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild size="lg" className="h-14 px-8 text-base bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]">
-            <a href="#commander">Commander ma carte · 29 € <ArrowRight className="h-4 w-4 ml-1.5" /></a>
+            <a href="#configurer">Commander ma carte · 29 € <ArrowRight className="h-4 w-4 ml-1.5" /></a>
           </Button>
           <Button asChild size="lg" variant="outline" className="h-14 px-8 text-base">
             <Link to="/dashboard">Retour au dashboard</Link>
@@ -789,6 +789,7 @@ function VideoSection() {
 function Configurator() {
   const [name, setName] = useState("Alex Martin");
   const [model, setModel] = useState<"onyx" | "aurum" | "carbone">("aurum");
+  const [ordered, setOrdered] = useState(false);
   const variant = useMemo(() => ({
     onyx: { bg: "linear-gradient(135deg,#0a0a0a 0%,#1f1f1f 100%)", border: "rgba(255,255,255,0.15)", text: "linear-gradient(180deg,#ffffff,#a3a3a3)", price: "29 €", accent: "text-white/80" },
     aurum: { bg: "linear-gradient(135deg,#0a0a0a 0%,#2a2419 50%,#0d0d0d 100%)", border: "rgba(234,179,8,0.35)", text: "linear-gradient(180deg,#f5e4a0,#c9a84c)", price: "59 €", accent: "text-amber-400" },
@@ -797,7 +798,7 @@ function Configurator() {
   const slug = (name || "vous").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
   return (
-    <section className="mx-auto max-w-6xl px-5 py-20 md:py-28 border-t border-border/50">
+    <section id="configurer" className="scroll-mt-20 mx-auto max-w-6xl px-5 py-20 md:py-28 border-t border-border/50">
       <div className="text-center mb-12">
         <p className="text-xs uppercase tracking-[0.18em] text-amber-400 mb-3">Configurateur live</p>
         <h2 className="font-display text-4xl md:text-5xl tracking-tight">Vois ta carte. Maintenant.</h2>
@@ -848,12 +849,40 @@ function Configurator() {
               ))}
             </div>
           </div>
-          <Button asChild size="lg" className="w-full h-14 bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]">
-            <a href="#commander">Commander cette carte · {variant.price} <ArrowRight className="h-4 w-4 ml-1.5" /></a>
+          <Button
+            size="lg"
+            onClick={() => setOrdered(true)}
+            className="w-full h-14 bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]"
+          >
+            Passer commande · {variant.price} <ArrowRight className="h-4 w-4 ml-1.5" />
           </Button>
           <p className="text-xs text-muted-foreground text-center">Gravure offerte · Modification possible jusqu'à l'expédition</p>
         </div>
       </div>
+
+      {ordered && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/80 backdrop-blur-sm p-5 animate-in fade-in" onClick={() => setOrdered(false)}>
+          <div className="relative max-w-md w-full rounded-3xl border border-amber-500/40 bg-gradient-to-br from-card to-background p-8 text-center shadow-[0_30px_120px_-20px_rgba(234,179,8,0.4)]" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setOrdered(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground" aria-label="Fermer">
+              <X className="h-5 w-5" />
+            </button>
+            <div className="mx-auto mb-5 h-16 w-16 rounded-full bg-amber-500/15 grid place-items-center">
+              <Check className="h-8 w-8 text-amber-400" />
+            </div>
+            <h3 className="font-display text-2xl tracking-tight mb-2">Votre carte est prête</h3>
+            <p className="text-sm text-muted-foreground mb-5">
+              <strong className="text-foreground">{name || "Votre nom"}</strong> · modèle <strong className="text-foreground capitalize">{model}</strong> · {variant.price}
+            </p>
+            <div className="rounded-xl border border-border bg-background/60 p-4 text-left text-xs text-muted-foreground mb-6">
+              Étape suivante : redirection vers la page de paiement sécurisée Stripe (CB, Apple Pay, Google Pay). Livraison sous 48h en France.
+            </div>
+            <Button size="lg" disabled className="w-full h-12 bg-gradient-to-br from-amber-400 to-amber-600 text-black opacity-90">
+              Redirection paiement Stripe…
+            </Button>
+            <p className="text-[10px] text-muted-foreground mt-3">Démo · paiement non branché</p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
