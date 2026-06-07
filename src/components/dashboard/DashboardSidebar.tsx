@@ -27,11 +27,11 @@ const PRIMARY = [
   { title: "Statistiques",   to: "/dashboard/share",   icon: BarChart3 },
 ] as const;
 
-const SECONDARY = [
+const SECONDARY: { title: string; to: string; icon: typeof Users; soon?: boolean }[] = [
   { title: "Contacts",       to: "/dashboard/contacts", icon: Users,    soon: true },
   { title: "Paramètres",     to: "/dashboard/settings", icon: Settings, soon: true },
   { title: "Plan & compte",  to: "/dashboard/account",  icon: User },
-] as const;
+];
 
 export function DashboardSidebar() {
   const { state } = useSidebar();
