@@ -2,7 +2,15 @@ import type { BrickId } from "./card-types";
 
 export type VariantOption = { id: string; label: string; hint: string };
 
-/** Per-brick available variants. Order = display order in the picker. */
+/**
+ * Per-brick available variants. Order = display order in the picker.
+ *
+ * RULE: if a new variant introduces a visual element the user should control
+ * (image, label, link, color…), add the corresponding field to `CardData`
+ * AND to the matching `*Brick` editor in `src/routes/builder.tsx`, with a
+ * conditional render on the active variant. Otherwise the variant becomes
+ * a dead visual the user cannot personalize.
+ */
 export const BRICK_VARIANTS: Partial<Record<BrickId, VariantOption[]>> = {
   identity: [
     { id: "centered",   label: "Centrée",     hint: "Avatar + nom centrés" },

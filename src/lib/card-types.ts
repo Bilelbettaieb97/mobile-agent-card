@@ -54,6 +54,7 @@ export interface CardData {
   agency: string;
   area: string;
   photo: string;
+  coverPhoto: string;
 
   // Actions
   actions: { call: boolean; whatsapp: boolean; email: boolean; website: boolean };
@@ -136,6 +137,7 @@ export const DEFAULT_CARD: CardData = {
   agency: "Maison Vendôme",
   area: "Paris & Île-de-France",
   photo: "",
+  coverPhoto: "",
   actions: { call: true, whatsapp: true, email: true, website: true },
   vcardEnabled: true,
   statsEnabled: true,
