@@ -333,6 +333,14 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
           </div>
         </aside>
       </div>
+
+      <StepFooter
+        step={stepNum}
+        onBack={onBack}
+        onNext={onNext}
+        nextLabel={nextLabel}
+        centerInfo={`Plan ${PLAN_LABEL[plan]} — ${activeAllowed} / ${totalAllowed} sections actives`}
+      />
     </main>
   );
 }
