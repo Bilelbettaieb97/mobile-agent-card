@@ -118,7 +118,7 @@ export function BuilderSections({ step, data, setData, update, onBack, onNext }:
   const activeTheme = THEMES_BY_ID[data.accent] ?? THEMES_BY_ID.gold;
   const total = defs.filter((d) => isEnabled(data, d.key)).length;
 
-  const stepLabel = isEssentials ? "Étape 3 / 5" : "Étape 4 / 5";
+  const stepNum: 3 | 4 = isEssentials ? 3 : 4;
   const heading = isEssentials ? "Les sections essentielles" : "Sections complémentaires";
   const intro = isEssentials
     ? "Ce que toute carte de visite digitale doit contenir. Activez et remplissez les champs — l'aperçu se met à jour en direct."
@@ -126,16 +126,12 @@ export function BuilderSections({ step, data, setData, update, onBack, onNext }:
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-7xl px-5 py-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10">
+      <StepHeader step={stepNum} title={heading} subtitle={intro} />
+
+      <div className="mx-auto max-w-7xl px-5 pb-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10">
         {/* LEFT — sections list with inline forms */}
         <section className="flex flex-col min-h-0">
-          <div className="mb-6">
-            <p className="text-xs uppercase tracking-[0.18em] text-primary mb-2 flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" /> {stepLabel}
-            </p>
-            <h1 className="font-display text-4xl mb-2">{heading}</h1>
-            <p className="text-sm text-muted-foreground">{intro}</p>
-          </div>
+
 
           <div className="space-y-3">
             {defs.map((d) => {
