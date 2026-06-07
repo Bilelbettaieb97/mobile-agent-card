@@ -2,9 +2,9 @@ import { useState } from "react";
 import {
   Phone, Mail, MessageCircle, MapPin, Globe, Linkedin, Instagram,
   Share2, Download, BadgeCheck, Award, ChevronRight, Building2, ImageIcon,
-  Star, Calendar, Languages as LangIcon, Sparkles, PlayCircle, ArrowRight,
+  Star, Calendar, Languages as LangIcon, Sparkles, PlayCircle, ArrowRight, Quote, ExternalLink,
 } from "lucide-react";
-import type { CardData, ThemeAccent } from "@/lib/card-types";
+import type { CardData, ThemeAccent, Testimonial, TestimonialsStyle } from "@/lib/card-types";
 
 const ACCENTS: Record<ThemeAccent, { primary: string; gradient: string }> = {
   gold:    { primary: "oklch(0.82 0.13 85)",  gradient: "linear-gradient(135deg, oklch(0.88 0.1 90), oklch(0.75 0.14 75))" },
@@ -279,24 +279,10 @@ export function BusinessCard({ data }: { data: CardData }) {
               return data.testimonialsEnabled && data.testimonials.length > 0 ? (
                 <section key="testimonials" className="mt-8">
                   <div className="px-5"><SectionTitle>Ils en parlent</SectionTitle></div>
-                  <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                    {data.testimonials.map((t) => (
-                      <article key={t.id} className="snap-start shrink-0 w-[82%] rounded-2xl bg-card border border-border p-4">
-                        <div className="flex gap-0.5" aria-label={`${t.rating} sur 5`}>
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className="h-3.5 w-3.5" fill={i < t.rating ? "currentColor" : "transparent"} style={{ color: "var(--card-accent)" }} strokeWidth={1.5} />
-                          ))}
-                        </div>
-                        <p className="mt-3 text-sm leading-relaxed">« {t.text} »</p>
-                        <div className="mt-3 pt-3 border-t border-border">
-                          <div className="text-sm font-medium">{t.name}</div>
-                          <div className="text-[11px] text-muted-foreground">{t.role}</div>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
+                  <TestimonialsBlock testimonials={data.testimonials} style={data.testimonialsStyle} />
                 </section>
               ) : null;
+
 
             case "calendar":
               return data.calendarEnabled && data.calendarUrl ? (
@@ -458,3 +444,117 @@ function YoutubeEmbed({ url, title }: { url: string; title?: string }) {
   );
 }
 
+
+function Stars({ rating }: { rating: number }) {
+  return (
+    <div className="flex gap-0.5" aria-label={`${rating} sur 5`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star key={i} className="h-3.5 w-3.5"
+          fill={i < rating ? "currentColor" : "transparent"}
+          style={{ color: "var(--card-accent)" }} strokeWidth={1.5} />
+      ))}
+    </div>
+  );
+}
+
+function Avatar({ photo, name, size = 40 }: { photo: string; name: string; size?: number }) {
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((s) => s[0]?.toUpperCase()).join("");
+  return (
+    <span
+      className="grid place-items-center rounded-full overflow-hidden bg-muted border border-border shrink-0 text-xs font-medium"
+      style={{ width: size, height: size }}
+    >
+      {photo
+        ? <img src={photo} alt={name} className="h-full w-full object-cover" />
+        : <span className="text-muted-foreground">{initials || "?"}</span>}
+    </span>
+  );
+}
+
+function TestimonialLinkWrap({ link, children }: { link?: string; children: React.ReactNode }) {
+  if (!link) return <>{children}</>;
+  return (
+    <a href={link} target="_blank" rel="noopener noreferrer" className="block active:opacity-90 transition">
+      {children}
+    </a>
+  );
+}
+
+function TestimonialsBlock({ testimonials, style }: { testimonials: Testimonial[]; style: TestimonialsStyle }) {
+  if (style === "stacked") {
+    return (
+      <ul className="mt-3 px-5 space-y-3">
+        {testimonials.map((t) => (
+          <li key={t.id}>
+            <TestimonialLinkWrap link={t.link}>
+              <article className="rounded-2xl bg-card border border-border p-4">
+                <div className="flex items-start gap-3">
+                  <Avatar photo={t.photo} name={t.name} size={44} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="text-sm font-medium truncate">{t.name}</div>
+                        <div className="text-[11px] text-muted-foreground truncate">{t.role}</div>
+                      </div>
+                      <Stars rating={t.rating} />
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">« {t.text} »</p>
+                    {t.link && (
+                      <div className="mt-2 inline-flex items-center gap-1 text-[11px]" style={{ color: "var(--card-accent)" }}>
+                        Voir l'avis <ExternalLink className="h-3 w-3" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </article>
+            </TestimonialLinkWrap>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (style === "compact") {
+    return (
+      <div className="mt-3 flex gap-2 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {testimonials.map((t) => (
+          <TestimonialLinkWrap key={t.id} link={t.link}>
+            <article className="snap-start shrink-0 w-[68%] rounded-xl bg-card border border-border p-3">
+              <div className="flex items-center gap-2">
+                <Avatar photo={t.photo} name={t.name} size={32} />
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-medium truncate">{t.name}</div>
+                  <Stars rating={t.rating} />
+                </div>
+              </div>
+              <p className="mt-2 text-xs leading-snug text-muted-foreground line-clamp-3">« {t.text} »</p>
+            </article>
+          </TestimonialLinkWrap>
+        ))}
+      </div>
+    );
+  }
+
+  // default: "cards"
+  return (
+    <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {testimonials.map((t) => (
+        <TestimonialLinkWrap key={t.id} link={t.link}>
+          <article className="snap-start shrink-0 w-[82%] rounded-2xl bg-card border border-border p-4 relative">
+            <Quote className="absolute top-3 right-3 h-5 w-5 opacity-30" style={{ color: "var(--card-accent)" }} />
+            <Stars rating={t.rating} />
+            <p className="mt-3 text-sm leading-relaxed">« {t.text} »</p>
+            <div className="mt-4 pt-3 border-t border-border flex items-center gap-3">
+              <Avatar photo={t.photo} name={t.name} size={36} />
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-medium truncate">{t.name}</div>
+                <div className="text-[11px] text-muted-foreground truncate">{t.role}</div>
+              </div>
+              {t.link && <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />}
+            </div>
+          </article>
+        </TestimonialLinkWrap>
+      ))}
+    </div>
+  );
+}

@@ -39,8 +39,11 @@ export interface Stat { label: string; value: string }
 export interface Listing { id: string; img: string; title: string; meta: string; price: string }
 export interface Badge { id: string; label: string }
 export interface Service { id: string; title: string; description: string }
-export interface Testimonial { id: string; name: string; role: string; text: string; rating: number }
+export interface Testimonial { id: string; name: string; role: string; text: string; rating: number; photo: string; link: string }
 export interface Language { id: string; name: string; level: string }
+
+export type TestimonialsStyle = "cards" | "stacked" | "compact";
+
 
 export interface CardData {
   // Identity (always on)
@@ -81,6 +84,8 @@ export interface CardData {
   // Testimonials
   testimonialsEnabled: boolean;
   testimonials: Testimonial[];
+  testimonialsStyle: TestimonialsStyle;
+
 
   // Calendar / booking
   calendarEnabled: boolean;
@@ -153,9 +158,11 @@ export const DEFAULT_CARD: CardData = {
   listings: [],
   testimonialsEnabled: true,
   testimonials: [
-    { id: "t1", name: "Camille D.", role: "Vendeuse — Paris 7e", text: "Discret, efficace, à l'écoute. Vente conclue 8 % au-dessus de l'estimation initiale.", rating: 5 },
-    { id: "t2", name: "Julien R.", role: "Acquéreur — Neuilly", text: "Alexandre a trouvé exactement le bien que nous cherchions, en moins de 3 semaines.", rating: 5 },
+    { id: "t1", name: "Camille D.", role: "Vendeuse — Paris 7e", text: "Discret, efficace, à l'écoute. Vente conclue 8 % au-dessus de l'estimation initiale.", rating: 5, photo: "", link: "" },
+    { id: "t2", name: "Julien R.", role: "Acquéreur — Neuilly", text: "Alexandre a trouvé exactement le bien que nous cherchions, en moins de 3 semaines.", rating: 5, photo: "", link: "" },
   ],
+  testimonialsStyle: "cards",
+
   calendarEnabled: false,
   calendarLabel: "Réserver un rendez-vous",
   calendarUrl: "https://calendly.com/votre-lien",
