@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Phone, Mail, MessageCircle, MapPin, Globe, Linkedin, Instagram,
   Share2, Download, BadgeCheck, Award, ChevronRight, Building2, ImageIcon,
+  Star, Calendar, Languages as LangIcon, Sparkles, PlayCircle, ArrowRight,
 } from "lucide-react";
 import type { CardData, ThemeAccent } from "@/lib/card-types";
 
