@@ -117,16 +117,15 @@ function BuilderPage() {
         onChoose={(variant, next) => {
           setData(next);
           setPlan(variant);
-          advanceTo("essentials");
+          advanceTo("sections");
         }}
       />
     );
   }
 
-  if (step === "essentials") {
+  if (step === "sections") {
     return (
       <BuilderSections
-        step="essentials"
         data={data}
         setData={setData}
         update={update}
@@ -135,23 +134,6 @@ function BuilderPage() {
         completedThrough={completedThrough}
         onGoToStep={goToStep}
         onBack={() => setStep(data.profession ? "compare" : "welcome")}
-        onNext={() => advanceTo("extras")}
-      />
-    );
-  }
-
-  if (step === "extras") {
-    return (
-      <BuilderSections
-        step="extras"
-        data={data}
-        setData={setData}
-        update={update}
-        plan={plan}
-        setPlan={setPlan}
-        completedThrough={completedThrough}
-        onGoToStep={goToStep}
-        onBack={() => setStep("essentials")}
         onNext={() => advanceTo("edit")}
       />
     );
