@@ -1,0 +1,18 @@
+{
+  "name": "Carte de visite digitale",
+  "short_name": "Ma carte",
+  "description": "Votre carte de visite digitale, partageable en un tap.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#11131a",
+  "theme_color": "#11131a",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
-  Upload, Plus, Trash2, RotateCcw, Eye, X, ExternalLink, Sparkles, GripVertical, Grid3x3, Check,
+  Upload, Plus, Trash2, RotateCcw, Eye, X, ExternalLink, Sparkles, GripVertical, Grid3x3, Check, Share2,
 } from "lucide-react";
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
@@ -19,9 +19,11 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
+import { ShareDialog } from "@/components/card/ShareDialog";
 import { useCardStore } from "@/lib/card-store";
 import type { CardData, Listing, Badge, Stat, BrickId, TestimonialsStyle } from "@/lib/card-types";
 import { BRICK_VARIANTS } from "@/lib/brick-variants";
+
 
 export const Route = createFileRoute("/builder")({
   head: () => ({
@@ -37,10 +39,12 @@ function BuilderPage() {
   const { data, setData, update, reset, hydrated } = useCardStore();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [gridOn, setGridOn] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   if (!hydrated) {
     return <div className="min-h-screen bg-background grid place-items-center text-muted-foreground">Chargement…</div>;
   }
+
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -57,6 +61,9 @@ function BuilderPage() {
             <Button variant="ghost" size="sm" onClick={reset}>
               <RotateCcw className="h-4 w-4 mr-1.5" /> Réinitialiser
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setShareOpen(true)}>
+              <Share2 className="h-4 w-4 mr-1.5" /> Partager
+            </Button>
             <Link to="/">
               <Button variant="outline" size="sm">
                 <ExternalLink className="h-4 w-4 mr-1.5" /> Voir démo
@@ -68,6 +75,7 @@ function BuilderPage() {
           </div>
         </div>
       </header>
+
 
       <div className="mx-auto max-w-7xl px-5 py-8 grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-10">
         {/* LEFT: editor */}
@@ -139,9 +147,12 @@ function BuilderPage() {
         </div>
       )}
 
+      <ShareDialog data={data} open={shareOpen} onOpenChange={setShareOpen} />
+
     </main>
   );
 }
+
 
 /* ---------- Brick shell ---------- */
 
