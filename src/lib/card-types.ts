@@ -84,6 +84,8 @@ export interface CardData {
   // Testimonials
   testimonialsEnabled: boolean;
   testimonials: Testimonial[];
+  testimonialsStyle: TestimonialsStyle;
+
 
   // Calendar / booking
   calendarEnabled: boolean;
