@@ -23,6 +23,9 @@ import { ShareDialog } from "@/components/card/ShareDialog";
 import { useCardStore } from "@/lib/card-store";
 import type { CardData, Listing, Badge, Stat, BrickId, TestimonialsStyle } from "@/lib/card-types";
 import { BRICK_VARIANTS } from "@/lib/brick-variants";
+import { BuilderWelcome } from "@/components/builder/BuilderWelcome";
+import { Palette } from "lucide-react";
+
 
 
 export const Route = createFileRoute("/builder")({
@@ -40,11 +43,29 @@ function BuilderPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [gridOn, setGridOn] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [step, setStep] = useState<"welcome" | "edit">("welcome");
+
+  // After hydration, skip welcome if a profession was already saved
+  useEffect(() => {
+    if (hydrated && data.profession) setStep("edit");
+  }, [hydrated, data.profession]);
 
   if (!hydrated) {
     return <div className="min-h-screen bg-background grid place-items-center text-muted-foreground">Chargement…</div>;
   }
 
+  if (step === "welcome") {
+    return (
+      <BuilderWelcome
+        initialProfessionId={data.profession}
+        initialAccent={data.accent}
+        onConfirm={(next) => {
+          setData(next);
+          setStep("edit");
+        }}
+      />
+    );
+  }
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -58,6 +79,9 @@ function BuilderPage() {
             <span className="font-display text-base">Builder</span>
           </div>
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setStep("welcome")}>
+              <Palette className="h-4 w-4 mr-1.5" /> Changer de thème
+            </Button>
             <Button variant="ghost" size="sm" onClick={reset}>
               <RotateCcw className="h-4 w-4 mr-1.5" /> Réinitialiser
             </Button>
@@ -73,6 +97,7 @@ function BuilderPage() {
               <Eye className="h-4 w-4 mr-1.5" /> Aperçu
             </Button>
           </div>
+
         </div>
       </header>
 
