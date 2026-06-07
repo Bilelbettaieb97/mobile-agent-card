@@ -223,24 +223,25 @@ export function BuilderWelcome({
             </div>
           )}
 
-          {/* Sticky CTA */}
-          <div className="mt-6 pt-4 border-t border-border flex items-center justify-between gap-4">
-            <div className="min-w-0">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Sélection</div>
-              <div className="text-sm font-medium truncate">
-                {selectedProfession ? selectedProfession.label : `Thème ${activeTheme.label}`}
-              </div>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <Button variant="ghost" size="sm" onClick={handleSkip} className="text-muted-foreground">
-                <SkipForward className="h-3.5 w-3.5 mr-1" /> Passer
-              </Button>
-              <Button size="lg" onClick={handleChoose}>
-                {selectedProfession ? "Choisir ce template" : "Continuer"}
-                <ArrowRight className="h-4 w-4 ml-1.5" />
-              </Button>
-            </div>
+          {/* Bottom CTA — pleine largeur, très visible */}
+          <div className="mt-6 pt-4 border-t border-border space-y-3">
+            <Button
+              size="lg"
+              onClick={handleChoose}
+              className="w-full h-12 text-base shadow-[var(--shadow-glow)]"
+            >
+              {selectedProfession ? `Choisir « ${selectedProfession.label} »` : `Continuer avec ${activeTheme.label}`}
+              <ArrowRight className="h-5 w-5 ml-1.5" />
+            </Button>
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="w-full text-xs text-muted-foreground hover:text-foreground transition flex items-center justify-center gap-1.5"
+            >
+              <SkipForward className="h-3.5 w-3.5" /> Passer cette étape
+            </button>
           </div>
+
         </section>
 
         {/* RIGHT — live preview */}
