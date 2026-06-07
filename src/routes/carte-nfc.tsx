@@ -702,3 +702,261 @@ function FinalCTA() {
     </section>
   );
 }
+
+/* ============================================================
+   STOCK BAR — sticky urgency
+   ============================================================ */
+function StockBar() {
+  const [stock, setStock] = useState(47);
+  useEffect(() => {
+    const id = setInterval(() => setStock((s) => (s > 12 ? s - 1 : s)), 38000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-black text-xs font-medium py-2 px-4 text-center relative overflow-hidden">
+      <div className="relative flex items-center justify-center gap-2 flex-wrap">
+        <Flame className="h-3.5 w-3.5 animate-pulse" />
+        <span>Édition Aurum 2026 — <strong>{stock} cartes restantes</strong> · Livraison avant Noël garantie si commande sous 72h</span>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   VIDEO SECTION — "le tap en action"
+   ============================================================ */
+function VideoSection() {
+  const [playing, setPlaying] = useState(false);
+  return (
+    <section className="mx-auto max-w-5xl px-5 py-16 md:py-20">
+      <div className="text-center mb-8">
+        <p className="text-xs uppercase tracking-[0.18em] text-amber-400 mb-3">Vu de l'extérieur</p>
+        <h2 className="font-display text-3xl md:text-4xl tracking-tight">Le moment où tout bascule.</h2>
+        <p className="text-sm text-muted-foreground mt-2">3 secondes. Pas une de plus.</p>
+      </div>
+      <button
+        onClick={() => setPlaying(true)}
+        className="group relative w-full aspect-video rounded-3xl overflow-hidden border border-border bg-card/40 hover:border-amber-500/40 transition"
+      >
+        {/* Faux video frame */}
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, oklch(0.22 0.02 250) 0%, oklch(0.12 0.02 250) 100%)" }} />
+        <div className="absolute inset-0 opacity-30" style={{
+          backgroundImage: "linear-gradient(rgba(234,179,8,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(234,179,8,0.3) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }} />
+        {/* Subject mock */}
+        <div className="absolute inset-0 flex items-center justify-center gap-6">
+          <div className="h-32 w-52 rounded-xl rotate-[-8deg] shadow-2xl" style={{ background: "linear-gradient(135deg,#0a0a0a,#1a1a1a)", border: "1px solid rgba(234,179,8,0.3)" }}>
+            <div className="p-3 flex justify-between">
+              <Hexagon className="h-3 w-3 text-amber-400" />
+              <Nfc className="h-3 w-3 text-amber-400" />
+            </div>
+          </div>
+          <div className="h-44 w-24 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900 rotate-[5deg] shadow-2xl border border-white/10" />
+        </div>
+        {/* Play button */}
+        <div className="absolute inset-0 grid place-items-center">
+          <div className="h-20 w-20 rounded-full bg-amber-400/90 grid place-items-center group-hover:scale-110 transition shadow-[0_10px_50px_-10px_rgba(234,179,8,0.8)]">
+            <Play className="h-8 w-8 text-black fill-black ml-1" />
+          </div>
+        </div>
+        <div className="absolute bottom-4 left-4 text-xs text-white/70 font-mono">▶ tap-to-share.mp4 · 0:03</div>
+      </button>
+      {playing && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur grid place-items-center p-4" onClick={() => setPlaying(false)}>
+          <button onClick={() => setPlaying(false)} className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 grid place-items-center text-white hover:bg-white/20">
+            <X className="h-5 w-5" />
+          </button>
+          <div className="aspect-video w-full max-w-4xl rounded-2xl bg-card border border-border grid place-items-center">
+            <p className="text-muted-foreground text-sm">Vidéo de démonstration à intégrer ici</p>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+/* ============================================================
+   CONFIGURATOR — live preview
+   ============================================================ */
+function Configurator() {
+  const [name, setName] = useState("Alex Martin");
+  const [model, setModel] = useState<"onyx" | "aurum" | "carbone">("aurum");
+  const variant = useMemo(() => ({
+    onyx: { bg: "linear-gradient(135deg,#0a0a0a 0%,#1f1f1f 100%)", border: "rgba(255,255,255,0.15)", text: "linear-gradient(180deg,#ffffff,#a3a3a3)", price: "29 €", accent: "text-white/80" },
+    aurum: { bg: "linear-gradient(135deg,#0a0a0a 0%,#2a2419 50%,#0d0d0d 100%)", border: "rgba(234,179,8,0.35)", text: "linear-gradient(180deg,#f5e4a0,#c9a84c)", price: "59 €", accent: "text-amber-400" },
+    carbone: { bg: "linear-gradient(135deg,#0a0a0a 0%,#161616 100%)", border: "rgba(180,180,180,0.25)", text: "linear-gradient(180deg,#e5e5e5,#737373)", price: "79 €", accent: "text-zinc-300" },
+  } as const)[model], [model]);
+  const slug = (name || "vous").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+
+  return (
+    <section className="mx-auto max-w-6xl px-5 py-20 md:py-28 border-t border-border/50">
+      <div className="text-center mb-12">
+        <p className="text-xs uppercase tracking-[0.18em] text-amber-400 mb-3">Configurateur live</p>
+        <h2 className="font-display text-4xl md:text-5xl tracking-tight">Vois ta carte. Maintenant.</h2>
+        <p className="text-muted-foreground mt-3">Tape ton nom. Choisis ton modèle. C'est ta carte qui s'affiche.</p>
+      </div>
+      <div className="grid md:grid-cols-2 gap-8 items-center">
+        {/* Live card */}
+        <div className="relative h-[340px] grid place-items-center">
+          <div
+            className="h-56 w-[22rem] rounded-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] -rotate-6 transition-all duration-500"
+            style={{ background: variant.bg, border: `1px solid ${variant.border}` }}
+          >
+            <div className="absolute inset-0 rounded-2xl opacity-40 pointer-events-none"
+              style={{ background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%)" }} />
+            <div className="absolute top-5 left-5 flex items-center gap-2">
+              <Hexagon className={`h-4 w-4 ${variant.accent}`} />
+              <span className={`text-[10px] uppercase tracking-[0.25em] font-semibold ${variant.accent}`}>Ma carte</span>
+            </div>
+            <div className="absolute top-5 right-5 h-8 w-10 rounded-md grid place-items-center" style={{ border: `1px solid ${variant.border}`, background: "rgba(255,255,255,0.03)" }}>
+              <Nfc className={`h-4 w-4 ${variant.accent}`} />
+            </div>
+            <div className="absolute bottom-6 left-5 right-5">
+              <div className="font-display text-2xl tracking-wide truncate" style={{ background: variant.text, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                {name || "Votre nom"}
+              </div>
+              <div className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5 truncate">
+                macarte.app/{slug || "vous"}
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Controls */}
+        <div className="space-y-6">
+          <div>
+            <label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Nom gravé</label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} maxLength={28} placeholder="Votre nom et prénom" className="h-12 text-base" />
+            <div className="text-[10px] text-muted-foreground mt-1">{name.length}/28 caractères</div>
+          </div>
+          <div>
+            <label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Modèle</label>
+            <div className="grid grid-cols-3 gap-2">
+              {(["onyx", "aurum", "carbone"] as const).map((m) => (
+                <button key={m} onClick={() => setModel(m)}
+                  className={`rounded-xl border p-3 text-left transition ${model === m ? "border-amber-500/60 bg-amber-500/5" : "border-border hover:border-amber-500/30"}`}>
+                  <div className="font-display text-sm capitalize">{m}</div>
+                  <div className="text-[10px] text-muted-foreground mt-0.5">{m === "onyx" ? "29 €" : m === "aurum" ? "59 €" : "79 €"}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+          <Button asChild size="lg" className="w-full h-14 bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]">
+            <a href="#commander">Commander cette carte · {variant.price} <ArrowRight className="h-4 w-4 ml-1.5" /></a>
+          </Button>
+          <p className="text-xs text-muted-foreground text-center">Gravure offerte · Modification possible jusqu'à l'expédition</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   COMPARISON TABLE
+   ============================================================ */
+function ComparisonTable() {
+  const rows = [
+    { f: "Partage de contact", paper: "Manuel, dicté", concur: "QR à scanner", us: "Tap NFC instantané" },
+    { f: "Mise à jour infos", paper: "Réimprimer", concur: "Réimprimer", us: "Auto, à vie" },
+    { f: "Taux de sauvegarde", paper: "11%", concur: "34%", us: "84%" },
+    { f: "Effet 'wow'", paper: "Aucun", concur: "Faible", us: "Garanti" },
+    { f: "Coût sur 5 ans", paper: "~350 €", concur: "~120 €", us: "29-79 € à vie" },
+    { f: "Empreinte écologique", paper: "Élevée", concur: "Moyenne", us: "Minimale" },
+  ];
+  return (
+    <section className="mx-auto max-w-5xl px-5 py-20 md:py-28 border-t border-border/50">
+      <div className="text-center mb-12">
+        <p className="text-xs uppercase tracking-[0.18em] text-amber-400 mb-3">Le verdict</p>
+        <h2 className="font-display text-4xl md:text-5xl tracking-tight">Pourquoi 12 400+ pros<br />ont fait le switch.</h2>
+      </div>
+      <div className="rounded-2xl border border-border overflow-hidden">
+        <div className="grid grid-cols-4 bg-card/60 border-b border-border text-xs uppercase tracking-wider">
+          <div className="p-4 font-medium">Critère</div>
+          <div className="p-4 text-muted-foreground">Carte papier</div>
+          <div className="p-4 text-muted-foreground">QR autocollant</div>
+          <div className="p-4 text-amber-400 font-semibold flex items-center gap-1.5">
+            <Crown className="h-3 w-3" /> Carte NFC
+          </div>
+        </div>
+        {rows.map((r, i) => (
+          <div key={r.f} className={`grid grid-cols-4 text-sm ${i % 2 ? "bg-card/20" : ""}`}>
+            <div className="p-4 font-medium">{r.f}</div>
+            <div className="p-4 text-muted-foreground">{r.paper}</div>
+            <div className="p-4 text-muted-foreground">{r.concur}</div>
+            <div className="p-4 text-amber-400 font-medium bg-amber-500/[0.04]">{r.us}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   GUARANTEE SECTION
+   ============================================================ */
+function GuaranteeSection() {
+  const badges = [
+    { icon: ShieldCheck, t: "Satisfait ou remboursé", d: "30 jours · sans question · remboursement sous 48h" },
+    { icon: RefreshCw, t: "Sync à vie", d: "Modifie ta carte digitale, la NFC suit. Pour toujours." },
+    { icon: PackageCheck, t: "Casse remplacée", d: "Si ta carte casse en 5 ans, on t'en renvoie une à prix coûtant" },
+    { icon: BadgeCheck, t: "Fabriqué en France", d: "Atelier Lyon · QC manuel sur chaque pièce" },
+  ];
+  return (
+    <section className="mx-auto max-w-6xl px-5 py-20 md:py-28 border-t border-border/50">
+      <div className="text-center mb-12">
+        <p className="text-xs uppercase tracking-[0.18em] text-amber-400 mb-3">Zéro risque</p>
+        <h2 className="font-display text-4xl md:text-5xl tracking-tight">Le risque est de notre côté.<br /><span className="text-muted-foreground">Pas du tien.</span></h2>
+      </div>
+      <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {badges.map((b) => (
+          <div key={b.t} className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/[0.04] to-transparent p-5 text-center">
+            <div className="h-12 w-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 grid place-items-center mx-auto mb-3">
+              <b.icon className="h-6 w-6 text-amber-400" />
+            </div>
+            <h3 className="font-medium text-sm mb-1.5">{b.t}</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">{b.d}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   FOMO TOASTS — social proof live
+   ============================================================ */
+function FomoToasts() {
+  const events = [
+    { name: "Camille L.", city: "Lyon", model: "Aurum", ago: "il y a 2 min" },
+    { name: "Théo P.", city: "Paris", model: "Onyx", ago: "il y a 4 min" },
+    { name: "Inès D.", city: "Bordeaux", model: "Carbone", ago: "il y a 7 min" },
+    { name: "Marc R.", city: "Marseille", model: "Aurum", ago: "il y a 11 min" },
+    { name: "Sophie B.", city: "Nantes", model: "Aurum", ago: "il y a 14 min" },
+  ];
+  const [idx, setIdx] = useState(-1);
+  useEffect(() => {
+    const start = setTimeout(() => setIdx(0), 6000);
+    const id = setInterval(() => setIdx((i) => (i + 1) % events.length), 9000);
+    return () => { clearTimeout(start); clearInterval(id); };
+  }, []);
+  if (idx < 0) return null;
+  const e = events[idx];
+  return (
+    <div key={idx} className="fixed bottom-4 left-4 z-40 max-w-xs animate-fade-in">
+      <div className="rounded-2xl border border-border bg-card/90 backdrop-blur-xl shadow-2xl p-3 flex items-center gap-3">
+        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 grid place-items-center text-black font-medium text-sm shrink-0">
+          {e.name.charAt(0)}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-xs">
+            <strong>{e.name}</strong> vient de commander
+          </div>
+          <div className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+            <MapPin className="h-2.5 w-2.5" /> {e.city} · {e.model} · <Clock className="h-2.5 w-2.5" /> {e.ago}
+          </div>
+        </div>
+        <BadgeCheck className="h-4 w-4 text-amber-400 shrink-0" />
+      </div>
+    </div>
+  );
+}
