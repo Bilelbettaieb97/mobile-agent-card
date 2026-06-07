@@ -1,72 +1,82 @@
-# Sections verrouillées par plan + upgrade en un clic
+# Parcours builder plus clair, étape par étape
 
-## Pourquoi
+## Problème
 
-Aujourd'hui, le visiteur choisit une mise en page à l'étape 2 mais peut ensuite activer **n'importe quelle** section à l'étape 3/4 — la promesse des 3 plans devient floue. On va verrouiller les sections selon le plan choisi et proposer un upgrade contextuel quand il clique sur une section non-incluse.
-
-## Le mapping section → plan minimum
-
-Un seul mapping canonique, indépendant du métier (plus simple à comprendre que les variations actuelles par catégorie).
-
-| Plan         | Sections incluses                                                                                  |
-| ------------ | -------------------------------------------------------------------------------------------------- |
-| **Essentielle** | Identité, Contact, Boutons d'action, vCard, À propos                                            |
-| **Pro**         | tout Essentielle + Services, Témoignages, Prise de rendez-vous, Langues, Réseaux sociaux       |
-| **Vitrine**     | tout Pro + Chiffres clés, Réalisations/biens, Vidéo, Bannière CTA                              |
-
-Logique : Essentielle = se présenter, Pro = convertir/rassurer, Vitrine = tout montrer.
+Aujourd'hui chaque étape a son propre header, son propre bouton « Continuer », et chacun est nommé/placé différemment. Le visiteur sait sur quelle étape il est (1/5, 2/5…), mais pas :
+- comment s'appellent les 5 étapes et ce qui reste à faire,
+- comment revenir à une étape précédente (le bouton « Retour » renvoie d'une étape à l'autre, mais on ne peut pas sauter directement à l'étape 2 depuis l'étape 4),
+- où se trouve « Suivant » à chaque étape — il change de label, de position, et parfois de couleur.
 
 ## Ce qu'on construit
 
-### 1. État du builder : ajouter `plan`
+### 1. Un stepper cliquable, partagé, sticky en haut
 
-Dans `src/routes/builder.tsx`, ajouter un champ `plan: VariantId` au state, défini quand l'utilisateur clique "Choisir cette mise en page" à l'étape 2. Persisté avec le reste (localStorage si déjà en place).
+Remplacer la barre de progression `StepHeader` (simple barre 1px + pastille « Étape X/5 ») par un **vrai stepper visuel** sticky :
 
-### 2. Bandeau "Plan actuel" en haut des étapes 3 & 4
-
-Au-dessus de la liste des sections, un bandeau compact, **toujours visible** :
-
-```text
-[●] Plan actuel : Pro    5 / 9 sections débloquées    [Changer de plan ▾]
+```
+ ●━━━━━○━━━━━○━━━━━○━━━━━○
+ 1     2     3     4     5
+Métier  Modèle Essentiels Plus  Finition
 ```
 
-Le bouton "Changer de plan" ouvre un petit menu (3 options + nombre de sections + court descriptif) pour switcher sans repasser par l'étape 2.
+- 5 puces numérotées + label court sous chacune.
+- Puce **active** : remplie en primary, label en `text-foreground`.
+- Puce **complétée** (étape déjà visitée) : remplie discrètement avec un ✓, **cliquable** pour y retourner.
+- Puce **future** : grise, non-cliquable.
+- Sur mobile : les labels passent en dessous, plus petits ; les puces restent visibles.
 
-### 3. Sections verrouillées : visibles mais désactivées
+Le composant remplace l'actuel `StepHeader` et est utilisé par les 5 étapes (welcome, compare, essentials, extras, edit) — c'est la **même barre** partout, ce qui ancre visuellement le parcours.
 
-C'est la **best practice** pour ce genre de gating (Notion, Linear, Figma le font tous ainsi) — montrer la valeur de l'upgrade vaut mieux que cacher.
+### 2. Une barre d'action fixe en bas de chaque étape
 
-Pour chaque section non-incluse dans le plan actuel :
+Aujourd'hui le bouton « Continuer » est en bas du contenu, qu'il faut scroller pour atteindre. On le sort dans une **barre sticky en bas de viewport**, identique sur les 5 étapes :
 
-- La carte reste dans la liste, **opacité 60%**, le Switch est remplacé par un petit cadenas + badge `Pro` ou `Vitrine` (couleur du plan).
-- Toute la carte est cliquable et ouvre une **mini-modale inline** (pas un dialog plein écran, juste un encart qui se déplie) :
+```
+[← Retour]              Étape 3/5 — Essentiels              [Continuer →]
+```
 
-  ```text
-  🔒 « Témoignages » fait partie du plan Pro
+- Bouton **gauche** : toujours « ← Retour » (sauf étape 1 où il est désactivé / absent).
+- Centre : titre court de l'étape courante + indicateur de complétion contextuel (ex. "5/5 sections actives", "Plan : Pro").
+- Bouton **droite** : toujours **« Continuer → »** avec le même style (taille, couleur, glow). À l'étape 5 il devient **« Activer ma carte 🚀 »**.
 
-  Passez à Pro pour activer cette section
-  (+ Services, Prise de RDV, Langues, Réseaux sociaux).
+Sticky en bas (`fixed bottom-0`), avec backdrop-blur et bordure haute. Padding-bottom ajouté au main pour éviter que la barre cache le contenu.
 
-  [Passer à Pro et activer]   [Annuler]
-  ```
+### 3. Uniformiser le vocabulaire des étapes
 
-- Clic sur "Passer à Pro et activer" → on met à jour `plan` ET on active la section cliquée, puis on affiche un toast :  
-  *"Plan passé à Pro. Témoignages activé."*
+Aujourd'hui les titres sont variables ("Choisissez votre univers", "Choisissez votre mise en page", "Les sections essentielles"...). On clarifie en gardant un seul système :
 
-### 4. Compteur de sections actives, contextualisé
+| # | Label court (stepper) | Titre H1                                     |
+| - | --------------------- | -------------------------------------------- |
+| 1 | Métier                | Choisissez votre métier                      |
+| 2 | Modèle                | Choisissez un modèle                         |
+| 3 | Essentiels            | Remplissez les sections essentielles         |
+| 4 | Sections en plus      | Ajoutez des sections complémentaires         |
+| 5 | Finition              | Personnalisez et activez                     |
 
-Au lieu de "X sections actives", afficher :  
-*"5 / 5 sections du plan Essentielle actives — débloquez-en plus en passant à Pro"*
+### 4. Aide contextuelle "Ce qui vous attend ensuite"
+
+Sous le sous-titre de chaque étape, une ligne discrète indique **ce qui vient après** pour rassurer :
+
+> *Après cette étape : choisir un modèle de mise en page.*
+
+À l'étape 5, elle devient : *Dernière étape — votre carte sera prête à partager.*
+
+### 5. Cohérence Retour ↔ Stepper
+
+- Le bouton « Retour » de la barre du bas et le clic sur une puce passée du stepper font la même chose.
+- L'étape 1 n'a pas de « Retour » (ou « Quitter le builder » qui ramène à `/`).
 
 ## Fichiers touchés
 
-- `src/routes/builder.tsx` — ajouter `plan` au state, le passer aux composants enfants, l'initialiser quand `onChoose` est appelé dans `BuilderCompare`.
-- `src/lib/profession-personas.ts` — exporter une constante `SECTION_TIER: Record<EnabledKey | "actions" | "identity", VariantId>` (le mapping ci-dessus) + helper `isSectionAllowed(plan, key)` et `planRank(plan)`.
-- `src/components/builder/BuilderSections.tsx` — recevoir `plan` + `setPlan`, ajouter le bandeau "Plan actuel", remplacer le Switch par cadenas + mini-modale inline pour les sections verrouillées, brancher l'upgrade auto + toast.
-- `src/components/builder/BuilderCompare.tsx` — au `onChoose`, transmettre aussi le `variant` choisi pour qu'il devienne le `plan` du state (déjà le cas via la signature actuelle, juste à câbler côté `builder.tsx`).
+- `src/components/builder/StepHeader.tsx` — réécrire en stepper cliquable (5 puces + labels) + ligne « après cette étape ». Accepte `step`, `title`, `subtitle`, `onGoToStep?: (n) => void`, `completedThrough: number` (jusqu'où le user est allé), `nextHint?: string`.
+- `src/components/builder/StepFooter.tsx` (nouveau) — barre sticky bas avec `onBack`, `onNext`, `nextLabel`, `centerInfo`, `step`.
+- `src/components/builder/BuilderWelcome.tsx` — utiliser `StepHeader` nouvelle API + `StepFooter`. Supprimer le bouton sticky-top et le bloc CTA bas dupliqué (un seul CTA "Continuer" dans le footer). Conserver « Passer cette étape » comme lien discret au-dessus du footer.
+- `src/components/builder/BuilderCompare.tsx` — utiliser `StepFooter` ; le footer affiche un message si aucun modèle n'est encore choisi, sinon « Continuer ». Le clic sur une carte sélectionne sans avancer ; un second clic OU le bouton "Continuer" du footer avance. (Variante simple : garder le click-to-advance actuel et masquer le bouton "Continuer" tant qu'aucune sélection.)
+- `src/components/builder/BuilderSections.tsx` — utiliser `StepFooter`. Supprimer le bloc Retour/Continuer en bas du contenu. Le compteur "X/Y sections débloquées" reste dans le bandeau plan.
+- `src/routes/builder.tsx` — exposer `completedThrough` (max step atteint) + `goToStep(n)` au stepper. Pour l'étape `edit`, intégrer le même `StepHeader`/`StepFooter` (aujourd'hui elle a son propre topbar custom — on garde le topbar pour les actions globales mais on ajoute le stepper en dessous et le footer en bas). Le bouton "Activer ma carte" devient le CTA droit du footer à l'étape 5.
 
 ## Hors scope
 
-- Pas de changement au mapping persona/contenu existant (`SECTION_PROFILES` reste pour le **pré-remplissage** à l'étape 2, mais c'est `SECTION_TIER` qui gouverne le **verrouillage** à l'étape 3/4).
-- Pas de paiement réel — "Passer à Pro" change juste le plan en cours, c'est gratuit pour l'instant. Le hook est posé pour brancher Stripe/Paddle plus tard.
-- Pas de changement aux étapes 1 et 5.
+- Pas de changement aux écrans, au contenu, au mapping plan/section, ni à la logique de verrouillage.
+- Pas de refonte visuelle des cartes de l'étape 2 ni des sections de l'étape 3/4 — uniquement la chrome (stepper + footer) qui les entoure.
+- Pas d'animations Motion ajoutées (les transitions existantes suffisent).
