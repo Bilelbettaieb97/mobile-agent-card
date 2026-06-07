@@ -16,7 +16,12 @@ export function loadCard(): CardData {
     const raw = localStorage.getItem(KEY);
     if (!raw) return DEFAULT_CARD;
     const parsed = JSON.parse(raw);
-    return { ...DEFAULT_CARD, ...parsed, sectionOrder: normalizeOrder(parsed.sectionOrder) };
+    return {
+      ...DEFAULT_CARD,
+      ...parsed,
+      sectionOrder: normalizeOrder(parsed.sectionOrder),
+      variants: { ...DEFAULT_CARD.variants, ...(parsed.variants ?? {}) },
+    };
   } catch {
     return DEFAULT_CARD;
   }

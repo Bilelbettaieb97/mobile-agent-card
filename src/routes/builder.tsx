@@ -21,6 +21,7 @@ import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
 import { useCardStore } from "@/lib/card-store";
 import type { CardData, Listing, Badge, Stat, ThemeAccent, BrickId, TestimonialsStyle } from "@/lib/card-types";
+import { BRICK_VARIANTS } from "@/lib/brick-variants";
 
 export const Route = createFileRoute("/builder")({
   head: () => ({
@@ -181,24 +182,32 @@ function BrickList({ data, update, setData }: {
     setData({ ...data, sectionOrder: arrayMove(data.sectionOrder, oldIdx, newIdx) });
   };
 
+  const wrap = (id: BrickId, body: ReactNode): ReactNode => (
+    <div className="space-y-4">
+      <VariantPicker brick={id} data={data} update={update} />
+      {body}
+    </div>
+  );
+
   const renderBody = (id: BrickId): ReactNode => {
     switch (id) {
-      case "identity":     return <IdentityBrick data={data} update={update} />;
-      case "actions":      return <ActionsBrick data={data} update={update} />;
-      case "vcard":        return <p className="text-sm text-muted-foreground">Affiche un bouton « Enregistrer le contact » qui télécharge un fichier .vcf compatible iPhone/Android.</p>;
-      case "stats":        return <StatsBrick data={data} update={update} />;
-      case "about":        return <AboutBrick data={data} update={update} />;
-      case "video":        return <VideoBrick data={data} update={update} />;
-      case "services":     return <ServicesBrick data={data} update={update} />;
-      case "listings":     return <ListingsBrick data={data} update={update} />;
+      case "identity":     return wrap(id, <IdentityBrick data={data} update={update} />);
+      case "actions":      return wrap(id, <ActionsBrick data={data} update={update} />);
+      case "vcard":        return wrap(id, <p className="text-sm text-muted-foreground">Affiche un bouton « Enregistrer le contact » qui télécharge un fichier .vcf compatible iPhone/Android.</p>);
+      case "stats":        return wrap(id, <StatsBrick data={data} update={update} />);
+      case "about":        return wrap(id, <AboutBrick data={data} update={update} />);
+      case "video":        return wrap(id, <VideoBrick data={data} update={update} />);
+      case "services":     return wrap(id, <ServicesBrick data={data} update={update} />);
+      case "listings":     return wrap(id, <ListingsBrick data={data} update={update} />);
       case "testimonials": return <TestimonialsBrick data={data} update={update} />;
-      case "calendar":     return <CalendarBrick data={data} update={update} />;
-      case "languages":    return <LanguagesBrick data={data} update={update} />;
-      case "cta":          return <CtaBrick data={data} update={update} />;
-      case "contact":      return <ContactBrick data={data} update={update} />;
-      case "socials":      return <SocialsBrick data={data} update={update} />;
+      case "calendar":     return wrap(id, <CalendarBrick data={data} update={update} />);
+      case "languages":    return wrap(id, <LanguagesBrick data={data} update={update} />);
+      case "cta":          return wrap(id, <CtaBrick data={data} update={update} />);
+      case "contact":      return wrap(id, <ContactBrick data={data} update={update} />);
+      case "socials":      return wrap(id, <SocialsBrick data={data} update={update} />);
       case "theme":        return <ThemeBrick data={data} update={update} />;
     }
+
   };
 
   const enabledOf = (id: BrickId): boolean | undefined => {
@@ -688,3 +697,32 @@ function CtaBrick({ data, update }: BrickProps) {
   );
 }
 
+
+/* ---------- Variant picker ---------- */
+
+function VariantPicker({ brick, data, update }: { brick: BrickId; data: CardData; update: BrickProps["update"] }) {
+  const options = BRICK_VARIANTS[brick];
+  if (!options || options.length < 2) return null;
+  const current = (data.variants as Record<string, string>)[brick];
+  return (
+    <div>
+      <Label className="text-xs">Style</Label>
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        {options.map((o) => {
+          const active = current === o.id;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              onClick={() => update("variants", { ...data.variants, [brick]: o.id } as CardData["variants"])}
+              className={`rounded-xl border p-2.5 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
+            >
+              <div className="text-xs font-medium">{o.label}</div>
+              <div className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{o.hint}</div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

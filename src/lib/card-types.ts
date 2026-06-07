@@ -1,3 +1,5 @@
+import { DEFAULT_VARIANTS, type BrickVariants } from "./brick-variants";
+
 export type ThemeAccent = "gold" | "emerald" | "copper";
 
 export type BrickId =
@@ -122,7 +124,11 @@ export interface CardData {
 
   // Order
   sectionOrder: BrickId[];
+
+  // Per-brick design variants
+  variants: BrickVariants;
 }
+
 
 export const DEFAULT_CARD: CardData = {
   name: "Alexandre Moreau",
@@ -188,4 +194,6 @@ export const DEFAULT_CARD: CardData = {
   whatsappSocial: "33612345678",
   accent: "gold",
   sectionOrder: DEFAULT_SECTION_ORDER,
+  variants: { ...DEFAULT_VARIANTS },
 };
+

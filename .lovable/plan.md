@@ -1,79 +1,78 @@
-## Idée
 
-Une page `/builder` en deux colonnes (desktop) :
-- **Gauche** : un panneau d'édition organisé en sections (briques), chacune avec un **toggle on/off** pour l'activer/désactiver + les champs pour remplir les infos.
-- **Droite** : un **mockup de téléphone** qui affiche en temps réel la carte de visite, exactement avec le rendu actuel (même design dark + or).
+# Variantes de design par brique
 
-Sur mobile, l'éditeur s'affiche en premier et un bouton flottant "Aperçu" ouvre le rendu en plein écran.
+Objectif : pour chaque brique (Identité, Actions, Stats, etc.), proposer 2 à 3 **styles visuels** que vous choisissez dans le builder (en haut de la brique, comme pour Témoignages). Toutes les variantes restent **100 % optimisées mobile** (largeur 360 px du PhoneFrame, gouttières 20 px, cibles tactiles ≥ 44 px).
 
-## Briques activables
+## Catalogue de variantes proposé
 
-Chaque brique = un switch + ses champs. L'utilisateur compose sa carte morceau par morceau.
+| Brique | Variant A (actuelle) | Variant B | Variant C |
+|---|---|---|---|
+| **Identité** | Centrée (avatar + nom + titre alignés au centre) | Couverture floue + avatar débordant en bas | Horizontal (avatar à gauche, infos à droite) |
+| **Actions rapides** | Rangée d'icônes rondes | Pills empilées full-width | Grille 2×2 carrée |
+| **vCard** | Bouton gradient large | Bouton outlined minimal | Carte avec icône + texte secondaire |
+| **Stats** | Grille inline 3 colonnes | Gros chiffres empilés, label en dessous | Pills compactes en ligne |
+| **À propos** | Texte + badges chips | Style citation (Quote, fond léger) | Carte avec icône et titre |
+| **Vidéo YouTube** | Embed direct | Thumbnail + bouton play (lite, charge à la demande) | Cinéma : 16:9 plein, titre overlay en bas |
+| **Services** | Liste à icônes (actuelle) | Grille numérotée (01 / 02 / 03) | Carrousel de cartes |
+| **Listings** | Carrousel snap large | Cartes empilées full-width | Lignes compactes (mini-thumb + infos) |
+| **Témoignages** | Cartes / Empilées / Compactes (déjà en place) | — | — |
+| **Calendrier** | Carte-row avec chevron | Bouton CTA pleine largeur | Bloc icône agenda + texte centré |
+| **Langues** | Chips avec icône | Liste avec puce de niveau (●●●○○) | Grille 2 colonnes avec drapeau emoji optionnel |
+| **CTA** | Bannière gradient | Outlined minimal | Pleine largeur bold (fond accent fort) |
+| **Coordonnées** | Liste de rows (actuelle) | Grille 2×2 de mini-cartes | Liste compacte icônes + valeurs |
+| **Réseaux sociaux** | Icônes rondes centrées | Pills full-width avec label | Boutons branded (couleurs LinkedIn/IG/WhatsApp) |
 
-1. **Identité** (toujours active) — photo (upload), nom, titre, agence, secteur
-2. **Actions rapides** — choix des boutons à afficher : Appel, WhatsApp, Mail, Site
-3. **Bouton "Enregistrer le contact"** (vCard) — on/off
-4. **Statistiques** — 3 chiffres clés éditables (label + valeur)
-5. **À propos** — bio + badges (FNAIM, Top 1%, etc.)
-6. **Sélection de biens** — liste de cartes (photo, titre, surface, prix), ajout/suppression
-7. **Coordonnées détaillées** — téléphone, email, site, secteur
-8. **Réseaux sociaux** — LinkedIn, Instagram, WhatsApp (chaque lien on/off)
-9. **Thème** (bonus léger) — choix entre 2-3 accents de couleur (or, émeraude, cuivre)
+> Si une variante vous semble inutile, on l'enlève. Si vous en voulez plus pour une brique précise, on l'ajoute.
 
-Chaque section a aussi un petit indicateur "✓ Complétée" / "À remplir".
+## UX dans le builder
 
-## Aperçu live
+- En haut du contenu de chaque brique : sélecteur **3 boutons** (Style A / B / C) avec petit libellé + indice (« Centrée », « Couverture », « Horizontal »…) — même pattern que la brique Témoignages actuelle.
+- Le choix est instantanément reflété dans l'aperçu mobile à droite.
+- Persisté dans `localStorage` (réinitialisation = retour aux variantes par défaut, identiques à l'actuel).
 
-- Composant `<BusinessCardPreview data={...} />` réutilisable, extrait du code actuel de `src/routes/index.tsx`.
-- À droite : un **cadre iPhone** (encoche, bords arrondis, ombre) qui contient la carte, scrollable à l'intérieur.
-- Mise à jour instantanée via un store local (React state ou Zustand léger).
+## Architecture technique
 
-## Persistance et export
+1. **`src/lib/card-types.ts`**
+   - Ajouter `BrickVariants` :
+     ```ts
+     interface BrickVariants {
+       identity: "centered" | "cover" | "horizontal";
+       actions: "icons" | "pills" | "grid";
+       vcard: "gradient" | "outline" | "card";
+       stats: "inline" | "stacked" | "pills";
+       about: "default" | "quote" | "card";
+       video: "embed" | "thumb" | "cinema";
+       services: "list" | "numbered" | "carousel";
+       listings: "carousel" | "stacked" | "compact";
+       calendar: "row" | "cta" | "block";
+       languages: "chips" | "list" | "grid";
+       cta: "gradient" | "outline" | "bold";
+       contact: "list" | "grid" | "compact";
+       socials: "icons" | "pills" | "branded";
+     }
+     ```
+   - Ajouter `variants: BrickVariants` à `CardData` + valeurs par défaut (= rendu actuel).
+   - Garder `testimonialsStyle` tel quel (déjà fait).
+   - `card-store.ts` : merger `variants` champ par champ pour les anciens localStorage.
 
-- **Sauvegarde automatique** dans `localStorage` (pas de backend nécessaire pour cette V1).
-- Bouton **"Réinitialiser"** + bouton **"Exporter en JSON"** (pour réimporter plus tard).
-- Bouton **"Voir la carte en plein écran"** → ouvre `/` avec les données du builder.
+2. **`src/components/card/BusinessCard.tsx`**
+   - Refactor : extraire chaque section en sous-composant `IdentitySection`, `ActionsSection`, etc. Chacun reçoit `data` + lit `data.variants.<brick>` et `switch` sur la variante.
+   - Le rendu actuel devient la variante par défaut de chaque brique — zéro régression visuelle initiale.
+   - Tailles, paddings et cibles tactiles audités sur largeur 320 px (innerW = 300) ET 360 px.
 
-## Structure technique
+3. **`src/routes/builder.tsx`**
+   - Nouveau composant `<VariantPicker brick="identity" />` réutilisable, placé en première position dans chaque BrickBody.
+   - Catalogue des variantes (label + hint) centralisé dans un fichier `src/lib/brick-variants.ts` partagé entre builder et card.
 
-```
-src/
-  routes/
-    index.tsx              → carte finale (lit les données du store)
-    builder.tsx            → la page éditeur (split layout)
-  components/
-    card/
-      BusinessCard.tsx     → composant carte réutilisable (refacto de l'actuel)
-      PhoneFrame.tsx       → cadre iPhone pour l'aperçu
-    builder/
-      BrickSection.tsx     → wrapper accordéon + toggle on/off
-      IdentityBrick.tsx
-      ActionsBrick.tsx
-      StatsBrick.tsx
-      AboutBrick.tsx
-      ListingsBrick.tsx
-      ContactBrick.tsx
-      SocialsBrick.tsx
-      ThemeBrick.tsx
-  lib/
-    card-store.ts          → state + persistance localStorage
-    card-types.ts          → types TS partagés
-```
+## Hors-scope (V1)
 
-## UX du panneau gauche
+- Pas de previews thumbnail SVG des variantes dans le picker — uniquement labels + hint courts (rapide à shipper, lisible). Les vraies previews se voient dans le PhoneFrame à droite.
+- Pas de variantes pour `theme` (déjà un sélecteur de couleur).
+- Pas de variantes mixables (ex : choisir séparément le style des boutons CTA dans une variante d'Actions).
 
-- Accordéon vertical : une brique ouverte à la fois pour ne pas surcharger.
-- Switch à droite du titre de chaque brique pour l'activer/désactiver (la brique apparaît/disparaît dans l'aperçu en live, avec une petite animation).
-- Champs avec labels clairs, placeholders d'exemple, validation douce (email, téléphone).
-- Upload photo en drag & drop, stockée en base64 dans le state (V1).
+## Livraison
 
-## Hors scope V1
-
-- Pas de comptes utilisateurs / sauvegarde cloud (on reste en localStorage).
-- Pas de génération de QR code ni d'URL publique partageable (à ajouter en V2 avec Lovable Cloud si besoin).
-- Pas de multi-thèmes complets ; juste l'accent de couleur.
-
-## Questions avant de lancer
-
-1. Est-ce que la page actuelle `/` reste telle quelle (avec les données d'exemple) ou doit-elle afficher la carte du builder ?
-2. Tu veux uniquement **localStorage** pour V1, ou tu préfères qu'on active **Lovable Cloud** dès maintenant pour pouvoir sauvegarder en base et avoir une URL publique partageable par agent (genre `/c/alexandre`) ?
+1. Types + defaults + store
+2. Refactor BusinessCard en sections + variantes (toutes les bricks)
+3. VariantPicker + intégration dans chaque brique du builder
+4. Vérification visuelle dans le PhoneFrame + mode Grille activé (déjà dispo) pour valider l'alignement
