@@ -111,7 +111,9 @@ interface Props {
 
 export function BuilderSections({ step, data, setData, update, plan, setPlan, completedThrough, onGoToStep, onBack, onNext }: Props) {
   const isEssentials = step === "essentials";
-  const defs = isEssentials ? ESSENTIALS : EXTRAS;
+  const defs = isEssentials
+    ? ESSENTIALS
+    : [...EXTRAS].sort((a, b) => planRank(sectionTier(a.key)) - planRank(sectionTier(b.key)));
 
   const [openSet, setOpenSet] = useState<Set<SectionKey>>(() => {
     const s = new Set<SectionKey>();
