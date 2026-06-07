@@ -375,7 +375,7 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
               </p>
               <span className="text-[10px] text-muted-foreground">Met à jour à chaque saisie</span>
             </div>
-            <div className="relative">
+            <div className="relative" ref={phoneRef}>
               <div
                 className="absolute inset-0 -z-10 blur-3xl opacity-40 transition-all duration-500"
                 style={{ background: activeTheme.palette.gradient }}
