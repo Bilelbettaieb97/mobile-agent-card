@@ -12,7 +12,7 @@ import {
   THEMES_BY_ID,
   type Profession,
 } from "@/lib/card-themes";
-import { buildPreviewCard, buildPreviewFromTheme } from "@/lib/profession-personas";
+import { buildPreviewCard, buildPreviewFromTheme, VARIANTS, type VariantId } from "@/lib/profession-personas";
 import type { CardData } from "@/lib/card-types";
 
 interface Props {
@@ -30,12 +30,18 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
   const [selectedThemeId, setSelectedThemeId] = useState<string>(
     initialProfessionId ? PROFESSIONS.find((p) => p.id === initialProfessionId)?.themeId ?? initialAccent : initialAccent,
   );
+  const [variant, setVariant] = useState<VariantId>("vitrine");
 
-  // Preview data — derives from current selection
+  // Reset to the wow variant whenever the profession changes
+  useEffect(() => {
+    setVariant("vitrine");
+  }, [selectedProfession?.id]);
+
+  // Preview data — derives from current selection + variant
   const previewData = useMemo<CardData>(() => {
-    if (selectedProfession) return buildPreviewCard(selectedProfession);
+    if (selectedProfession) return buildPreviewCard(selectedProfession, variant);
     return buildPreviewFromTheme(selectedThemeId);
-  }, [selectedProfession, selectedThemeId]);
+  }, [selectedProfession, selectedThemeId, variant]);
 
   // Preload portrait of selected persona to avoid flash
   useEffect(() => {
@@ -57,7 +63,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
 
   const handleStart = () => {
     if (selectedProfession) {
-      onConfirm(buildPreviewCard(selectedProfession));
+      onConfirm(buildPreviewCard(selectedProfession, variant));
     } else {
       onConfirm(buildPreviewFromTheme(selectedThemeId));
     }
@@ -217,12 +223,37 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
         {/* RIGHT — live preview */}
         <aside className="hidden lg:block h-full overflow-hidden">
           <div className="h-full flex flex-col justify-center">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <p className="text-xs uppercase tracking-[0.18em] text-primary flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5" /> Aperçu live
               </p>
-              <span className="text-[10px] text-muted-foreground">Met à jour à chaque sélection</span>
+              <span className="text-[10px] text-muted-foreground">
+                {selectedProfession ? "3 mises en page possibles" : "Met à jour à chaque sélection"}
+              </span>
             </div>
+
+            {/* Variantes — visibles uniquement quand un métier est choisi */}
+            {selectedProfession && (
+              <div className="mb-4 inline-flex w-full rounded-lg border border-border bg-muted/40 p-0.5 text-xs">
+                {VARIANTS.map((v) => {
+                  const active = variant === v.id;
+                  return (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => setVariant(v.id)}
+                      className={`flex-1 px-2.5 py-1.5 rounded-md transition text-center ${
+                        active ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                      title={v.hint}
+                    >
+                      <span className={`block leading-tight ${active ? "font-medium" : ""}`}>{v.label}</span>
+                      <span className="block text-[9px] text-muted-foreground/80 leading-tight">{v.hint}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <div className="relative">
               {/* halo */}
               <div

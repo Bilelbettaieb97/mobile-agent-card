@@ -980,10 +980,17 @@ export const PERSONAS: Record<string, Persona> = {
 };
 
 /* ============================================================
-   SECTION PROFILES — chaque catégorie métier a une composition
-   visuelle distincte pour inspirer le visiteur (pas les mêmes
-   briques pour tout le monde).
+   SECTION PROFILES — 3 variantes par catégorie métier pour
+   inspirer le visiteur avec plusieurs mises en page possibles.
    ============================================================ */
+
+export type VariantId = "essentielle" | "vitrine" | "pro";
+
+export const VARIANTS: { id: VariantId; label: string; hint: string }[] = [
+  { id: "essentielle", label: "Essentielle", hint: "L'indispensable" },
+  { id: "vitrine", label: "Vitrine", hint: "Tout le potentiel" },
+  { id: "pro", label: "Pro", hint: "Contact & crédibilité" },
+];
 
 type SectionFlags = Partial<Pick<CardData,
   | "vcardEnabled" | "statsEnabled" | "aboutEnabled" | "videoEnabled"
@@ -1006,57 +1013,115 @@ function profile(...keys: (keyof SectionFlags)[]): Required<SectionFlags> {
   return f;
 }
 
-const SECTION_PROFILES: Record<string, Required<SectionFlags>> = {
-  // Immobilier : vitrine de biens, chiffres, appel à l'action
-  Immobilier: profile("aboutEnabled", "statsEnabled", "listingsEnabled", "ctaEnabled"),
-  // Juridique : légitimité, expertise, langues parlées, témoignages
-  Juridique: profile("aboutEnabled", "servicesEnabled", "languagesEnabled", "testimonialsEnabled"),
-  // Finance : chiffres clés, services, rendez-vous, langues
-  Finance: profile("aboutEnabled", "statsEnabled", "servicesEnabled", "calendarEnabled"),
-  // Tech : portfolio de projets, stack, socials, dispo
-  Tech: profile("statsEnabled", "servicesEnabled", "listingsEnabled", "socialsEnabled", "calendarEnabled"),
-  // Santé : prise de RDV, services médicaux, langues
-  Santé: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "languagesEnabled"),
-  // Beauté : galerie réalisations, RDV, socials, services
-  Beauté: profile("listingsEnabled", "servicesEnabled", "calendarEnabled", "socialsEnabled"),
-  // Coaching : vidéo, témoignages, CTA fort, RDV
-  Coaching: profile("aboutEnabled", "videoEnabled", "testimonialsEnabled", "ctaEnabled", "calendarEnabled"),
-  // Sport : stats perf, vidéo démo, CTA, témoignages
-  Sport: profile("statsEnabled", "videoEnabled", "servicesEnabled", "testimonialsEnabled", "ctaEnabled"),
-  // Restauration : photos de plats, socials, contact direct
-  Restauration: profile("listingsEnabled", "videoEnabled", "socialsEnabled", "aboutEnabled"),
-  // Artisanat : réalisations, services, témoignages
-  Artisanat: profile("listingsEnabled", "servicesEnabled", "testimonialsEnabled", "aboutEnabled"),
-  // Mode : lookbook visuel, socials, vidéo
-  Mode: profile("listingsEnabled", "videoEnabled", "socialsEnabled"),
-  // Créatif / Photo / Vidéo : portfolio massif, vidéo, socials
-  Créatif: profile("listingsEnabled", "videoEnabled", "socialsEnabled", "testimonialsEnabled"),
-  // Éducation : services, RDV, témoignages parents
-  Éducation: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled"),
-  // Voyage / Hôtellerie : visuel, vidéo, langues, socials
-  Voyage: profile("listingsEnabled", "videoEnabled", "languagesEnabled", "socialsEnabled"),
-  // Événementiel : portfolio, vidéo, témoignages
-  Événementiel: profile("listingsEnabled", "videoEnabled", "testimonialsEnabled", "socialsEnabled"),
-  // Média / Podcast : vidéo, socials, stats audience
-  Média: profile("statsEnabled", "videoEnabled", "socialsEnabled", "aboutEnabled"),
+type VariantSet = Record<VariantId, Required<SectionFlags>>;
+
+/** Variante essentielle générique : carte minimale + 1 brique de différenciation. */
+function essentielleWith(extra: keyof SectionFlags): Required<SectionFlags> {
+  return profile("aboutEnabled", extra);
+}
+
+const SECTION_PROFILES: Record<string, VariantSet> = {
+  Immobilier: {
+    essentielle: essentielleWith("statsEnabled"),
+    vitrine: profile("aboutEnabled", "statsEnabled", "listingsEnabled", "ctaEnabled", "servicesEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "calendarEnabled", "languagesEnabled"),
+  },
+  Juridique: {
+    essentielle: essentielleWith("servicesEnabled"),
+    vitrine: profile("aboutEnabled", "servicesEnabled", "languagesEnabled", "testimonialsEnabled", "statsEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "languagesEnabled", "calendarEnabled", "testimonialsEnabled"),
+  },
+  Finance: {
+    essentielle: essentielleWith("statsEnabled"),
+    vitrine: profile("aboutEnabled", "statsEnabled", "servicesEnabled", "calendarEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "languagesEnabled", "testimonialsEnabled"),
+  },
+  Tech: {
+    essentielle: essentielleWith("socialsEnabled"),
+    vitrine: profile("statsEnabled", "servicesEnabled", "listingsEnabled", "socialsEnabled", "calendarEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "socialsEnabled"),
+  },
+  Santé: {
+    essentielle: essentielleWith("calendarEnabled"),
+    vitrine: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "languagesEnabled", "statsEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "languagesEnabled", "testimonialsEnabled"),
+  },
+  Beauté: {
+    essentielle: essentielleWith("calendarEnabled"),
+    vitrine: profile("listingsEnabled", "servicesEnabled", "calendarEnabled", "socialsEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "languagesEnabled"),
+  },
+  Coaching: {
+    essentielle: essentielleWith("ctaEnabled"),
+    vitrine: profile("aboutEnabled", "videoEnabled", "testimonialsEnabled", "ctaEnabled", "calendarEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "languagesEnabled"),
+  },
+  Sport: {
+    essentielle: essentielleWith("statsEnabled"),
+    vitrine: profile("statsEnabled", "videoEnabled", "servicesEnabled", "testimonialsEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "ctaEnabled"),
+  },
+  Restauration: {
+    essentielle: essentielleWith("socialsEnabled"),
+    vitrine: profile("listingsEnabled", "videoEnabled", "socialsEnabled", "aboutEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "languagesEnabled", "calendarEnabled"),
+  },
+  Artisanat: {
+    essentielle: essentielleWith("servicesEnabled"),
+    vitrine: profile("listingsEnabled", "servicesEnabled", "testimonialsEnabled", "aboutEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "calendarEnabled", "ctaEnabled"),
+  },
+  Mode: {
+    essentielle: essentielleWith("socialsEnabled"),
+    vitrine: profile("listingsEnabled", "videoEnabled", "socialsEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "listingsEnabled", "servicesEnabled", "testimonialsEnabled", "socialsEnabled"),
+  },
+  Créatif: {
+    essentielle: essentielleWith("listingsEnabled"),
+    vitrine: profile("listingsEnabled", "videoEnabled", "socialsEnabled", "testimonialsEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "listingsEnabled", "testimonialsEnabled", "calendarEnabled"),
+  },
+  Éducation: {
+    essentielle: essentielleWith("calendarEnabled"),
+    vitrine: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "statsEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "languagesEnabled"),
+  },
+  Voyage: {
+    essentielle: essentielleWith("socialsEnabled"),
+    vitrine: profile("listingsEnabled", "videoEnabled", "languagesEnabled", "socialsEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "languagesEnabled", "calendarEnabled", "testimonialsEnabled"),
+  },
+  Événementiel: {
+    essentielle: essentielleWith("listingsEnabled"),
+    vitrine: profile("listingsEnabled", "videoEnabled", "testimonialsEnabled", "socialsEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "calendarEnabled", "ctaEnabled"),
+  },
+  Média: {
+    essentielle: essentielleWith("socialsEnabled"),
+    vitrine: profile("statsEnabled", "videoEnabled", "socialsEnabled", "aboutEnabled", "ctaEnabled"),
+    pro: profile("aboutEnabled", "servicesEnabled", "statsEnabled", "calendarEnabled", "socialsEnabled"),
+  },
 };
 
-const DEFAULT_PROFILE: Required<SectionFlags> = profile(
-  "aboutEnabled", "servicesEnabled", "statsEnabled",
-);
+const DEFAULT_VARIANTS: VariantSet = {
+  essentielle: essentielleWith("servicesEnabled"),
+  vitrine: profile("aboutEnabled", "servicesEnabled", "statsEnabled", "listingsEnabled", "ctaEnabled"),
+  pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "calendarEnabled", "languagesEnabled"),
+};
 
 /** Build a complete CardData for preview using DEFAULT_CARD as the base
- *  and overlaying the profession's persona + sa composition de sections. */
-export function buildPreviewCard(profession: Profession): CardData {
+ *  and overlaying the profession's persona + la variante demandée. */
+export function buildPreviewCard(profession: Profession, variant: VariantId = "vitrine"): CardData {
   const persona = PERSONAS[profession.id];
   if (!persona) {
     return { ...DEFAULT_CARD, accent: profession.themeId as CardData["accent"], profession: profession.id };
   }
 
   const photo = `https://i.pravatar.cc/400?img=${persona.pravatarId}`;
-  const sections = SECTION_PROFILES[profession.category] ?? DEFAULT_PROFILE;
+  const variants = SECTION_PROFILES[profession.category] ?? DEFAULT_VARIANTS;
+  const sections = variants[variant];
 
-  // Listings : on n'affiche que si le profil métier active la brique ET que la persona a un visuel pertinent
+  // Listings : on n'affiche que si la variante active la brique ET que la persona a un visuel pertinent
   const listingsActive = !!(sections.listingsEnabled && persona.withListings);
   const listings: Listing[] = listingsActive
     ? [
