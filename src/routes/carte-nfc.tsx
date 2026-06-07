@@ -8,6 +8,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import cardStudio from "@/assets/nfc-card-studio.jpg";
+import cardHand from "@/assets/nfc-card-hand.jpg";
+import cardMacro from "@/assets/nfc-card-macro.jpg";
+
 
 
 export const Route = createFileRoute("/carte-nfc")({
@@ -37,9 +41,11 @@ function NfcLandingPage() {
       <Nav />
       <Hero />
       <SocialProofBar />
+      <Gallery />
       <VideoSection />
       <ProblemSection />
       <HowItWorks />
+
       <Configurator />
       <Models />
       <ComparisonTable />
@@ -150,100 +156,36 @@ function Hero() {
           </div>
         </div>
 
-        {/* RIGHT — Card visual */}
-        <div className="relative h-[480px] flex items-center justify-center perspective-[1200px]">
-          {/* Phone mockup behind */}
-          <div className="absolute right-4 top-12 h-72 w-40 rounded-[28px] border border-border bg-card shadow-2xl rotate-[8deg] overflow-hidden">
-            <div className="h-full p-2.5">
-              <div className="h-full rounded-[20px] bg-gradient-to-br from-zinc-900 to-zinc-800 p-3 flex flex-col">
-                <div className="h-1 w-8 rounded-full bg-white/20 mx-auto mb-3" />
-                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 mx-auto mb-2" />
-                <div className="text-center">
-                  <div className="text-[10px] font-medium text-white">Alex Martin</div>
-                  <div className="text-[8px] text-white/50">Designer · Paris</div>
-                </div>
-                <div className="mt-3 space-y-1">
-                  <div className="h-5 rounded-md bg-white/5" />
-                  <div className="h-5 rounded-md bg-white/5" />
-                  <div className="h-5 rounded-md bg-amber-400/20 border border-amber-400/40" />
-                </div>
-              </div>
-            </div>
-            {/* Notification slide */}
-            <div
-              className={`absolute top-3 left-2 right-2 rounded-xl bg-black/80 backdrop-blur border border-white/10 p-2 transition-all duration-500 ${
-                tapped ? "translate-y-0 opacity-100" : "-translate-y-12 opacity-0"
-              }`}
-            >
-              <div className="flex items-center gap-1.5">
-                <div className="h-4 w-4 rounded bg-amber-400/80 grid place-items-center">
-                  <Nfc className="h-2.5 w-2.5 text-black" />
-                </div>
-                <div className="text-[8px] text-white">macarte.app/alex</div>
-              </div>
-            </div>
-          </div>
-
-          {/* The card */}
-          <div
-            className="relative h-56 w-[22rem] rounded-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] -rotate-6 hover:rotate-0 transition-transform duration-700"
-            style={{
-              background:
-                "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)",
-              border: "1px solid rgba(234,179,8,0.2)",
-            }}
-          >
-            {/* Sheen */}
-            <div
-              className="absolute inset-0 rounded-2xl opacity-40 pointer-events-none"
-              style={{
-                background:
-                  "linear-gradient(105deg, transparent 30%, rgba(234,179,8,0.15) 50%, transparent 70%)",
-              }}
+        {/* RIGHT — Real product shot */}
+        <div className="relative h-[480px] flex items-center justify-center">
+          <div className="absolute inset-0 rounded-3xl overflow-hidden">
+            <img
+              src={cardStudio}
+              alt="Carte NFC noire avec gravure dorée Alex Martin sur fond studio"
+              className="absolute inset-0 h-full w-full object-cover"
+              width={1280}
+              height={960}
             />
-            {/* Embossed logo */}
-            <div className="absolute top-5 left-5 flex items-center gap-2">
-              <Hexagon className="h-4 w-4 text-amber-400" />
-              <span className="text-[10px] uppercase tracking-[0.25em] text-amber-400/80 font-semibold">
-                Ma carte
-              </span>
-            </div>
-            {/* NFC chip */}
-            <div className="absolute top-5 right-5 h-8 w-10 rounded-md border border-amber-400/30 grid place-items-center"
-              style={{ background: "linear-gradient(135deg, rgba(234,179,8,0.15), rgba(234,179,8,0.05))" }}>
-              <Nfc className="h-4 w-4 text-amber-400" />
-            </div>
-            {/* Engraved name */}
-            <div className="absolute bottom-6 left-5 right-5">
-              <div
-                className="font-display text-2xl tracking-wide"
-                style={{
-                  background: "linear-gradient(180deg, #f5e4a0 0%, #c9a84c 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                Alex Martin
-              </div>
-              <div className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5">
-                macarte.app/alex
-              </div>
-            </div>
-            {/* QR back hint */}
-            <div className="absolute bottom-5 right-5 h-10 w-10 rounded-md border border-white/10 grid grid-cols-3 gap-px p-1">
-              {Array.from({ length: 9 }).map((_, i) => (
-                <div key={i} className={`rounded-sm ${[0, 2, 4, 6, 8].includes(i) ? "bg-white/40" : "bg-white/10"}`} />
-              ))}
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
-
-          {/* NFC waves */}
-          <div className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none ${tapped ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}>
+          {/* NFC waves overlay */}
+          <div className={`absolute left-[55%] top-[55%] -translate-x-1/2 -translate-y-1/2 pointer-events-none ${tapped ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}>
             <div className="absolute h-20 w-20 rounded-full border border-amber-400/60 -translate-x-1/2 -translate-y-1/2 animate-ping" />
             <div className="absolute h-32 w-32 rounded-full border border-amber-400/40 -translate-x-1/2 -translate-y-1/2 animate-ping" style={{ animationDelay: "0.2s" }} />
             <div className="absolute h-44 w-44 rounded-full border border-amber-400/20 -translate-x-1/2 -translate-y-1/2 animate-ping" style={{ animationDelay: "0.4s" }} />
           </div>
+          {/* Floating badge */}
+          <div className="absolute bottom-5 left-5 rounded-2xl bg-black/70 backdrop-blur-xl border border-amber-400/30 px-3 py-2 flex items-center gap-2 animate-fade-in">
+            <div className="h-7 w-7 rounded-lg bg-amber-400 grid place-items-center">
+              <Nfc className="h-4 w-4 text-black" />
+            </div>
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-amber-400/80">Tap & connect</div>
+              <div className="text-xs text-white font-medium">macarte.app/alex</div>
+            </div>
+          </div>
         </div>
+
       </div>
     </section>
   );
@@ -958,5 +900,43 @@ function FomoToasts() {
         <BadgeCheck className="h-4 w-4 text-amber-400 shrink-0" />
       </div>
     </div>
+  );
+}
+
+/* ============================================================
+   GALLERY — real product photography
+   ============================================================ */
+function Gallery() {
+  const shots = [
+    { src: cardStudio, label: "Studio", caption: "Édition Aurum · gravure laser or 24k", span: "md:col-span-2 md:row-span-2" },
+    { src: cardHand, label: "En usage", caption: "Un geste suffit · zéro friction", span: "md:col-span-1" },
+    { src: cardMacro, label: "Macro", caption: "Métal brossé · finition jewelry-grade", span: "md:col-span-1" },
+  ];
+  return (
+    <section className="mx-auto max-w-6xl px-5 py-20 md:py-28 border-t border-border/50">
+      <div className="text-center mb-10">
+        <p className="text-xs uppercase tracking-[0.18em] text-amber-400 mb-3">L'objet</p>
+        <h2 className="font-display text-4xl md:text-5xl tracking-tight">Pas un visuel.<br /><span className="text-muted-foreground">L'objet, en vrai.</span></h2>
+      </div>
+      <div className="grid md:grid-cols-3 md:grid-rows-2 gap-3 md:gap-4 md:h-[640px]">
+        {shots.map((s) => (
+          <div key={s.label} className={`group relative rounded-3xl overflow-hidden border border-border bg-card ${s.span}`}>
+            <img
+              src={s.src}
+              alt={`Carte NFC — ${s.label}`}
+              loading="lazy"
+              width={1280}
+              height={960}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-amber-400 mb-1">{s.label}</div>
+              <div className="text-sm text-white font-medium">{s.caption}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
