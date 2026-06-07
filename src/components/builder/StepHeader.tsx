@@ -1,13 +1,12 @@
 import { Check, ArrowRight } from "lucide-react";
 
-export type StepNum = 1 | 2 | 3 | 4 | 5;
+export type StepNum = 1 | 2 | 3 | 4;
 
 export const STEPS: { n: StepNum; label: string }[] = [
   { n: 1, label: "Métier" },
   { n: 2, label: "Modèle" },
-  { n: 3, label: "Essentiels" },
-  { n: 4, label: "Sections en plus" },
-  { n: 5, label: "Finition" },
+  { n: 3, label: "Sections" },
+  { n: 4, label: "Finition" },
 ];
 
 interface Props {
