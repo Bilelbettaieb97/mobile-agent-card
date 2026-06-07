@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, Check, ArrowRight, Sparkles, SkipForward } from "lucide-react";
+import { StepHeader } from "@/components/builder/StepHeader";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BusinessCard } from "@/components/card/BusinessCard";
