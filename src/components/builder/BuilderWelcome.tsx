@@ -260,9 +260,11 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
                 <button
                   type="button"
                   onClick={() => setCompareOpen(true)}
-                  className="text-[10px] inline-flex items-center gap-1 text-foreground/80 hover:text-foreground transition px-2 py-1 rounded-md border border-border bg-background"
+                  aria-haspopup="dialog"
+                  aria-expanded={compareOpen}
+                  className="text-[10px] inline-flex items-center gap-1 text-foreground/80 hover:text-foreground transition px-2 py-1 rounded-md border border-border bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
-                  <Maximize2 className="h-3 w-3" /> Comparer les 3
+                  <Maximize2 className="h-3 w-3" aria-hidden="true" /> Comparer les 3
                 </button>
               ) : (
                 <span className="text-[10px] text-muted-foreground">Met à jour à chaque sélection</span>
@@ -271,15 +273,21 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
 
             {/* Variantes — visibles uniquement quand un métier est choisi */}
             {selectedProfession && (
-              <div className="mb-4 inline-flex w-full rounded-lg border border-border bg-muted/40 p-0.5 text-xs">
+              <div
+                role="radiogroup"
+                aria-label="Variante de mise en page"
+                className="mb-4 inline-flex w-full rounded-lg border border-border bg-muted/40 p-0.5 text-xs"
+              >
                 {VARIANTS.map((v) => {
                   const active = variant === v.id;
                   return (
                     <button
                       key={v.id}
                       type="button"
+                      role="radio"
+                      aria-checked={active}
                       onClick={() => setVariant(v.id)}
-                      className={`flex-1 px-2.5 py-1.5 rounded-md transition text-center ${
+                      className={`flex-1 px-2.5 py-1.5 rounded-md transition text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background ${
                         active ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                       }`}
                       title={v.hint}
