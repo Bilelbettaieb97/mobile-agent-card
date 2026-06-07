@@ -32,10 +32,7 @@ export const Route = createFileRoute("/builder")({
 });
 
 function BuilderPage() {
-  const { data, setData, update, reset, hydrated } = useCardStore();
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [gridOn, setGridOn] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
+  const { data, setData, update, hydrated } = useCardStore();
   const [step, setStep] = useState<Step>("welcome");
   const [plan, setPlan] = useState<VariantId>("vitrine");
   const [completedThrough, setCompletedThrough] = useState<StepNum>(1);
