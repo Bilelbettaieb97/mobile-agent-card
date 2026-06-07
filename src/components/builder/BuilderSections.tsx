@@ -474,11 +474,16 @@ function LockedSection({
         aria-expanded={expanded}
       >
         <div className="flex-1 min-w-0 opacity-70">
-          <div className="flex items-center gap-2 mb-0.5">
+          <div className="flex items-center gap-2 mb-0.5 flex-wrap">
             <span className="text-sm font-medium">{def.label}</span>
             <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-primary bg-primary/10 border border-primary/30 px-1.5 py-0.5 rounded">
               {planIcon(requiredPlan)} {PLAN_LABEL[requiredPlan]}
             </span>
+            {def.popular && (
+              <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded">
+                <Flame className="h-2.5 w-2.5" /> Populaire
+              </span>
+            )}
           </div>
           <p className="text-xs text-muted-foreground">{def.description}</p>
         </div>
