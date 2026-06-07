@@ -145,9 +145,14 @@ function BuilderPage() {
           <Button variant="ghost" size="sm" onClick={reset}>
             <RotateCcw className="h-4 w-4 mr-1.5" /> Réinitialiser
           </Button>
-          <Link to="/">
+          <Link to="/dashboard">
             <Button variant="outline" size="sm">
-              <ExternalLink className="h-4 w-4 mr-1.5" /> Voir démo
+              <LayoutDashboard className="h-4 w-4 mr-1.5" /> Mon dashboard
+            </Button>
+          </Link>
+          <Link to="/">
+            <Button variant="ghost" size="sm">
+              <ExternalLink className="h-4 w-4 mr-1.5" /> Démo
             </Button>
           </Link>
           <Button size="sm" className="lg:hidden" onClick={() => setPreviewOpen(true)}>
