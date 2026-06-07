@@ -81,30 +81,32 @@ export function BusinessCard({ data }: { data: CardData }) {
         </button>
       </div>
 
-      {/* IDENTITY (always at top, variant-switched) */}
-      <IdentitySection data={data} />
+      {/* IDENTITY + ORDERED SECTIONS — spacing is centralized here.
+          Do NOT add vertical margins on section roots. */}
+      <div className="flex flex-col gap-6 pb-2">
+        <IdentitySection data={data} />
+        {data.sectionOrder
+          .filter((id) => id !== "identity" && id !== "theme")
+          .map((id) => {
+            switch (id) {
+              case "actions":      return <ActionsSection key={id} data={data} />;
+              case "vcard":        return <VCardSection key={id} data={data} onSave={handleSave} copied={copied} />;
+              case "stats":        return <StatsSection key={id} data={data} />;
+              case "about":        return <AboutSection key={id} data={data} />;
+              case "video":        return <VideoSection key={id} data={data} />;
+              case "services":     return <ServicesSection key={id} data={data} />;
+              case "listings":     return <ListingsSection key={id} data={data} />;
+              case "testimonials": return <TestimonialsSection key={id} data={data} />;
+              case "calendar":     return <CalendarSection key={id} data={data} />;
+              case "languages":    return <LanguagesSection key={id} data={data} />;
+              case "cta":          return <CtaSection key={id} data={data} />;
+              case "contact":      return <ContactSection key={id} data={data} />;
+              case "socials":      return <SocialsSection key={id} data={data} />;
+              default:             return null;
+            }
+          })}
+      </div>
 
-      {/* ORDERED SECTIONS */}
-      {data.sectionOrder
-        .filter((id) => id !== "identity" && id !== "theme")
-        .map((id) => {
-          switch (id) {
-            case "actions":      return <ActionsSection key={id} data={data} />;
-            case "vcard":        return <VCardSection key={id} data={data} onSave={handleSave} copied={copied} />;
-            case "stats":        return <StatsSection key={id} data={data} />;
-            case "about":        return <AboutSection key={id} data={data} />;
-            case "video":        return <VideoSection key={id} data={data} />;
-            case "services":     return <ServicesSection key={id} data={data} />;
-            case "listings":     return <ListingsSection key={id} data={data} />;
-            case "testimonials": return <TestimonialsSection key={id} data={data} />;
-            case "calendar":     return <CalendarSection key={id} data={data} />;
-            case "languages":    return <LanguagesSection key={id} data={data} />;
-            case "cta":          return <CtaSection key={id} data={data} />;
-            case "contact":      return <ContactSection key={id} data={data} />;
-            case "socials":      return <SocialsSection key={id} data={data} />;
-            default:             return null;
-          }
-        })}
 
       <footer className="px-5 pt-8 pb-10 text-center">
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {data.agency} · Carte digitale</p>
