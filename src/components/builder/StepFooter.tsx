@@ -41,7 +41,7 @@ export function StepFooter({
 
           <div className="hidden md:flex flex-col items-center text-center min-w-0 px-2">
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Étape {step} / 4 — {stepLabel}
+              Étape {step} / 5 — {stepLabel}
             </span>
             {centerInfo && (
               <span className="text-xs text-foreground/80 mt-0.5 truncate max-w-[40ch]">

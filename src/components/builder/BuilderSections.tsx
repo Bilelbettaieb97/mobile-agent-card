@@ -97,6 +97,7 @@ function sectionAllowed(plan: VariantId, key: SectionKey): boolean {
 }
 
 interface Props {
+  step: "essentials" | "extras";
   data: CardData;
   setData: (d: CardData) => void;
   update: <K extends keyof CardData>(k: K, v: CardData[K]) => void;
@@ -108,16 +109,15 @@ interface Props {
   onNext: () => void;
 }
 
-export function BuilderSections({ data, setData, update, plan, setPlan, completedThrough, onGoToStep, onBack, onNext }: Props) {
-  // Toutes les sections fusionnées : essentielles d'abord, puis extras triés par plan.
-  const defs: SectionDef[] = [
-    ...ESSENTIALS,
-    ...[...EXTRAS].sort((a, b) => planRank(sectionTier(a.key)) - planRank(sectionTier(b.key))),
-  ];
+export function BuilderSections({ step, data, setData, update, plan, setPlan, completedThrough, onGoToStep, onBack, onNext }: Props) {
+  const isEssentials = step === "essentials";
+  const defs = isEssentials
+    ? ESSENTIALS
+    : [...EXTRAS].sort((a, b) => planRank(sectionTier(a.key)) - planRank(sectionTier(b.key)));
 
   const [openSet, setOpenSet] = useState<Set<SectionKey>>(() => {
     const s = new Set<SectionKey>();
-    s.add("identity");
+    if (isEssentials) s.add("identity");
     for (const d of defs) if (isEnabled(data, d.key)) s.add(d.key);
     return s;
   });
@@ -183,11 +183,15 @@ export function BuilderSections({ data, setData, update, plan, setPlan, complete
   const activeAllowed = allowedDefs.filter((d) => isEnabled(data, d.key)).length;
   const totalAllowed = allowedDefs.length;
 
-  const stepNum = 3 as const;
-  const heading = "Composez votre carte";
-  const intro = "Choisissez votre plan et activez les sections qui vous correspondent — l'aperçu se met à jour en direct.";
-  const nextHint = "Après cette étape : personnaliser et activer votre carte.";
-  const nextLabel = "Personnaliser ma carte";
+  const stepNum: 3 | 4 = isEssentials ? 3 : 4;
+  const heading = isEssentials ? "Remplissez les sections essentielles" : "Ajoutez des sections complémentaires";
+  const intro = isEssentials
+    ? "Ce que toute carte de visite digitale doit contenir. Activez et remplissez les champs — l'aperçu se met à jour en direct."
+    : "Enrichissez votre carte avec ce qui vous différencie. Les sections grisées nécessitent un plan supérieur.";
+  const nextHint = isEssentials
+    ? "Après cette étape : ajouter des sections complémentaires."
+    : "Après cette étape : personnaliser et activer votre carte.";
+  const nextLabel = isEssentials ? "Continuer" : "Personnaliser ma carte";
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -205,13 +209,15 @@ export function BuilderSections({ data, setData, update, plan, setPlan, complete
         {/* LEFT — sections list */}
         <section className="flex flex-col min-h-0">
 
-          {/* Bandeau plan actuel — toujours visible (étape unique Sections) */}
-          <PlanBanner
-            plan={plan}
-            onChange={changePlan}
-            activeCount={activeAllowed}
-            totalCount={totalAllowed}
-          />
+          {/* Bandeau plan actuel — visible uniquement à l'étape 4 */}
+          {!isEssentials && (
+            <PlanBanner
+              plan={plan}
+              onChange={changePlan}
+              activeCount={activeAllowed}
+              totalCount={totalAllowed}
+            />
+          )}
 
           <div className="space-y-3 mt-4">
             {defs.map((d) => {

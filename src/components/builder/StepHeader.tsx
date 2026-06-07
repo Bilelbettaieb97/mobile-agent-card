@@ -1,12 +1,13 @@
 import { Check, ArrowRight } from "lucide-react";
 
-export type StepNum = 1 | 2 | 3 | 4;
+export type StepNum = 1 | 2 | 3 | 4 | 5;
 
 export const STEPS: { n: StepNum; label: string }[] = [
   { n: 1, label: "Métier" },
   { n: 2, label: "Modèle" },
-  { n: 3, label: "Sections" },
-  { n: 4, label: "Finition" },
+  { n: 3, label: "Essentiels" },
+  { n: 4, label: "Sections en plus" },
+  { n: 5, label: "Finition" },
 ];
 
 interface Props {
@@ -83,7 +84,7 @@ export function StepHeader({ step, title, subtitle, completedThrough, onGoToStep
       {/* Centered header */}
       <div className="text-center max-w-2xl mx-auto pt-6 sm:pt-8 pb-5 sm:pb-6 px-5">
         <p className="text-[11px] uppercase tracking-[0.22em] text-primary mb-2.5">
-          Étape {step} sur 4
+          Étape {step} sur 5
         </p>
         <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl mb-3 leading-tight">{title}</h1>
         <p className="text-sm sm:text-base text-muted-foreground">{subtitle}</p>
