@@ -85,8 +85,9 @@ function BuilderPage() {
       <BuilderCompare
         profession={profession}
         onBack={() => setStep("welcome")}
-        onChoose={(_variant, next) => {
+        onChoose={(variant, next) => {
           setData(next);
+          setPlan(variant);
           setStep("essentials");
         }}
       />
@@ -100,6 +101,8 @@ function BuilderPage() {
         data={data}
         setData={setData}
         update={update}
+        plan={plan}
+        setPlan={setPlan}
         onBack={() => setStep(data.profession ? "compare" : "welcome")}
         onNext={() => setStep("extras")}
       />
@@ -113,6 +116,8 @@ function BuilderPage() {
         data={data}
         setData={setData}
         update={update}
+        plan={plan}
+        setPlan={setPlan}
         onBack={() => setStep("essentials")}
         onNext={() => setStep("edit")}
       />
