@@ -992,6 +992,48 @@ export const VARIANTS: { id: VariantId; label: string; hint: string }[] = [
   { id: "pro", label: "Pro", hint: "Contact & crédibilité" },
 ];
 
+export const PLAN_LABEL: Record<VariantId, string> = {
+  essentielle: "Essentielle",
+  pro: "Pro",
+  vitrine: "Vitrine",
+};
+
+/** Rang d'un plan : plus c'est élevé, plus il débloque de sections. */
+export function planRank(p: VariantId): number {
+  return p === "essentielle" ? 0 : p === "pro" ? 1 : 2;
+}
+
+/** Plan minimum requis pour activer chaque section.
+ *  Essentielle = se présenter, Pro = convertir/rassurer, Vitrine = tout montrer. */
+export type GatedSectionKey =
+  | "identity" | "actions" | "vcardEnabled" | "aboutEnabled" | "contactEnabled"
+  | "servicesEnabled" | "testimonialsEnabled" | "calendarEnabled" | "languagesEnabled" | "socialsEnabled"
+  | "statsEnabled" | "listingsEnabled" | "videoEnabled" | "ctaEnabled";
+
+export const SECTION_TIER: Record<GatedSectionKey, VariantId> = {
+  // Essentielle
+  identity: "essentielle",
+  contactEnabled: "essentielle",
+  actions: "essentielle",
+  vcardEnabled: "essentielle",
+  aboutEnabled: "essentielle",
+  // Pro
+  servicesEnabled: "pro",
+  testimonialsEnabled: "pro",
+  calendarEnabled: "pro",
+  languagesEnabled: "pro",
+  socialsEnabled: "pro",
+  // Vitrine
+  statsEnabled: "vitrine",
+  listingsEnabled: "vitrine",
+  videoEnabled: "vitrine",
+  ctaEnabled: "vitrine",
+};
+
+export function isSectionAllowed(plan: VariantId, key: GatedSectionKey): boolean {
+  return planRank(plan) >= planRank(SECTION_TIER[key]);
+}
+
 type SectionFlags = Partial<Pick<CardData,
   | "vcardEnabled" | "statsEnabled" | "aboutEnabled" | "videoEnabled"
   | "servicesEnabled" | "listingsEnabled" | "testimonialsEnabled"

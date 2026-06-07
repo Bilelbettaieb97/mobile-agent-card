@@ -28,7 +28,7 @@ import {
   renderBrickBody,
   type BrickProps,
 } from "@/components/builder/bricks";
-import { buildPreviewFromTheme } from "@/lib/profession-personas";
+import { buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
 import { PROFESSIONS } from "@/lib/card-themes";
 
 type Step = "welcome" | "compare" | "essentials" | "extras" | "edit";
@@ -49,6 +49,7 @@ function BuilderPage() {
   const [gridOn, setGridOn] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [step, setStep] = useState<Step>("welcome");
+  const [plan, setPlan] = useState<VariantId>("vitrine");
 
   if (!hydrated) {
     return <div className="min-h-screen bg-background grid place-items-center text-muted-foreground">Chargement…</div>;
@@ -84,8 +85,9 @@ function BuilderPage() {
       <BuilderCompare
         profession={profession}
         onBack={() => setStep("welcome")}
-        onChoose={(_variant, next) => {
+        onChoose={(variant, next) => {
           setData(next);
+          setPlan(variant);
           setStep("essentials");
         }}
       />
@@ -99,6 +101,8 @@ function BuilderPage() {
         data={data}
         setData={setData}
         update={update}
+        plan={plan}
+        setPlan={setPlan}
         onBack={() => setStep(data.profession ? "compare" : "welcome")}
         onNext={() => setStep("extras")}
       />
@@ -112,6 +116,8 @@ function BuilderPage() {
         data={data}
         setData={setData}
         update={update}
+        plan={plan}
+        setPlan={setPlan}
         onBack={() => setStep("essentials")}
         onNext={() => setStep("edit")}
       />
