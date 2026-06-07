@@ -91,7 +91,7 @@ export function BuilderWelcome({
         subtitle="Votre carte sera pré-remplie avec un modèle adapté. Vous pourrez tout modifier juste après."
         completedThrough={completedThrough}
         onGoToStep={onGoToStep}
-        nextHint="Après cette étape : choisir un modèle de mise en page."
+        nextHint="Après cette étape : remplir les sections essentielles."
       />
 
       <div className="mx-auto w-full max-w-7xl px-5 pb-8 grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-10 flex-1 min-h-0">

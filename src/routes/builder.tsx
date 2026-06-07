@@ -20,7 +20,6 @@ import { ShareDialog } from "@/components/card/ShareDialog";
 import { useCardStore } from "@/lib/card-store";
 import type { CardData, BrickId } from "@/lib/card-types";
 import { BuilderWelcome } from "@/components/builder/BuilderWelcome";
-import { BuilderCompare } from "@/components/builder/BuilderCompare";
 import { BuilderSections } from "@/components/builder/BuilderSections";
 import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
 import { StepFooter } from "@/components/builder/StepFooter";
@@ -30,16 +29,16 @@ import {
   renderBrickBody,
   type BrickProps,
 } from "@/components/builder/bricks";
-import { buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
-import { PROFESSIONS } from "@/lib/card-themes";
+import { buildPreviewCard, buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
 
-type Step = "welcome" | "compare" | "essentials" | "extras" | "edit";
+
+type Step = "welcome" | "essentials" | "extras" | "edit";
 
 const STEP_NUM: Record<Step, StepNum> = {
-  welcome: 1, compare: 2, essentials: 3, extras: 4, edit: 5,
+  welcome: 1, essentials: 2, extras: 3, edit: 4,
 };
 const NUM_STEP: Record<StepNum, Step> = {
-  1: "welcome", 2: "compare", 3: "essentials", 4: "extras", 5: "edit",
+  1: "welcome", 2: "essentials", 3: "extras", 4: "edit",
 };
 
 export const Route = createFileRoute("/builder")({
@@ -91,7 +90,9 @@ function BuilderPage() {
         onChooseProfession={(p) => {
           update("profession", p.id);
           update("accent", p.themeId as CardData["accent"]);
-          advanceTo("compare");
+          setData(buildPreviewCard(p, "vitrine"));
+          setPlan("vitrine");
+          advanceTo("essentials");
         }}
         onChooseTheme={(themeId) => {
           setData(buildPreviewFromTheme(themeId));
@@ -101,27 +102,6 @@ function BuilderPage() {
     );
   }
 
-  if (step === "compare") {
-    const profession =
-      (data.profession && PROFESSIONS.find((p) => p.id === data.profession)) || undefined;
-    if (!profession) {
-      setStep("welcome");
-      return null;
-    }
-    return (
-      <BuilderCompare
-        profession={profession}
-        completedThrough={completedThrough}
-        onGoToStep={goToStep}
-        onBack={() => setStep("welcome")}
-        onChoose={(variant, next) => {
-          setData(next);
-          setPlan(variant);
-          advanceTo("essentials");
-        }}
-      />
-    );
-  }
 
   if (step === "essentials") {
     return (
@@ -134,7 +114,7 @@ function BuilderPage() {
         setPlan={setPlan}
         completedThrough={completedThrough}
         onGoToStep={goToStep}
-        onBack={() => setStep(data.profession ? "compare" : "welcome")}
+        onBack={() => setStep("welcome")}
         onNext={() => advanceTo("extras")}
       />
     );
@@ -157,11 +137,11 @@ function BuilderPage() {
     );
   }
 
-  // Step 5 — edit
+  // Step 4 — edit
   return (
     <main className="min-h-screen bg-background text-foreground">
       <StepHeader
-        step={5}
+        step={4}
         title="Personnalisez et activez"
         subtitle="Réorganisez vos sections, ajustez le style — l'aperçu se met à jour en direct."
         completedThrough={completedThrough}
@@ -229,7 +209,7 @@ function BuilderPage() {
       </div>
 
       <StepFooter
-        step={5}
+        step={4}
         onBack={() => setStep("extras")}
         onNext={() => setShareOpen(true)}
         nextLabel="Activer ma carte"
