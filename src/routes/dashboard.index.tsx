@@ -99,7 +99,7 @@ function OverviewPage() {
             <p className="text-xs text-muted-foreground mb-4">Les opérations les plus courantes.</p>
             <div className="space-y-2">
               <QuickAction to="/dashboard/card" icon={CreditCard} label="Ouvrir ma carte" hint="Aperçu, QR, partage" />
-              <QuickAction to="/dashboard/style" icon={Palette} label="Changer l'apparence" hint="Thème & variantes" />
+              <QuickAction to="/dashboard/card" icon={Palette} label="Changer l'apparence" hint="Thème & variantes (onglet Apparence)" />
               <QuickAction to="/dashboard/share" icon={Share2} label="Voir les stats" hint="Engagement détaillé" />
               <QuickAction to="/dashboard/account" icon={TrendingUp} label="Passer à Vitrine" hint="Débloquer tout" highlight />
             </div>

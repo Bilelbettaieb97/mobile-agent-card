@@ -23,7 +23,6 @@ import {
 const PRIMARY = [
   { title: "Vue d'ensemble", to: "/dashboard",         icon: LayoutGrid },
   { title: "Ma carte",       to: "/dashboard/card",    icon: CreditCard },
-  { title: "Apparence",      to: "/dashboard/style",   icon: Palette },
   { title: "Statistiques",   to: "/dashboard/share",   icon: BarChart3 },
 ] as const;
 
