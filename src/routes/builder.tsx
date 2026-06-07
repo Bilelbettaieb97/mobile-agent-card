@@ -145,15 +145,21 @@ function BuilderPage() {
 /* ---------- Brick shell ---------- */
 
 const BRICK_META: Record<BrickId, { title: string; subtitle: string }> = {
-  identity: { title: "Identité", subtitle: "Photo, nom, titre, agence" },
-  actions:  { title: "Actions rapides", subtitle: "Appel, WhatsApp, Mail, Site" },
-  vcard:    { title: "Enregistrer le contact", subtitle: "Bouton vCard" },
-  stats:    { title: "Statistiques", subtitle: "Chiffres clés" },
-  about:    { title: "À propos", subtitle: "Bio + badges" },
-  listings: { title: "Sélection de biens", subtitle: "Vos annonces phares" },
-  contact:  { title: "Coordonnées", subtitle: "Téléphone, mail, site, secteur" },
-  socials:  { title: "Réseaux sociaux", subtitle: "LinkedIn, Instagram, WhatsApp" },
-  theme:    { title: "Thème", subtitle: "Couleur d'accent" },
+  identity:     { title: "Identité",            subtitle: "Photo, nom, titre, agence" },
+  actions:      { title: "Actions rapides",     subtitle: "Appel, WhatsApp, Mail, Site" },
+  vcard:        { title: "Enregistrer le contact", subtitle: "Bouton vCard" },
+  stats:        { title: "Statistiques",        subtitle: "Chiffres clés" },
+  about:        { title: "À propos",            subtitle: "Bio + badges" },
+  video:        { title: "Vidéo de présentation", subtitle: "Lien YouTube" },
+  services:     { title: "Services",            subtitle: "Vos offres / prestations" },
+  listings:     { title: "Sélection de biens",  subtitle: "Vos annonces phares" },
+  testimonials: { title: "Témoignages",         subtitle: "Avis clients" },
+  calendar:     { title: "Prendre rendez-vous", subtitle: "Lien Calendly / agenda" },
+  languages:    { title: "Langues parlées",     subtitle: "Idiomes & niveau" },
+  cta:          { title: "Bannière CTA",        subtitle: "Encart d'appel à l'action" },
+  contact:      { title: "Coordonnées",         subtitle: "Téléphone, mail, site, secteur" },
+  socials:      { title: "Réseaux sociaux",     subtitle: "LinkedIn, Instagram, WhatsApp" },
+  theme:        { title: "Thème",               subtitle: "Couleur d'accent" },
 };
 
 function BrickList({ data, update, setData }: {
@@ -177,42 +183,61 @@ function BrickList({ data, update, setData }: {
 
   const renderBody = (id: BrickId): ReactNode => {
     switch (id) {
-      case "identity": return <IdentityBrick data={data} update={update} />;
-      case "actions":  return <ActionsBrick data={data} update={update} />;
-      case "vcard":    return <p className="text-sm text-muted-foreground">Affiche un bouton « Enregistrer le contact » qui télécharge un fichier .vcf compatible iPhone/Android.</p>;
-      case "stats":    return <StatsBrick data={data} update={update} />;
-      case "about":    return <AboutBrick data={data} update={update} />;
-      case "listings": return <ListingsBrick data={data} update={update} />;
-      case "contact":  return <ContactBrick data={data} update={update} />;
-      case "socials":  return <SocialsBrick data={data} update={update} />;
-      case "theme":    return <ThemeBrick data={data} update={update} />;
+      case "identity":     return <IdentityBrick data={data} update={update} />;
+      case "actions":      return <ActionsBrick data={data} update={update} />;
+      case "vcard":        return <p className="text-sm text-muted-foreground">Affiche un bouton « Enregistrer le contact » qui télécharge un fichier .vcf compatible iPhone/Android.</p>;
+      case "stats":        return <StatsBrick data={data} update={update} />;
+      case "about":        return <AboutBrick data={data} update={update} />;
+      case "video":        return <VideoBrick data={data} update={update} />;
+      case "services":     return <ServicesBrick data={data} update={update} />;
+      case "listings":     return <ListingsBrick data={data} update={update} />;
+      case "testimonials": return <TestimonialsBrick data={data} update={update} />;
+      case "calendar":     return <CalendarBrick data={data} update={update} />;
+      case "languages":    return <LanguagesBrick data={data} update={update} />;
+      case "cta":          return <CtaBrick data={data} update={update} />;
+      case "contact":      return <ContactBrick data={data} update={update} />;
+      case "socials":      return <SocialsBrick data={data} update={update} />;
+      case "theme":        return <ThemeBrick data={data} update={update} />;
     }
   };
 
   const enabledOf = (id: BrickId): boolean | undefined => {
     switch (id) {
-      case "actions":  return Object.values(data.actions).some(Boolean);
-      case "vcard":    return data.vcardEnabled;
-      case "stats":    return data.statsEnabled;
-      case "about":    return data.aboutEnabled;
-      case "listings": return data.listingsEnabled;
-      case "contact":  return data.contactEnabled;
-      case "socials":  return data.socialsEnabled;
-      default:         return undefined;
+      case "actions":      return Object.values(data.actions).some(Boolean);
+      case "vcard":        return data.vcardEnabled;
+      case "stats":        return data.statsEnabled;
+      case "about":        return data.aboutEnabled;
+      case "video":        return data.videoEnabled;
+      case "services":     return data.servicesEnabled;
+      case "listings":     return data.listingsEnabled;
+      case "testimonials": return data.testimonialsEnabled;
+      case "calendar":     return data.calendarEnabled;
+      case "languages":    return data.languagesEnabled;
+      case "cta":          return data.ctaEnabled;
+      case "contact":      return data.contactEnabled;
+      case "socials":      return data.socialsEnabled;
+      default:             return undefined;
     }
   };
 
   const toggleOf = (id: BrickId) => (v: boolean) => {
     switch (id) {
-      case "actions":  update("actions", { call: v, whatsapp: v, email: v, website: v }); break;
-      case "vcard":    update("vcardEnabled", v); break;
-      case "stats":    update("statsEnabled", v); break;
-      case "about":    update("aboutEnabled", v); break;
-      case "listings": update("listingsEnabled", v); break;
-      case "contact":  update("contactEnabled", v); break;
-      case "socials":  update("socialsEnabled", v); break;
+      case "actions":      update("actions", { call: v, whatsapp: v, email: v, website: v }); break;
+      case "vcard":        update("vcardEnabled", v); break;
+      case "stats":        update("statsEnabled", v); break;
+      case "about":        update("aboutEnabled", v); break;
+      case "video":        update("videoEnabled", v); break;
+      case "services":     update("servicesEnabled", v); break;
+      case "listings":     update("listingsEnabled", v); break;
+      case "testimonials": update("testimonialsEnabled", v); break;
+      case "calendar":     update("calendarEnabled", v); break;
+      case "languages":    update("languagesEnabled", v); break;
+      case "cta":          update("ctaEnabled", v); break;
+      case "contact":      update("contactEnabled", v); break;
+      case "socials":      update("socialsEnabled", v); break;
     }
   };
+
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
@@ -490,3 +515,110 @@ function ImportJsonButton({ onImport }: { onImport: (d: CardData) => void }) {
     </>
   );
 }
+
+/* ---------- Additional brick bodies ---------- */
+
+function VideoBrick({ data, update }: BrickProps) {
+  return (
+    <div className="space-y-3">
+      <Field label="Titre de la vidéo">
+        <Input value={data.videoTitle} onChange={(e) => update("videoTitle", e.target.value)} />
+      </Field>
+      <Field label="Lien YouTube (watch, youtu.be ou shorts)">
+        <Input value={data.videoUrl} onChange={(e) => update("videoUrl", e.target.value)} placeholder="https://www.youtube.com/watch?v=..." />
+      </Field>
+      <p className="text-xs text-muted-foreground">L'aperçu intègre la vidéo via youtube.com/embed.</p>
+    </div>
+  );
+}
+
+function ServicesBrick({ data, update }: BrickProps) {
+  const set = (id: string, patch: Partial<typeof data.services[number]>) =>
+    update("services", data.services.map((s) => s.id === id ? { ...s, ...patch } : s));
+  const add = () => update("services", [...data.services, { id: crypto.randomUUID(), title: "Nouveau service", description: "" }]);
+  const remove = (id: string) => update("services", data.services.filter((s) => s.id !== id));
+  return (
+    <div className="space-y-3">
+      {data.services.map((s) => (
+        <div key={s.id} className="rounded-xl border border-border p-3 space-y-2">
+          <Input placeholder="Titre" value={s.title} onChange={(e) => set(s.id, { title: e.target.value })} />
+          <Textarea rows={2} placeholder="Description courte" value={s.description} onChange={(e) => set(s.id, { description: e.target.value })} />
+          <div className="flex justify-end">
+            <Button type="button" variant="ghost" size="icon" onClick={() => remove(s.id)}><Trash2 className="h-4 w-4" /></Button>
+          </div>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={add}><Plus className="h-4 w-4 mr-1.5" />Ajouter un service</Button>
+    </div>
+  );
+}
+
+function TestimonialsBrick({ data, update }: BrickProps) {
+  const set = (id: string, patch: Partial<typeof data.testimonials[number]>) =>
+    update("testimonials", data.testimonials.map((t) => t.id === id ? { ...t, ...patch } : t));
+  const add = () => update("testimonials", [...data.testimonials, { id: crypto.randomUUID(), name: "Prénom N.", role: "Client", text: "", rating: 5 }]);
+  const remove = (id: string) => update("testimonials", data.testimonials.filter((t) => t.id !== id));
+  return (
+    <div className="space-y-3">
+      {data.testimonials.map((t) => (
+        <div key={t.id} className="rounded-xl border border-border p-3 space-y-2">
+          <div className="flex gap-2">
+            <Input placeholder="Nom" value={t.name} onChange={(e) => set(t.id, { name: e.target.value })} />
+            <Input placeholder="Rôle" value={t.role} onChange={(e) => set(t.id, { role: e.target.value })} />
+          </div>
+          <Textarea rows={3} placeholder="Témoignage" value={t.text} onChange={(e) => set(t.id, { text: e.target.value })} />
+          <div className="flex items-center justify-between">
+            <Field label="Note (1-5)" className="w-24">
+              <Input type="number" min={1} max={5} value={t.rating}
+                onChange={(e) => set(t.id, { rating: Math.max(1, Math.min(5, Number(e.target.value) || 5)) })} />
+            </Field>
+            <Button type="button" variant="ghost" size="icon" onClick={() => remove(t.id)}><Trash2 className="h-4 w-4" /></Button>
+          </div>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={add}><Plus className="h-4 w-4 mr-1.5" />Ajouter un témoignage</Button>
+    </div>
+  );
+}
+
+function CalendarBrick({ data, update }: BrickProps) {
+  return (
+    <div className="space-y-3">
+      <Field label="Libellé du bouton"><Input value={data.calendarLabel} onChange={(e) => update("calendarLabel", e.target.value)} /></Field>
+      <Field label="URL (Calendly, Cal.com, Google Calendar…)">
+        <Input value={data.calendarUrl} onChange={(e) => update("calendarUrl", e.target.value)} placeholder="https://calendly.com/..." />
+      </Field>
+    </div>
+  );
+}
+
+function LanguagesBrick({ data, update }: BrickProps) {
+  const set = (id: string, patch: Partial<typeof data.languages[number]>) =>
+    update("languages", data.languages.map((l) => l.id === id ? { ...l, ...patch } : l));
+  const add = () => update("languages", [...data.languages, { id: crypto.randomUUID(), name: "Langue", level: "Courant" }]);
+  const remove = (id: string) => update("languages", data.languages.filter((l) => l.id !== id));
+  return (
+    <div className="space-y-2">
+      {data.languages.map((l) => (
+        <div key={l.id} className="flex gap-2">
+          <Input placeholder="Langue" value={l.name} onChange={(e) => set(l.id, { name: e.target.value })} />
+          <Input placeholder="Niveau" value={l.level} onChange={(e) => set(l.id, { level: e.target.value })} />
+          <Button type="button" variant="ghost" size="icon" onClick={() => remove(l.id)}><Trash2 className="h-4 w-4" /></Button>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={add}><Plus className="h-4 w-4 mr-1.5" />Ajouter une langue</Button>
+    </div>
+  );
+}
+
+function CtaBrick({ data, update }: BrickProps) {
+  return (
+    <div className="space-y-3">
+      <Field label="Titre"><Input value={data.ctaTitle} onChange={(e) => update("ctaTitle", e.target.value)} /></Field>
+      <Field label="Texte"><Textarea rows={2} value={data.ctaText} onChange={(e) => update("ctaText", e.target.value)} /></Field>
+      <Field label="Libellé du bouton"><Input value={data.ctaButtonLabel} onChange={(e) => update("ctaButtonLabel", e.target.value)} /></Field>
+      <Field label="URL du bouton"><Input value={data.ctaButtonUrl} onChange={(e) => update("ctaButtonUrl", e.target.value)} /></Field>
+    </div>
+  );
+}
+

@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Phone, Mail, MessageCircle, MapPin, Globe, Linkedin, Instagram,
   Share2, Download, BadgeCheck, Award, ChevronRight, Building2, ImageIcon,
+  Star, Calendar, Languages as LangIcon, Sparkles, PlayCircle, ArrowRight,
 } from "lucide-react";
 import type { CardData, ThemeAccent } from "@/lib/card-types";
 
@@ -246,10 +247,124 @@ export function BusinessCard({ data }: { data: CardData }) {
                 </section>
               ) : null;
 
+            case "video":
+              return data.videoEnabled && data.videoUrl ? (
+                <section key="video" className="px-5 mt-7">
+                  <SectionTitle>{data.videoTitle || "Vidéo"}</SectionTitle>
+                  <YoutubeEmbed url={data.videoUrl} title={data.videoTitle} />
+                </section>
+              ) : null;
+
+            case "services":
+              return data.servicesEnabled && data.services.length > 0 ? (
+                <section key="services" className="px-5 mt-7">
+                  <SectionTitle>Services</SectionTitle>
+                  <ul className="mt-3 space-y-2">
+                    {data.services.map((s) => (
+                      <li key={s.id} className="rounded-2xl bg-card border border-border p-4 flex gap-3">
+                        <span className="h-9 w-9 grid place-items-center rounded-xl shrink-0" style={{ background: "var(--card-accent-gradient)" }}>
+                          <Sparkles className="h-4 w-4 text-primary-foreground" />
+                        </span>
+                        <div className="min-w-0">
+                          <h3 className="text-sm font-medium">{s.title}</h3>
+                          {s.description && <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">{s.description}</p>}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null;
+
+            case "testimonials":
+              return data.testimonialsEnabled && data.testimonials.length > 0 ? (
+                <section key="testimonials" className="mt-8">
+                  <div className="px-5"><SectionTitle>Ils en parlent</SectionTitle></div>
+                  <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    {data.testimonials.map((t) => (
+                      <article key={t.id} className="snap-start shrink-0 w-[82%] rounded-2xl bg-card border border-border p-4">
+                        <div className="flex gap-0.5" aria-label={`${t.rating} sur 5`}>
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <Star key={i} className="h-3.5 w-3.5" fill={i < t.rating ? "currentColor" : "transparent"} style={{ color: "var(--card-accent)" }} strokeWidth={1.5} />
+                          ))}
+                        </div>
+                        <p className="mt-3 text-sm leading-relaxed">« {t.text} »</p>
+                        <div className="mt-3 pt-3 border-t border-border">
+                          <div className="text-sm font-medium">{t.name}</div>
+                          <div className="text-[11px] text-muted-foreground">{t.role}</div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ) : null;
+
+            case "calendar":
+              return data.calendarEnabled && data.calendarUrl ? (
+                <section key="calendar" className="px-5 mt-7">
+                  <a
+                    href={data.calendarUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 rounded-2xl bg-card border border-border p-4 active:scale-[0.99] transition"
+                  >
+                    <span className="h-11 w-11 grid place-items-center rounded-xl" style={{ background: "var(--card-accent-gradient)" }}>
+                      <Calendar className="h-5 w-5 text-primary-foreground" />
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Agenda</div>
+                      <div className="text-sm font-medium">{data.calendarLabel || "Réserver un rendez-vous"}</div>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </a>
+                </section>
+              ) : null;
+
+            case "languages":
+              return data.languagesEnabled && data.languages.length > 0 ? (
+                <section key="languages" className="px-5 mt-7">
+                  <SectionTitle>Langues parlées</SectionTitle>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {data.languages.map((l) => (
+                      <span key={l.id} className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-3 py-1.5 text-xs">
+                        <LangIcon className="h-3.5 w-3.5" style={{ color: "var(--card-accent)" }} />
+                        <span className="font-medium">{l.name}</span>
+                        {l.level && <span className="text-muted-foreground">· {l.level}</span>}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              ) : null;
+
+            case "cta":
+              return data.ctaEnabled ? (
+                <section key="cta" className="px-5 mt-7">
+                  <div
+                    className="rounded-2xl p-5 border border-border"
+                    style={{ background: "linear-gradient(135deg, oklch(0.22 0.02 250), oklch(0.14 0.02 250))" }}
+                  >
+                    <h3 className="font-display text-lg leading-tight">{data.ctaTitle}</h3>
+                    {data.ctaText && <p className="mt-1.5 text-sm text-muted-foreground">{data.ctaText}</p>}
+                    {data.ctaButtonLabel && data.ctaButtonUrl && (
+                      <a
+                        href={data.ctaButtonUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium text-primary-foreground active:scale-[0.99] transition"
+                        style={{ background: "var(--card-accent-gradient)" }}
+                      >
+                        {data.ctaButtonLabel}
+                        <ArrowRight className="h-4 w-4" />
+                      </a>
+                    )}
+                  </div>
+                </section>
+              ) : null;
+
             default:
               return null;
           }
         })}
+
 
 
       <footer className="px-5 pt-8 pb-10 text-center">
@@ -302,3 +417,44 @@ function SocialIcon({ icon: Icon, href, label }: { icon: any; href: string; labe
     </a>
   );
 }
+
+function parseYoutubeId(url: string): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url.trim());
+    if (u.hostname.includes("youtu.be")) return u.pathname.slice(1) || null;
+    if (u.hostname.includes("youtube.com")) {
+      if (u.pathname === "/watch") return u.searchParams.get("v");
+      const m = u.pathname.match(/\/(embed|shorts)\/([\w-]{6,})/);
+      if (m) return m[2];
+    }
+  } catch {
+    const m = url.match(/[\w-]{11}/);
+    if (m) return m[0];
+  }
+  return null;
+}
+
+function YoutubeEmbed({ url, title }: { url: string; title?: string }) {
+  const id = parseYoutubeId(url);
+  if (!id) {
+    return (
+      <div className="mt-3 rounded-2xl border border-border bg-card p-4 text-xs text-muted-foreground">
+        URL YouTube invalide.
+      </div>
+    );
+  }
+  return (
+    <div className="mt-3 relative rounded-2xl overflow-hidden border border-border bg-black aspect-video">
+      <iframe
+        className="absolute inset-0 h-full w-full"
+        src={`https://www.youtube.com/embed/${id}?rel=0`}
+        title={title || "YouTube"}
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+      />
+    </div>
+  );
+}
+
