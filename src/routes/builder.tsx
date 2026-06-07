@@ -509,12 +509,17 @@ import {
 } from "@/lib/card-themes";
 
 function ThemeBrick({ data, update }: BrickProps) {
-  const [tab, setTab] = useState<"profession" | "theme">(
-    data.profession ? "profession" : "theme",
-  );
+  const [tab, setTab] = useState<"profession" | "theme">("theme");
   const [query, setQuery] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
+
+  // Restore "Par métier" tab when a saved profession comes back from localStorage
+  useEffect(() => {
+    if (data.profession) {
+      setTab("profession");
+    }
+  }, [data.profession]);
 
   const activeTheme = THEMES_BY_ID[data.accent];
   const activeProfession = data.profession
