@@ -72,22 +72,30 @@ export function BusinessCard({ data }: { data: CardData }) {
         {data.sectionOrder
           .filter((id) => id !== "identity" && id !== "theme")
           .map((id) => {
-            switch (id) {
-              case "actions":      return <ActionsSection key={id} data={data} />;
-              case "vcard":        return <VCardSection key={id} data={data} onSave={handleSave} copied={copied} />;
-              case "stats":        return <StatsSection key={id} data={data} />;
-              case "about":        return <AboutSection key={id} data={data} />;
-              case "video":        return <VideoSection key={id} data={data} />;
-              case "services":     return <ServicesSection key={id} data={data} />;
-              case "listings":     return <ListingsSection key={id} data={data} />;
-              case "testimonials": return <TestimonialsSection key={id} data={data} />;
-              case "calendar":     return <CalendarSection key={id} data={data} />;
-              case "languages":    return <LanguagesSection key={id} data={data} />;
-              case "cta":          return <CtaSection key={id} data={data} />;
-              case "contact":      return <ContactSection key={id} data={data} />;
-              case "socials":      return <SocialsSection key={id} data={data} />;
-              default:             return null;
-            }
+            const node = (() => {
+              switch (id) {
+                case "actions":      return <ActionsSection data={data} />;
+                case "vcard":        return <VCardSection data={data} onSave={handleSave} copied={copied} />;
+                case "stats":        return <StatsSection data={data} />;
+                case "about":        return <AboutSection data={data} />;
+                case "video":        return <VideoSection data={data} />;
+                case "services":     return <ServicesSection data={data} />;
+                case "listings":     return <ListingsSection data={data} />;
+                case "testimonials": return <TestimonialsSection data={data} />;
+                case "calendar":     return <CalendarSection data={data} />;
+                case "languages":    return <LanguagesSection data={data} />;
+                case "cta":          return <CtaSection data={data} />;
+                case "contact":      return <ContactSection data={data} />;
+                case "socials":      return <SocialsSection data={data} />;
+                default:             return null;
+              }
+            })();
+            if (!node) return null;
+            return (
+              <div key={id} data-brick={id} className="scroll-mt-4">
+                {node}
+              </div>
+            );
           })}
       </div>
 
