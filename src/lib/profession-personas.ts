@@ -1013,7 +1013,8 @@ function profile(...keys: (keyof SectionFlags)[]): Required<SectionFlags> {
   return f;
 }
 
-type VariantSet = Record<VariantId, Required<SectionFlags>>;
+
+
 
 /** Variante essentielle générique : carte minimale + 1 brique de différenciation. */
 function essentielleWith(extra: keyof SectionFlags): Required<SectionFlags> {
