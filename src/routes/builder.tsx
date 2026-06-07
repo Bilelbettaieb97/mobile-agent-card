@@ -553,33 +553,99 @@ function ServicesBrick({ data, update }: BrickProps) {
   );
 }
 
+const TESTIMONIAL_STYLES: { id: TestimonialsStyle; label: string; hint: string }[] = [
+  { id: "cards",   label: "Cartes",    hint: "Carrousel large avec citation" },
+  { id: "stacked", label: "Empilées",  hint: "Liste verticale, avatar à gauche" },
+  { id: "compact", label: "Compactes", hint: "Mini-cartes plus denses" },
+];
+
 function TestimonialsBrick({ data, update }: BrickProps) {
   const set = (id: string, patch: Partial<typeof data.testimonials[number]>) =>
     update("testimonials", data.testimonials.map((t) => t.id === id ? { ...t, ...patch } : t));
-  const add = () => update("testimonials", [...data.testimonials, { id: crypto.randomUUID(), name: "Prénom N.", role: "Client", text: "", rating: 5 }]);
+  const add = () => update("testimonials", [...data.testimonials, {
+    id: crypto.randomUUID(), name: "Prénom N.", role: "Client", text: "", rating: 5, photo: "", link: "",
+  }]);
   const remove = (id: string) => update("testimonials", data.testimonials.filter((t) => t.id !== id));
+  const onPhoto = (id: string, f: File) => {
+    const reader = new FileReader();
+    reader.onload = () => set(id, { photo: String(reader.result) });
+    reader.readAsDataURL(f);
+  };
+
   return (
-    <div className="space-y-3">
-      {data.testimonials.map((t) => (
-        <div key={t.id} className="rounded-xl border border-border p-3 space-y-2">
-          <div className="flex gap-2">
-            <Input placeholder="Nom" value={t.name} onChange={(e) => set(t.id, { name: e.target.value })} />
-            <Input placeholder="Rôle" value={t.role} onChange={(e) => set(t.id, { role: e.target.value })} />
-          </div>
-          <Textarea rows={3} placeholder="Témoignage" value={t.text} onChange={(e) => set(t.id, { text: e.target.value })} />
-          <div className="flex items-center justify-between">
-            <Field label="Note (1-5)" className="w-24">
-              <Input type="number" min={1} max={5} value={t.rating}
-                onChange={(e) => set(t.id, { rating: Math.max(1, Math.min(5, Number(e.target.value) || 5)) })} />
-            </Field>
-            <Button type="button" variant="ghost" size="icon" onClick={() => remove(t.id)}><Trash2 className="h-4 w-4" /></Button>
-          </div>
+    <div className="space-y-4">
+      <div>
+        <Label className="text-xs">Style du carrousel</Label>
+        <div className="mt-2 grid grid-cols-3 gap-2">
+          {TESTIMONIAL_STYLES.map((s) => {
+            const active = data.testimonialsStyle === s.id;
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => update("testimonialsStyle", s.id)}
+                className={`rounded-xl border p-2.5 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
+              >
+                <div className="text-xs font-medium">{s.label}</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{s.hint}</div>
+              </button>
+            );
+          })}
         </div>
-      ))}
-      <Button type="button" variant="outline" size="sm" onClick={add}><Plus className="h-4 w-4 mr-1.5" />Ajouter un témoignage</Button>
+      </div>
+
+      <div className="space-y-3">
+        {data.testimonials.map((t) => (
+          <div key={t.id} className="rounded-xl border border-border p-3 space-y-3">
+            <div className="flex gap-3">
+              <label className="h-14 w-14 rounded-full overflow-hidden bg-muted border border-border grid place-items-center cursor-pointer shrink-0">
+                {t.photo
+                  ? <img src={t.photo} alt="" className="h-full w-full object-cover" />
+                  : <Upload className="h-4 w-4 text-muted-foreground" />}
+                <input type="file" accept="image/*" className="hidden"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) onPhoto(t.id, f); }} />
+              </label>
+              <div className="flex-1 grid grid-cols-2 gap-2">
+                <Input placeholder="Nom" value={t.name} onChange={(e) => set(t.id, { name: e.target.value })} />
+                <Input placeholder="Rôle / contexte" value={t.role} onChange={(e) => set(t.id, { role: e.target.value })} />
+              </div>
+            </div>
+
+            {t.photo && (
+              <button type="button" onClick={() => set(t.id, { photo: "" })}
+                className="text-[11px] text-muted-foreground hover:text-foreground">
+                Retirer la photo
+              </button>
+            )}
+
+            <Textarea rows={3} placeholder="Témoignage" value={t.text} onChange={(e) => set(t.id, { text: e.target.value })} />
+
+            <div className="grid grid-cols-[6rem_1fr] gap-2">
+              <Field label="Note (1-5)">
+                <Input type="number" min={1} max={5} value={t.rating}
+                  onChange={(e) => set(t.id, { rating: Math.max(1, Math.min(5, Number(e.target.value) || 5)) })} />
+              </Field>
+              <Field label="Lien (optionnel)">
+                <Input placeholder="https://google.com/avis/..." value={t.link}
+                  onChange={(e) => set(t.id, { link: e.target.value })} />
+              </Field>
+            </div>
+
+            <div className="flex justify-end">
+              <Button type="button" variant="ghost" size="sm" onClick={() => remove(t.id)}>
+                <Trash2 className="h-4 w-4 mr-1.5" /> Supprimer
+              </Button>
+            </div>
+          </div>
+        ))}
+        <Button type="button" variant="outline" size="sm" onClick={add}>
+          <Plus className="h-4 w-4 mr-1.5" />Ajouter un témoignage
+        </Button>
+      </div>
     </div>
   );
 }
+
 
 function CalendarBrick({ data, update }: BrickProps) {
   return (
