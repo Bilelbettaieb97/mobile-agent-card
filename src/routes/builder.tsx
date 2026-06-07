@@ -20,7 +20,6 @@ import { ShareDialog } from "@/components/card/ShareDialog";
 import { useCardStore } from "@/lib/card-store";
 import type { CardData, BrickId } from "@/lib/card-types";
 import { BuilderWelcome } from "@/components/builder/BuilderWelcome";
-import { BuilderCompare } from "@/components/builder/BuilderCompare";
 import { BuilderSections } from "@/components/builder/BuilderSections";
 import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
 import { StepFooter } from "@/components/builder/StepFooter";
@@ -30,16 +29,16 @@ import {
   renderBrickBody,
   type BrickProps,
 } from "@/components/builder/bricks";
-import { buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
+import { buildPreviewCard, buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
 import { PROFESSIONS } from "@/lib/card-themes";
 
-type Step = "welcome" | "compare" | "essentials" | "extras" | "edit";
+type Step = "welcome" | "essentials" | "extras" | "edit";
 
 const STEP_NUM: Record<Step, StepNum> = {
-  welcome: 1, compare: 2, essentials: 3, extras: 4, edit: 5,
+  welcome: 1, essentials: 2, extras: 3, edit: 4,
 };
 const NUM_STEP: Record<StepNum, Step> = {
-  1: "welcome", 2: "compare", 3: "essentials", 4: "extras", 5: "edit",
+  1: "welcome", 2: "essentials", 3: "extras", 4: "edit",
 };
 
 export const Route = createFileRoute("/builder")({
