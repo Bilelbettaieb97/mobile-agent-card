@@ -215,6 +215,71 @@ function SocialProofBar() {
 }
 
 /* ============================================================
+   PRODUCT GALLERY
+   ============================================================ */
+function Gallery() {
+  const shots = [
+    {
+      src: cardStudio,
+      title: "Studio noir",
+      caption: "La carte premium, posée comme un objet de statut.",
+      alt: "Carte NFC noire gravée sur fond noir en studio",
+      featured: true,
+    },
+    {
+      src: cardHand,
+      title: "Dans la main",
+      caption: "Le geste simple qui remplace les cartes papier.",
+      alt: "Carte NFC tenue dans une main près d'un smartphone",
+      featured: false,
+    },
+    {
+      src: cardMacro,
+      title: "Gravure macro",
+      caption: "Finition mate, détail précis, présence immédiate.",
+      alt: "Plan macro de la gravure et de la finition d'une carte NFC noire",
+      featured: false,
+    },
+  ];
+
+  return (
+    <section className="border-t border-border/50 bg-background">
+      <div className="mx-auto max-w-6xl px-5 py-16 md:py-24">
+        <div className="max-w-2xl mb-10">
+          <p className="text-xs uppercase tracking-[0.18em] text-primary mb-3">L'objet, en vrai</p>
+          <h2 className="font-display text-3xl md:text-5xl leading-tight tracking-tight">
+            Une carte qu'on remarque avant même de la toucher.
+          </h2>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3 md:auto-rows-[260px]">
+          {shots.map((shot) => (
+            <figure
+              key={shot.title}
+              className={`group relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-2xl shadow-primary/10 ${shot.featured ? "md:col-span-2 md:row-span-2" : ""}`}
+            >
+              <img
+                src={shot.src}
+                alt={shot.alt}
+                loading="lazy"
+                width={1280}
+                height={960}
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/10 to-transparent" />
+              <figcaption className="absolute inset-x-0 bottom-0 p-5 md:p-7">
+                <p className="text-xs uppercase tracking-[0.18em] text-primary mb-2">{shot.title}</p>
+                <p className="max-w-sm text-sm md:text-base text-foreground/90">{shot.caption}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
    PROBLEM
    ============================================================ */
 function ProblemSection() {
@@ -903,40 +968,3 @@ function FomoToasts() {
   );
 }
 
-/* ============================================================
-   GALLERY — real product photography
-   ============================================================ */
-function Gallery() {
-  const shots = [
-    { src: cardStudio, label: "Studio", caption: "Édition Aurum · gravure laser or 24k", span: "md:col-span-2 md:row-span-2" },
-    { src: cardHand, label: "En usage", caption: "Un geste suffit · zéro friction", span: "md:col-span-1" },
-    { src: cardMacro, label: "Macro", caption: "Métal brossé · finition jewelry-grade", span: "md:col-span-1" },
-  ];
-  return (
-    <section className="mx-auto max-w-6xl px-5 py-20 md:py-28 border-t border-border/50">
-      <div className="text-center mb-10">
-        <p className="text-xs uppercase tracking-[0.18em] text-amber-400 mb-3">L'objet</p>
-        <h2 className="font-display text-4xl md:text-5xl tracking-tight">Pas un visuel.<br /><span className="text-muted-foreground">L'objet, en vrai.</span></h2>
-      </div>
-      <div className="grid md:grid-cols-3 md:grid-rows-2 gap-3 md:gap-4 md:h-[640px]">
-        {shots.map((s) => (
-          <div key={s.label} className={`group relative rounded-3xl overflow-hidden border border-border bg-card ${s.span}`}>
-            <img
-              src={s.src}
-              alt={`Carte NFC — ${s.label}`}
-              loading="lazy"
-              width={1280}
-              height={960}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4">
-              <div className="text-[10px] uppercase tracking-[0.18em] text-amber-400 mb-1">{s.label}</div>
-              <div className="text-sm text-white font-medium">{s.caption}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
