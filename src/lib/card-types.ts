@@ -126,6 +126,7 @@ export interface CardData {
 
   // Theme
   accent: ThemeAccent;
+  profession?: string;
 
   // Order
   sectionOrder: BrickId[];
