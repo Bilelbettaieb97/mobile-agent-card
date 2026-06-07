@@ -75,60 +75,8 @@ function BuilderPage() {
             Activez une brique, remplissez les champs — l'aperçu se met à jour en direct.
           </p>
 
-          <Accordion type="single" collapsible defaultValue="identity" className="space-y-3">
-            <Brick id="identity" title="Identité" subtitle="Photo, nom, titre, agence" alwaysOn>
-              <IdentityBrick data={data} update={update} />
-            </Brick>
+          <BrickList data={data} update={update} setData={setData} />
 
-            <Brick id="actions" title="Actions rapides" subtitle="Appel, WhatsApp, Mail, Site"
-              enabled={Object.values(data.actions).some(Boolean)}
-              onToggle={(v) => update("actions", { call: v, whatsapp: v, email: v, website: v })}
-            >
-              <ActionsBrick data={data} update={update} />
-            </Brick>
-
-            <Brick id="vcard" title="Enregistrer le contact" subtitle="Bouton vCard"
-              enabled={data.vcardEnabled} onToggle={(v) => update("vcardEnabled", v)}
-            >
-              <p className="text-sm text-muted-foreground">
-                Affiche un bouton « Enregistrer le contact » qui télécharge un fichier .vcf compatible iPhone/Android.
-              </p>
-            </Brick>
-
-            <Brick id="stats" title="Statistiques" subtitle="Chiffres clés"
-              enabled={data.statsEnabled} onToggle={(v) => update("statsEnabled", v)}
-            >
-              <StatsBrick data={data} update={update} />
-            </Brick>
-
-            <Brick id="about" title="À propos" subtitle="Bio + badges"
-              enabled={data.aboutEnabled} onToggle={(v) => update("aboutEnabled", v)}
-            >
-              <AboutBrick data={data} update={update} />
-            </Brick>
-
-            <Brick id="listings" title="Sélection de biens" subtitle="Vos annonces phares"
-              enabled={data.listingsEnabled} onToggle={(v) => update("listingsEnabled", v)}
-            >
-              <ListingsBrick data={data} update={update} />
-            </Brick>
-
-            <Brick id="contact" title="Coordonnées" subtitle="Téléphone, mail, site, secteur"
-              enabled={data.contactEnabled} onToggle={(v) => update("contactEnabled", v)}
-            >
-              <ContactBrick data={data} update={update} />
-            </Brick>
-
-            <Brick id="socials" title="Réseaux sociaux" subtitle="LinkedIn, Instagram, WhatsApp"
-              enabled={data.socialsEnabled} onToggle={(v) => update("socialsEnabled", v)}
-            >
-              <SocialsBrick data={data} update={update} />
-            </Brick>
-
-            <Brick id="theme" title="Thème" subtitle="Couleur d'accent" alwaysOn>
-              <ThemeBrick data={data} update={update} />
-            </Brick>
-          </Accordion>
 
           <div className="mt-8 flex gap-3">
             <Button
