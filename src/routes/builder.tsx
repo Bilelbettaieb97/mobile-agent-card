@@ -145,15 +145,21 @@ function BuilderPage() {
 /* ---------- Brick shell ---------- */
 
 const BRICK_META: Record<BrickId, { title: string; subtitle: string }> = {
-  identity: { title: "Identité", subtitle: "Photo, nom, titre, agence" },
-  actions:  { title: "Actions rapides", subtitle: "Appel, WhatsApp, Mail, Site" },
-  vcard:    { title: "Enregistrer le contact", subtitle: "Bouton vCard" },
-  stats:    { title: "Statistiques", subtitle: "Chiffres clés" },
-  about:    { title: "À propos", subtitle: "Bio + badges" },
-  listings: { title: "Sélection de biens", subtitle: "Vos annonces phares" },
-  contact:  { title: "Coordonnées", subtitle: "Téléphone, mail, site, secteur" },
-  socials:  { title: "Réseaux sociaux", subtitle: "LinkedIn, Instagram, WhatsApp" },
-  theme:    { title: "Thème", subtitle: "Couleur d'accent" },
+  identity:     { title: "Identité",            subtitle: "Photo, nom, titre, agence" },
+  actions:      { title: "Actions rapides",     subtitle: "Appel, WhatsApp, Mail, Site" },
+  vcard:        { title: "Enregistrer le contact", subtitle: "Bouton vCard" },
+  stats:        { title: "Statistiques",        subtitle: "Chiffres clés" },
+  about:        { title: "À propos",            subtitle: "Bio + badges" },
+  video:        { title: "Vidéo de présentation", subtitle: "Lien YouTube" },
+  services:     { title: "Services",            subtitle: "Vos offres / prestations" },
+  listings:     { title: "Sélection de biens",  subtitle: "Vos annonces phares" },
+  testimonials: { title: "Témoignages",         subtitle: "Avis clients" },
+  calendar:     { title: "Prendre rendez-vous", subtitle: "Lien Calendly / agenda" },
+  languages:    { title: "Langues parlées",     subtitle: "Idiomes & niveau" },
+  cta:          { title: "Bannière CTA",        subtitle: "Encart d'appel à l'action" },
+  contact:      { title: "Coordonnées",         subtitle: "Téléphone, mail, site, secteur" },
+  socials:      { title: "Réseaux sociaux",     subtitle: "LinkedIn, Instagram, WhatsApp" },
+  theme:        { title: "Thème",               subtitle: "Couleur d'accent" },
 };
 
 function BrickList({ data, update, setData }: {
@@ -177,42 +183,61 @@ function BrickList({ data, update, setData }: {
 
   const renderBody = (id: BrickId): ReactNode => {
     switch (id) {
-      case "identity": return <IdentityBrick data={data} update={update} />;
-      case "actions":  return <ActionsBrick data={data} update={update} />;
-      case "vcard":    return <p className="text-sm text-muted-foreground">Affiche un bouton « Enregistrer le contact » qui télécharge un fichier .vcf compatible iPhone/Android.</p>;
-      case "stats":    return <StatsBrick data={data} update={update} />;
-      case "about":    return <AboutBrick data={data} update={update} />;
-      case "listings": return <ListingsBrick data={data} update={update} />;
-      case "contact":  return <ContactBrick data={data} update={update} />;
-      case "socials":  return <SocialsBrick data={data} update={update} />;
-      case "theme":    return <ThemeBrick data={data} update={update} />;
+      case "identity":     return <IdentityBrick data={data} update={update} />;
+      case "actions":      return <ActionsBrick data={data} update={update} />;
+      case "vcard":        return <p className="text-sm text-muted-foreground">Affiche un bouton « Enregistrer le contact » qui télécharge un fichier .vcf compatible iPhone/Android.</p>;
+      case "stats":        return <StatsBrick data={data} update={update} />;
+      case "about":        return <AboutBrick data={data} update={update} />;
+      case "video":        return <VideoBrick data={data} update={update} />;
+      case "services":     return <ServicesBrick data={data} update={update} />;
+      case "listings":     return <ListingsBrick data={data} update={update} />;
+      case "testimonials": return <TestimonialsBrick data={data} update={update} />;
+      case "calendar":     return <CalendarBrick data={data} update={update} />;
+      case "languages":    return <LanguagesBrick data={data} update={update} />;
+      case "cta":          return <CtaBrick data={data} update={update} />;
+      case "contact":      return <ContactBrick data={data} update={update} />;
+      case "socials":      return <SocialsBrick data={data} update={update} />;
+      case "theme":        return <ThemeBrick data={data} update={update} />;
     }
   };
 
   const enabledOf = (id: BrickId): boolean | undefined => {
     switch (id) {
-      case "actions":  return Object.values(data.actions).some(Boolean);
-      case "vcard":    return data.vcardEnabled;
-      case "stats":    return data.statsEnabled;
-      case "about":    return data.aboutEnabled;
-      case "listings": return data.listingsEnabled;
-      case "contact":  return data.contactEnabled;
-      case "socials":  return data.socialsEnabled;
-      default:         return undefined;
+      case "actions":      return Object.values(data.actions).some(Boolean);
+      case "vcard":        return data.vcardEnabled;
+      case "stats":        return data.statsEnabled;
+      case "about":        return data.aboutEnabled;
+      case "video":        return data.videoEnabled;
+      case "services":     return data.servicesEnabled;
+      case "listings":     return data.listingsEnabled;
+      case "testimonials": return data.testimonialsEnabled;
+      case "calendar":     return data.calendarEnabled;
+      case "languages":    return data.languagesEnabled;
+      case "cta":          return data.ctaEnabled;
+      case "contact":      return data.contactEnabled;
+      case "socials":      return data.socialsEnabled;
+      default:             return undefined;
     }
   };
 
   const toggleOf = (id: BrickId) => (v: boolean) => {
     switch (id) {
-      case "actions":  update("actions", { call: v, whatsapp: v, email: v, website: v }); break;
-      case "vcard":    update("vcardEnabled", v); break;
-      case "stats":    update("statsEnabled", v); break;
-      case "about":    update("aboutEnabled", v); break;
-      case "listings": update("listingsEnabled", v); break;
-      case "contact":  update("contactEnabled", v); break;
-      case "socials":  update("socialsEnabled", v); break;
+      case "actions":      update("actions", { call: v, whatsapp: v, email: v, website: v }); break;
+      case "vcard":        update("vcardEnabled", v); break;
+      case "stats":        update("statsEnabled", v); break;
+      case "about":        update("aboutEnabled", v); break;
+      case "video":        update("videoEnabled", v); break;
+      case "services":     update("servicesEnabled", v); break;
+      case "listings":     update("listingsEnabled", v); break;
+      case "testimonials": update("testimonialsEnabled", v); break;
+      case "calendar":     update("calendarEnabled", v); break;
+      case "languages":    update("languagesEnabled", v); break;
+      case "cta":          update("ctaEnabled", v); break;
+      case "contact":      update("contactEnabled", v); break;
+      case "socials":      update("socialsEnabled", v); break;
     }
   };
+
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
