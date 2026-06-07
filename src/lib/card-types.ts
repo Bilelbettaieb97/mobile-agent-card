@@ -109,4 +109,6 @@ export const DEFAULT_CARD: CardData = {
   instagram: "https://instagram.com",
   whatsappSocial: "33612345678",
   accent: "gold",
+  sectionOrder: DEFAULT_SECTION_ORDER,
 };
+
