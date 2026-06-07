@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check, Crown, Mail, LogOut } from "lucide-react";
+import { UpsellSection } from "@/components/dashboard/UpsellSection";
 
 export const Route = createFileRoute("/dashboard/account")({
   component: AccountPage,
@@ -83,6 +84,11 @@ function AccountPage() {
             </Card>
           ))}
         </div>
+      </section>
+
+      {/* Premium upsells */}
+      <section className="-mx-5">
+        <UpsellSection />
       </section>
 
       {/* Account */}
