@@ -183,7 +183,7 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
   const activeAllowed = allowedDefs.filter((d) => isEnabled(data, d.key)).length;
   const totalAllowed = allowedDefs.length;
 
-  const stepNum: 3 | 4 = isEssentials ? 3 : 4;
+  const stepNum: 2 | 3 = isEssentials ? 2 : 3;
   const heading = isEssentials ? "Remplissez les sections essentielles" : "Ajoutez des sections complémentaires";
   const intro = isEssentials
     ? "Ce que toute carte de visite digitale doit contenir. Activez et remplissez les champs — l'aperçu se met à jour en direct."
