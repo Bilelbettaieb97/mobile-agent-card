@@ -46,10 +46,6 @@ function BuilderPage() {
   const [shareOpen, setShareOpen] = useState(false);
   const [step, setStep] = useState<"welcome" | "essentials" | "extras" | "edit">("welcome");
 
-  // After hydration, skip onboarding if a profession was already saved
-  useEffect(() => {
-    if (hydrated && data.profession) setStep("edit");
-  }, [hydrated, data.profession]);
 
   if (!hydrated) {
     return <div className="min-h-screen bg-background grid place-items-center text-muted-foreground">Chargement…</div>;
