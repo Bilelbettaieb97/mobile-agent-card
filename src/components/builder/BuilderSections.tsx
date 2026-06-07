@@ -349,7 +349,7 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
                 aria-hidden
               />
               <PhoneFrame>
-                <BusinessCard data={data} />
+                <BusinessCard data={previewData} />
               </PhoneFrame>
             </div>
           </div>
