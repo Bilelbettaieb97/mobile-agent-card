@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Sparkles, Check, ChevronDown, Lock, Crown, Zap } from "lucide-react";
+import { Sparkles, Check, ChevronDown, Lock, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
