@@ -124,7 +124,11 @@ export interface CardData {
 
   // Order
   sectionOrder: BrickId[];
+
+  // Per-brick design variants
+  variants: BrickVariants;
 }
+
 
 export const DEFAULT_CARD: CardData = {
   name: "Alexandre Moreau",
