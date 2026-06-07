@@ -1,54 +1,65 @@
-# Corriger le chevauchement entre briques
+# Champs de formulaire conditionnels par variante
 
-## Le problème
+## Principe
 
-Chaque section (Identité, Actions, vCard, Stats…) gère elle-même son espacement vertical via des classes `mt-4`, `mt-5`, `mt-6` posées sur sa balise racine. Certaines variantes utilisent en plus des effets visuels qui « débordent » de leur boîte logique :
+Quand une variante introduit un élément visuel nouveau (image, label, couleur…), le formulaire doit exposer un champ pour le piloter. Sinon la variante reste « cosmétique » et impossible à personnaliser.
 
-- **Identité « Couverture »** : bannière 144px + bloc contenu tiré vers le haut avec `-mt-12` → la hauteur réelle du header est plus petite que ce que l'œil perçoit, et le visuel descend plus bas que le flux.
-- **Identité « Horizontal »** : carte avec bordure et padding propres.
-- **Actions « Pills » / « Grid »** : éléments pleine largeur qui collent visuellement à ce qui précède s'il n'y a pas de respiration garantie.
+## Audit des variantes
 
-Comme chaque brique a sa propre marge, le mélange de variantes produit des espacements incohérents — et dans le cas Couverture + Pills, les deux blocs se touchent / se chevauchent.
+J'ai relu chaque variante existante. Une seule introduit un nouvel élément non géré :
 
-## La solution
+| Section | Variante | Nouvel élément | Statut actuel | Action |
+|---|---|---|---|---|
+| **Identité** | **Couverture** | Bandeau image en arrière-plan de l'en-tête | Réutilise `data.photo` flouté (donc pas de vrai contrôle séparé) | **Ajouter `coverPhoto`** |
+| Identité | Horizontal | — | OK | rien |
+| Actions | pills / grid / icons | — (même data) | OK | rien |
+| vCard | gradient / outline / card | — | OK | rien |
+| Stats | inline / stacked / pills | — | OK | rien |
+| About | standard / quote / card | — | OK | rien |
+| Vidéo | embed / thumb / cinema | — (même `videoUrl` / `videoTitle`) | OK | rien |
+| Services | list / numbered / carousel | — | OK | rien |
+| Listings | carousel / stacked / compact | — | OK | rien |
+| Calendar | row / cta / block | — | OK | rien |
+| Languages | chips / list / grid | — | OK | rien |
+| CTA | gradient / outline / bold | — | OK | rien |
+| Contact | list / grid / compact | — | OK | rien |
+| Socials | icons / pills / branded | — (couleurs câblées en interne) | OK | rien |
 
-Centraliser l'espacement dans **un seul conteneur parent** dans `BusinessCard.tsx`, et retirer toutes les marges verticales individuelles des sections.
+Seule **Identité Couverture** a besoin d'un champ supplémentaire pour le moment.
 
-### 1. `src/components/card/BusinessCard.tsx` — conteneur unique
+## Changements
 
-Envelopper Identity + la boucle des sections ordonnées dans un wrapper qui impose un gap uniforme :
+### 1. `src/lib/card-types.ts`
+- Ajouter `coverPhoto: string` à `CardData`.
+- `DEFAULT_CARD.coverPhoto = ""`.
 
-```tsx
-<div className="flex flex-col gap-6 pt-4 pb-2">
-  <IdentitySection data={data} />
-  {data.sectionOrder.filter(...).map(...)}
-</div>
-```
+### 2. `src/lib/card-store.ts`
+- Le merge avec `localStorage` reprend tous les champs manquants par défaut — vérifier qu'il prend bien `coverPhoto` (logique identique à `variants`).
 
-Avantages :
-- Espacement **identique** entre toutes les briques (24px), quelle que soit la variante.
-- Aucune brique ne peut « manger » l'espace d'une autre.
-- Le drag-and-drop reste valide : l'ordre change, l'espacement reste constant.
+### 3. `src/components/card/BusinessCard.tsx` — `IdentitySection` variante `cover`
+- Bannière : si `data.coverPhoto` est défini → image plein cadre (object-cover, sans flou ni opacité 40%). Sinon → fallback dégradé actuel + photo floutée si dispo, puis dégradé plat si rien.
+- Avatar dans le rond : continue d'utiliser `data.photo`.
 
-### 2. Nettoyer chaque section
+### 4. `src/routes/builder.tsx` — `IdentityBrick`
+- Ajouter, **sous le champ « Secteur géographique »**, un bloc **conditionnel** qui n'apparaît que si `data.variants.identity === "cover"` :
+  - Label : « Photo de couverture »
+  - Hint : « Affichée en bannière derrière votre photo. »
+  - Bouton import (FileReader → `coverPhoto` en data-URL)
+  - Aperçu miniature 16/9 + bouton « Retirer »
+- Pattern identique à l'upload `photo` déjà en place.
 
-Pour **chaque** sous-composant (`IdentitySection`, `ActionsSection`, `VCardSection`, `StatsSection`, `AboutSection`, `VideoSection`, `ServicesSection`, `ListingsSection`, `TestimonialsSection`, `CalendarSection`, `LanguagesSection`, `CtaSection`, `ContactSection`, `SocialsSection`) et **chaque variante** :
-
-- Retirer `mt-2`, `mt-3`, `mt-4`, `mt-5`, `mt-6`, `mt-8` de la balise racine de la section.
-- Garder `px-5` (gouttières) et le padding interne.
-- Pour la variante **Identité Couverture** : remplacer le `-mt-12` par un layout sans débordement négatif — soit un `padding-top` réservé pour l'avatar, soit un avatar positionné en absolu avec un `padding-top` équivalent sur le bloc texte. La boîte logique correspondra alors au visuel.
-- Pour la variante **Identité par défaut (centered)** : déjà `pt-3 pb-7`, simplement retirer le `mt-2`.
-
-### 3. Garantir qu'aucune variante future ne casse l'alignement
-
-Ajouter un commentaire en tête de chaque sous-composant : « Ne pas poser de marge verticale sur la racine — l'espacement est géré par le parent. »
+### 5. Règle pour le futur
+Ajouter un commentaire en tête de `BRICK_VARIANTS` dans `src/lib/brick-variants.ts` : « Si une nouvelle variante introduit un élément visuel pilotable (image, libellé, lien…), créer le champ correspondant dans `CardData` ET dans le `*Brick` du builder, avec affichage conditionnel sur la variante. »
 
 ## Hors scope
 
-- Pas de changement de design des variantes (couleurs, formes, typo).
-- Pas de changement du système de variantes ni du store.
-- Pas de touche au builder ni au drag-and-drop.
+- Pas de refonte des autres variantes.
+- Pas de système générique « schema → form » (overkill pour ce besoin).
 
 ## Fichiers modifiés
 
-- `src/components/card/BusinessCard.tsx` (seul fichier)
+- `src/lib/card-types.ts`
+- `src/lib/card-store.ts` (vérif seulement, modif si nécessaire)
+- `src/components/card/BusinessCard.tsx`
+- `src/routes/builder.tsx`
+- `src/lib/brick-variants.ts` (commentaire de règle)
