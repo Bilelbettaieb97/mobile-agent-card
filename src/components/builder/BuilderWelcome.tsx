@@ -256,6 +256,13 @@ export function BuilderWelcome({
           </div>
         </aside>
       </div>
+
+      <StepFooter
+        step={1}
+        onNext={handleChoose}
+        nextLabel={nextLabel}
+        centerInfo={`Sélection : ${centerInfo}`}
+      />
     </main>
   );
 }
