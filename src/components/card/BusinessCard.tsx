@@ -417,3 +417,44 @@ function SocialIcon({ icon: Icon, href, label }: { icon: any; href: string; labe
     </a>
   );
 }
+
+function parseYoutubeId(url: string): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url.trim());
+    if (u.hostname.includes("youtu.be")) return u.pathname.slice(1) || null;
+    if (u.hostname.includes("youtube.com")) {
+      if (u.pathname === "/watch") return u.searchParams.get("v");
+      const m = u.pathname.match(/\/(embed|shorts)\/([\w-]{6,})/);
+      if (m) return m[2];
+    }
+  } catch {
+    const m = url.match(/[\w-]{11}/);
+    if (m) return m[0];
+  }
+  return null;
+}
+
+function YoutubeEmbed({ url, title }: { url: string; title?: string }) {
+  const id = parseYoutubeId(url);
+  if (!id) {
+    return (
+      <div className="mt-3 rounded-2xl border border-border bg-card p-4 text-xs text-muted-foreground">
+        URL YouTube invalide.
+      </div>
+    );
+  }
+  return (
+    <div className="mt-3 relative rounded-2xl overflow-hidden border border-border bg-black aspect-video">
+      <iframe
+        className="absolute inset-0 h-full w-full"
+        src={`https://www.youtube.com/embed/${id}?rel=0`}
+        title={title || "YouTube"}
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+      />
+    </div>
+  );
+}
+
