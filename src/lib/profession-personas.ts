@@ -984,7 +984,7 @@ export const PERSONAS: Record<string, Persona> = {
 export function buildPreviewCard(profession: Profession): CardData {
   const persona = PERSONAS[profession.id];
   if (!persona) {
-    return { ...DEFAULT_CARD, accent: profession.themeId, profession: profession.id };
+    return { ...DEFAULT_CARD, accent: profession.themeId as CardData["accent"], profession: profession.id };
   }
 
   const photo = `https://i.pravatar.cc/400?img=${persona.pravatarId}`;
@@ -998,7 +998,7 @@ export function buildPreviewCard(profession: Profession): CardData {
 
   return {
     ...DEFAULT_CARD,
-    accent: profession.themeId,
+    accent: profession.themeId as CardData["accent"],
     profession: profession.id,
     name: persona.name,
     title: persona.title,
