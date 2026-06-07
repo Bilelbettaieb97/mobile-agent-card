@@ -91,7 +91,7 @@ function BuilderPage() {
           update("profession", p.id);
           update("accent", p.themeId as CardData["accent"]);
           setData(buildPreviewCard(p, "essentielle"));
-          setPlan("essentielle");
+          setPlan("vitrine");
           advanceTo("essentials");
         }}
         onChooseTheme={(themeId) => {
