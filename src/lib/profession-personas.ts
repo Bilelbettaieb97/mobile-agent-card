@@ -984,27 +984,25 @@ export const PERSONAS: Record<string, Persona> = {
    inspirer le visiteur avec plusieurs mises en page possibles.
    ============================================================ */
 
-export type VariantId = "essentielle" | "vitrine" | "pro";
+export type VariantId = "essentielle" | "vitrine";
 
 export const VARIANTS: { id: VariantId; label: string; hint: string }[] = [
   { id: "essentielle", label: "Essentielle", hint: "L'indispensable" },
   { id: "vitrine", label: "Vitrine", hint: "Tout le potentiel" },
-  { id: "pro", label: "Pro", hint: "Contact & crédibilité" },
 ];
 
 export const PLAN_LABEL: Record<VariantId, string> = {
   essentielle: "Essentielle",
-  pro: "Pro",
   vitrine: "Vitrine",
 };
 
 /** Rang d'un plan : plus c'est élevé, plus il débloque de sections. */
 export function planRank(p: VariantId): number {
-  return p === "essentielle" ? 0 : p === "pro" ? 1 : 2;
+  return p === "essentielle" ? 0 : 1;
 }
 
 /** Plan minimum requis pour activer chaque section.
- *  Essentielle = se présenter, Pro = convertir/rassurer, Vitrine = tout montrer. */
+ *  Essentielle = se présenter, Vitrine = tout montrer. */
 export type GatedSectionKey =
   | "identity" | "actions" | "vcardEnabled" | "aboutEnabled" | "contactEnabled"
   | "servicesEnabled" | "testimonialsEnabled" | "calendarEnabled" | "languagesEnabled" | "socialsEnabled"
@@ -1017,13 +1015,12 @@ export const SECTION_TIER: Record<GatedSectionKey, VariantId> = {
   actions: "essentielle",
   vcardEnabled: "essentielle",
   aboutEnabled: "essentielle",
-  // Pro
-  servicesEnabled: "pro",
-  testimonialsEnabled: "pro",
-  calendarEnabled: "pro",
-  languagesEnabled: "pro",
-  socialsEnabled: "pro",
   // Vitrine
+  servicesEnabled: "vitrine",
+  testimonialsEnabled: "vitrine",
+  calendarEnabled: "vitrine",
+  languagesEnabled: "vitrine",
+  socialsEnabled: "vitrine",
   statsEnabled: "vitrine",
   listingsEnabled: "vitrine",
   videoEnabled: "vitrine",
@@ -1086,89 +1083,72 @@ const SECTION_PROFILES: Record<string, VariantSet> = {
   Immobilier: {
     essentielle: essentielleWith("statsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "calendarEnabled", "languagesEnabled"),
   },
   Juridique: {
     essentielle: essentielleWith("servicesEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "languagesEnabled", "calendarEnabled", "testimonialsEnabled"),
   },
   Finance: {
     essentielle: essentielleWith("statsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "languagesEnabled", "testimonialsEnabled"),
   },
   Tech: {
     essentielle: essentielleWith("socialsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "socialsEnabled"),
   },
   Santé: {
     essentielle: essentielleWith("calendarEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "languagesEnabled", "testimonialsEnabled"),
   },
   Beauté: {
     essentielle: essentielleWith("calendarEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "languagesEnabled"),
   },
   Coaching: {
     essentielle: essentielleWith("ctaEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "languagesEnabled"),
   },
   Sport: {
     essentielle: essentielleWith("statsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "ctaEnabled"),
   },
   Restauration: {
     essentielle: essentielleWith("socialsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "languagesEnabled", "calendarEnabled"),
   },
   Artisanat: {
     essentielle: essentielleWith("servicesEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "calendarEnabled", "ctaEnabled"),
   },
   Mode: {
     essentielle: essentielleWith("socialsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "listingsEnabled", "servicesEnabled", "testimonialsEnabled", "socialsEnabled"),
   },
   Créatif: {
     essentielle: essentielleWith("listingsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "listingsEnabled", "testimonialsEnabled", "calendarEnabled"),
   },
   Éducation: {
     essentielle: essentielleWith("calendarEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "calendarEnabled", "testimonialsEnabled", "languagesEnabled"),
   },
   Voyage: {
     essentielle: essentielleWith("socialsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "languagesEnabled", "calendarEnabled", "testimonialsEnabled"),
   },
   Événementiel: {
     essentielle: essentielleWith("listingsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "calendarEnabled", "ctaEnabled"),
   },
   Média: {
     essentielle: essentielleWith("socialsEnabled"),
     vitrine: VITRINE_ALL,
-    pro: profile("aboutEnabled", "servicesEnabled", "statsEnabled", "calendarEnabled", "socialsEnabled"),
   },
 };
 
 const DEFAULT_VARIANTS: VariantSet = {
   essentielle: essentielleWith("servicesEnabled"),
   vitrine: VITRINE_ALL,
-  pro: profile("aboutEnabled", "servicesEnabled", "testimonialsEnabled", "calendarEnabled", "languagesEnabled"),
 };
 
 

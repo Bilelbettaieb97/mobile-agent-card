@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Sparkles, Check, ChevronDown, Lock, Crown, Zap } from "lucide-react";
+import { Sparkles, Check, ChevronDown, Lock, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -373,7 +373,6 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
 
 function planIcon(p: VariantId) {
   if (p === "vitrine") return <Crown className="h-3.5 w-3.5" />;
-  if (p === "pro") return <Zap className="h-3.5 w-3.5" />;
   return <Check className="h-3.5 w-3.5" />;
 }
 
@@ -385,7 +384,7 @@ function PlanBanner({
   activeCount: number;
   totalCount: number;
 }) {
-  const nextPlan: VariantId | null = plan === "essentielle" ? "pro" : plan === "pro" ? "vitrine" : null;
+  const nextPlan: VariantId | null = plan === "essentielle" ? "vitrine" : null;
   return (
     <div className="rounded-2xl border border-primary/30 bg-primary/5 p-3 flex flex-wrap items-center gap-3">
       <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/15 border border-primary/30 rounded-full px-2.5 py-1">
