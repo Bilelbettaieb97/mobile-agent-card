@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ArrowLeft, ArrowRight, Sparkles, Check, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BusinessCard } from "@/components/card/BusinessCard";
 import { PhoneFrame } from "@/components/card/PhoneFrame";
