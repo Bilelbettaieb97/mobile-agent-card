@@ -7,9 +7,22 @@ import {
 import type { CardData, ThemeAccent, Testimonial, TestimonialsStyle, Listing, Service, Language, Stat, Badge } from "@/lib/card-types";
 
 const ACCENTS: Record<ThemeAccent, { primary: string; gradient: string }> = {
-  gold:    { primary: "oklch(0.82 0.13 85)",  gradient: "linear-gradient(135deg, oklch(0.88 0.1 90), oklch(0.75 0.14 75))" },
-  emerald: { primary: "oklch(0.78 0.16 160)", gradient: "linear-gradient(135deg, oklch(0.85 0.14 165), oklch(0.65 0.16 155))" },
-  copper:  { primary: "oklch(0.74 0.16 45)",  gradient: "linear-gradient(135deg, oklch(0.82 0.14 55), oklch(0.62 0.17 35))" },
+  gold:     { primary: "oklch(0.82 0.13 85)",  gradient: "linear-gradient(135deg, oklch(0.88 0.1 90), oklch(0.75 0.14 75))" },
+  emerald:  { primary: "oklch(0.78 0.16 160)", gradient: "linear-gradient(135deg, oklch(0.85 0.14 165), oklch(0.65 0.16 155))" },
+  copper:   { primary: "oklch(0.74 0.16 45)",  gradient: "linear-gradient(135deg, oklch(0.82 0.14 55), oklch(0.62 0.17 35))" },
+  navy:     { primary: "oklch(0.55 0.13 255)", gradient: "linear-gradient(135deg, oklch(0.65 0.14 255), oklch(0.42 0.14 260))" },
+  sapphire: { primary: "oklch(0.65 0.18 245)", gradient: "linear-gradient(135deg, oklch(0.72 0.18 240), oklch(0.55 0.2 250))" },
+  teal:     { primary: "oklch(0.72 0.14 195)", gradient: "linear-gradient(135deg, oklch(0.8 0.12 190), oklch(0.6 0.15 200))" },
+  forest:   { primary: "oklch(0.62 0.13 145)", gradient: "linear-gradient(135deg, oklch(0.7 0.13 140), oklch(0.5 0.14 150))" },
+  crimson:  { primary: "oklch(0.6 0.2 25)",    gradient: "linear-gradient(135deg, oklch(0.7 0.2 30), oklch(0.5 0.22 20))" },
+  coral:    { primary: "oklch(0.74 0.17 35)",  gradient: "linear-gradient(135deg, oklch(0.82 0.15 50), oklch(0.66 0.2 25))" },
+  rose:     { primary: "oklch(0.72 0.16 0)",   gradient: "linear-gradient(135deg, oklch(0.82 0.12 5), oklch(0.65 0.2 355))" },
+  violet:   { primary: "oklch(0.65 0.2 295)",  gradient: "linear-gradient(135deg, oklch(0.72 0.18 290), oklch(0.55 0.22 300))" },
+  amber:    { primary: "oklch(0.78 0.16 70)",  gradient: "linear-gradient(135deg, oklch(0.85 0.14 80), oklch(0.7 0.17 60))" },
+  slate:    { primary: "oklch(0.62 0.04 240)", gradient: "linear-gradient(135deg, oklch(0.7 0.04 240), oklch(0.5 0.05 245))" },
+  sky:      { primary: "oklch(0.72 0.13 230)", gradient: "linear-gradient(135deg, oklch(0.8 0.11 225), oklch(0.62 0.15 235))" },
+  magenta:  { primary: "oklch(0.65 0.24 330)", gradient: "linear-gradient(135deg, oklch(0.72 0.22 325), oklch(0.55 0.26 335))" },
+  graphite: { primary: "oklch(0.72 0.02 250)", gradient: "linear-gradient(135deg, oklch(0.78 0.02 250), oklch(0.55 0.02 250))" },
 };
 
 function buildVCard(d: CardData) {
