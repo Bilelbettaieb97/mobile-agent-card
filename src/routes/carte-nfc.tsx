@@ -8,6 +8,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import cardStudio from "@/assets/nfc-card-studio.jpg";
+import cardHand from "@/assets/nfc-card-hand.jpg";
+import cardMacro from "@/assets/nfc-card-macro.jpg";
+
 
 
 export const Route = createFileRoute("/carte-nfc")({
