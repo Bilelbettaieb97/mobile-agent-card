@@ -279,24 +279,10 @@ export function BusinessCard({ data }: { data: CardData }) {
               return data.testimonialsEnabled && data.testimonials.length > 0 ? (
                 <section key="testimonials" className="mt-8">
                   <div className="px-5"><SectionTitle>Ils en parlent</SectionTitle></div>
-                  <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                    {data.testimonials.map((t) => (
-                      <article key={t.id} className="snap-start shrink-0 w-[82%] rounded-2xl bg-card border border-border p-4">
-                        <div className="flex gap-0.5" aria-label={`${t.rating} sur 5`}>
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className="h-3.5 w-3.5" fill={i < t.rating ? "currentColor" : "transparent"} style={{ color: "var(--card-accent)" }} strokeWidth={1.5} />
-                          ))}
-                        </div>
-                        <p className="mt-3 text-sm leading-relaxed">« {t.text} »</p>
-                        <div className="mt-3 pt-3 border-t border-border">
-                          <div className="text-sm font-medium">{t.name}</div>
-                          <div className="text-[11px] text-muted-foreground">{t.role}</div>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
+                  <TestimonialsBlock testimonials={data.testimonials} style={data.testimonialsStyle} />
                 </section>
               ) : null;
+
 
             case "calendar":
               return data.calendarEnabled && data.calendarUrl ? (
