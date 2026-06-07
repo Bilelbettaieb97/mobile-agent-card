@@ -170,7 +170,7 @@ function IdentitySection({ data }: { data: CardData }) {
             <img src={data.photo} alt="" aria-hidden
               className="absolute inset-0 h-full w-full object-cover opacity-40 blur-[2px] scale-110" />
           ) : null}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 0%, oklch(0.16 0.018 250 / 0.6) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 0%, var(--card-bg) 100%)", opacity: 0.6 }} />
         </div>
         <div className="relative bg-card-surface px-5 pb-5 pt-0 -mt-12 flex flex-col items-center text-center">
           <div className="relative">
@@ -198,7 +198,7 @@ function IdentitySection({ data }: { data: CardData }) {
   // default: centered
   return (
     <header className="relative overflow-hidden pt-3 pb-7 px-5"
-      style={{ background: "radial-gradient(120% 80% at 50% 0%, oklch(0.28 0.05 250) 0%, oklch(0.16 0.018 250) 60%)" }}>
+      style={{ background: "var(--card-header-bg)" }}>
       <div className="flex flex-col items-center text-center">
         <div className="relative">
           <div className="absolute -inset-1 rounded-full opacity-60 blur-md" style={{ background: "var(--card-accent-gradient)" }} />
@@ -898,7 +898,7 @@ function CtaSection({ data }: { data: CardData }) {
   return (
     <section className="px-5">
       <div className="rounded-2xl p-5 border border-card-border"
-        style={{ background: "linear-gradient(135deg, oklch(0.22 0.02 250), oklch(0.14 0.02 250))" }}>
+        style={{ background: "var(--card-surface)" }}>
         <h3 className="font-display text-lg leading-tight">{data.ctaTitle}</h3>
         {data.ctaText && <p className="mt-1.5 text-sm text-card-muted">{data.ctaText}</p>}
         {hasBtn && (
