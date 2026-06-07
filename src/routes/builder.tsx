@@ -16,8 +16,6 @@ import { StepFooter } from "@/components/builder/StepFooter";
 import { BrickList } from "@/components/builder/BrickList";
 import { buildPreviewCard, buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
 
-import { buildPreviewCard, buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
-
 
 type Step = "welcome" | "essentials" | "extras" | "edit";
 
