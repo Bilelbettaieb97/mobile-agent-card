@@ -75,7 +75,7 @@ function Nav() {
           <span className="font-display text-sm tracking-tight">Ma carte · NFC</span>
         </Link>
         <Button asChild size="sm" className="h-9 bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_4px_20px_-4px_rgba(234,179,8,0.5)]">
-          <a href="#commander">Commander · 29 €</a>
+          <a href="#configurer">Commander · 29 €</a>
         </Button>
       </div>
     </header>
@@ -140,7 +140,7 @@ function Hero() {
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Button asChild size="lg" className="h-14 px-7 text-base bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]">
-              <a href="#commander">
+              <a href="#configurer">
                 Commander ma carte <ArrowRight className="h-4 w-4 ml-1.5" />
               </a>
             </Button>
@@ -440,7 +440,7 @@ function Models() {
             <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3">{m.mat}</p>
             <p className="text-sm text-foreground/80 mb-5">{m.desc}</p>
             <Button asChild className="w-full bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500">
-              <a href="#commander">Choisir {m.name}</a>
+              <a href="#configurer">Choisir {m.name}</a>
             </Button>
           </div>
         ))}
@@ -572,7 +572,7 @@ function Pricing() {
               ))}
             </ul>
             <Button asChild size="lg" className="w-full h-14 text-base bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]">
-              <a href="#">Commander ma carte · 29 € <ArrowRight className="h-4 w-4 ml-1.5" /></a>
+              <a href="#configurer">Commander ma carte · 29 € <ArrowRight className="h-4 w-4 ml-1.5" /></a>
             </Button>
             <p className="text-center text-xs text-muted-foreground mt-3">Paiement sécurisé · CB, Apple Pay, Google Pay</p>
           </div>
@@ -696,7 +696,7 @@ function FinalCTA() {
         </p>
         <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild size="lg" className="h-14 px-8 text-base bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]">
-            <a href="#commander">Commander ma carte · 29 € <ArrowRight className="h-4 w-4 ml-1.5" /></a>
+            <a href="#configurer">Commander ma carte · 29 € <ArrowRight className="h-4 w-4 ml-1.5" /></a>
           </Button>
           <Button asChild size="lg" variant="outline" className="h-14 px-8 text-base">
             <Link to="/dashboard">Retour au dashboard</Link>
