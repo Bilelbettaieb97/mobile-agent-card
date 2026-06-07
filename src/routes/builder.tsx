@@ -697,3 +697,32 @@ function CtaBrick({ data, update }: BrickProps) {
   );
 }
 
+
+/* ---------- Variant picker ---------- */
+
+function VariantPicker({ brick, data, update }: { brick: BrickId; data: CardData; update: BrickProps["update"] }) {
+  const options = BRICK_VARIANTS[brick];
+  if (!options || options.length < 2) return null;
+  const current = (data.variants as Record<string, string>)[brick];
+  return (
+    <div>
+      <Label className="text-xs">Style</Label>
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        {options.map((o) => {
+          const active = current === o.id;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              onClick={() => update("variants", { ...data.variants, [brick]: o.id } as CardData["variants"])}
+              className={`rounded-xl border p-2.5 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
+            >
+              <div className="text-xs font-medium">{o.label}</div>
+              <div className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{o.hint}</div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
