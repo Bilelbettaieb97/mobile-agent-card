@@ -305,17 +305,10 @@ export function BuilderSections({ step, data, setData, update, plan, setPlan, co
             })}
           </div>
 
-          <div className="mt-8 pt-4 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:justify-between">
-            <Button variant="ghost" onClick={onBack} className="sm:w-auto">
-              <ArrowLeft className="h-4 w-4 mr-1.5" /> Retour
-            </Button>
-            <Button size="lg" onClick={onNext} className="h-12 text-base shadow-[var(--shadow-glow)]">
-              {isEssentials ? "Continuer" : "Personnaliser ma carte"}
-              <ArrowRight className="h-5 w-5 ml-1.5" />
-            </Button>
-          </div>
+          <div className="mt-6" />
 
         </section>
+
 
         {/* RIGHT preview */}
         <aside className="hidden lg:block">
