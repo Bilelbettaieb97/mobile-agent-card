@@ -70,6 +70,9 @@ export interface CardData {
 
   // Theme
   accent: ThemeAccent;
+
+  // Order of bricks (editor + preview)
+  sectionOrder: BrickId[];
 }
 
 export const DEFAULT_CARD: CardData = {
