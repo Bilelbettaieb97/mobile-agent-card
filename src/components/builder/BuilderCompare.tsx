@@ -24,23 +24,20 @@ export function BuilderCompare({ profession, onBack, onChoose }: Props) {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-7xl px-5 py-8">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4 mb-6">
-          <div className="min-w-0">
-            <p className="text-xs uppercase tracking-[0.18em] text-primary mb-2 flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" /> Étape 2 / 5
-            </p>
-            <h1 className="font-display text-3xl lg:text-4xl mb-2">Choisissez votre mise en page</h1>
-            <p className="text-sm text-muted-foreground max-w-2xl">
-              Voici 3 façons de présenter votre carte <strong className="text-foreground">{profession.label}</strong>.
-              La <strong className="text-foreground">Vitrine</strong> active toutes les briques — vous pourrez ensuite désactiver ce qui ne sert pas.
-            </p>
-          </div>
-          <Button variant="ghost" onClick={onBack} className="shrink-0">
+      <StepHeader
+        step={2}
+        title="Choisissez votre mise en page"
+        subtitle={`3 façons de présenter votre carte ${profession.label}. La Vitrine active toutes les briques — vous pourrez désactiver ce qui ne sert pas.`}
+      />
+
+      <div className="mx-auto max-w-7xl px-5 pb-10">
+        <div className="flex justify-end mb-4">
+          <Button variant="ghost" size="sm" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-1.5" /> Changer de métier
           </Button>
         </div>
+
+
 
         {/* Halo */}
         <div className="relative">
