@@ -24,6 +24,7 @@ import { useCardStore } from "@/lib/card-store";
 import type { CardData, Listing, Badge, Stat, BrickId, TestimonialsStyle } from "@/lib/card-types";
 import { BRICK_VARIANTS } from "@/lib/brick-variants";
 import { BuilderWelcome } from "@/components/builder/BuilderWelcome";
+import { BuilderSections } from "@/components/builder/BuilderSections";
 import { Palette } from "lucide-react";
 
 
