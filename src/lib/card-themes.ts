@@ -19,6 +19,7 @@ export interface ThemePalette {
   accent: string;      // accent color (icons, prices, key marks)
   gradient: string;    // CTA gradient + identity halo
   headerBg: string;    // centered identity header background
+  onAccent: string;    // text/icon color on top of accent gradient or solid accent
 }
 
 export interface ThemeMeta {
