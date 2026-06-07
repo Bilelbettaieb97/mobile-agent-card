@@ -381,3 +381,134 @@ export const THEMES_BY_ID: Record<string, ThemeMeta> = Object.fromEntries(
 );
 
 export type ThemeId = (typeof CARD_THEMES)[number]["id"];
+
+/* ----------------------------- professions ----------------------------- */
+
+export interface Profession {
+  id: string;
+  label: string;
+  category: string;
+  themeId: ThemeId;
+}
+
+export const PROFESSIONS: Profession[] = [
+  // Immobilier
+  { id: "agent-immo-prestige", label: "Agent immobilier prestige", category: "Immobilier", themeId: "gold" },
+  { id: "agent-immo", label: "Agent immobilier", category: "Immobilier", themeId: "navy" },
+  { id: "chasseur-immo", label: "Chasseur immobilier", category: "Immobilier", themeId: "graphite" },
+  { id: "promoteur", label: "Promoteur immobilier", category: "Immobilier", themeId: "emerald" },
+  { id: "diagnostiqueur", label: "Diagnostiqueur immobilier", category: "Immobilier", themeId: "sky" },
+
+  // Juridique & Conseil
+  { id: "avocat", label: "Avocat", category: "Juridique", themeId: "navy" },
+  { id: "avocat-affaires", label: "Avocat d'affaires", category: "Juridique", themeId: "paper" },
+  { id: "notaire", label: "Notaire", category: "Juridique", themeId: "paper" },
+  { id: "huissier", label: "Commissaire de justice", category: "Juridique", themeId: "graphite" },
+  { id: "expert-comptable", label: "Expert-comptable", category: "Juridique", themeId: "emerald" },
+  { id: "consultant", label: "Consultant / Conseil", category: "Juridique", themeId: "sapphire" },
+
+  // Finance
+  { id: "courtier", label: "Courtier en prêt", category: "Finance", themeId: "emerald" },
+  { id: "conseiller-patrimoine", label: "Conseiller en patrimoine", category: "Finance", themeId: "navy" },
+  { id: "assureur", label: "Assureur", category: "Finance", themeId: "navy" },
+  { id: "trader", label: "Analyste / Trader", category: "Finance", themeId: "graphite" },
+
+  // Tech & Digital
+  { id: "dev", label: "Développeur / Ingé logiciel", category: "Tech", themeId: "sapphire" },
+  { id: "freelance-tech", label: "Freelance tech", category: "Tech", themeId: "violet" },
+  { id: "saas-founder", label: "Fondateur SaaS", category: "Tech", themeId: "sapphire" },
+  { id: "data", label: "Data scientist", category: "Tech", themeId: "graphite" },
+  { id: "cybersec", label: "Expert cybersécurité", category: "Tech", themeId: "noir" },
+
+  // Santé & Bien-être
+  { id: "medecin", label: "Médecin généraliste", category: "Santé", themeId: "mint" },
+  { id: "dentiste", label: "Chirurgien-dentiste", category: "Santé", themeId: "sky" },
+  { id: "kine", label: "Kinésithérapeute", category: "Santé", themeId: "mint" },
+  { id: "osteo", label: "Ostéopathe", category: "Santé", themeId: "forest" },
+  { id: "psy", label: "Psychologue / Thérapeute", category: "Santé", themeId: "cream" },
+  { id: "naturopathe", label: "Naturopathe", category: "Santé", themeId: "forest" },
+  { id: "sage-femme", label: "Sage-femme", category: "Santé", themeId: "blush" },
+
+  // Beauté & Esthétique
+  { id: "coiffeur", label: "Coiffeur / Barbier", category: "Beauté", themeId: "blush" },
+  { id: "estheticienne", label: "Esthéticienne", category: "Beauté", themeId: "rose" },
+  { id: "maquilleuse", label: "Maquilleuse pro", category: "Beauté", themeId: "rose" },
+  { id: "ongles", label: "Prothésiste ongulaire", category: "Beauté", themeId: "blush" },
+  { id: "spa", label: "Spa / Institut", category: "Beauté", themeId: "cream" },
+
+  // Coaching & Lifestyle
+  { id: "coach-vie", label: "Coach de vie", category: "Coaching", themeId: "cream" },
+  { id: "coach-sportif", label: "Coach sportif", category: "Sport", themeId: "crimson" },
+  { id: "coach-pro", label: "Coach professionnel", category: "Coaching", themeId: "sapphire" },
+  { id: "nutritionniste", label: "Nutritionniste", category: "Coaching", themeId: "mint" },
+  { id: "yoga", label: "Prof de yoga / Pilates", category: "Coaching", themeId: "forest" },
+
+  // Sport
+  { id: "preparateur", label: "Préparateur physique", category: "Sport", themeId: "crimson" },
+  { id: "club-sport", label: "Club / Salle de sport", category: "Sport", themeId: "slate" },
+
+  // Restauration
+  { id: "restaurateur", label: "Restaurateur", category: "Restauration", themeId: "clay" },
+  { id: "chef", label: "Chef cuisinier", category: "Restauration", themeId: "bordeaux" },
+  { id: "patissier", label: "Pâtissier", category: "Restauration", themeId: "blush" },
+  { id: "sommelier", label: "Sommelier / Caviste", category: "Restauration", themeId: "bordeaux" },
+  { id: "barista", label: "Café / Barista", category: "Restauration", themeId: "copper" },
+  { id: "traiteur", label: "Traiteur", category: "Restauration", themeId: "clay" },
+
+  // Artisanat & BTP
+  { id: "menuisier", label: "Menuisier / Ébéniste", category: "Artisanat", themeId: "copper" },
+  { id: "plombier", label: "Plombier", category: "Artisanat", themeId: "slate" },
+  { id: "electricien", label: "Électricien", category: "Artisanat", themeId: "slate" },
+  { id: "macon", label: "Maçon / BTP", category: "Artisanat", themeId: "slate" },
+  { id: "bijoutier", label: "Bijoutier / Joaillier", category: "Artisanat", themeId: "noir" },
+  { id: "tatoueur", label: "Tatoueur", category: "Artisanat", themeId: "noir" },
+  { id: "fleuriste", label: "Fleuriste", category: "Artisanat", themeId: "rose" },
+  { id: "paysagiste", label: "Paysagiste / Jardinier", category: "Artisanat", themeId: "forest" },
+
+  // Mode
+  { id: "styliste", label: "Styliste / Créateur de mode", category: "Mode", themeId: "magenta" },
+  { id: "mannequin", label: "Mannequin / Modèle", category: "Mode", themeId: "noir" },
+  { id: "boutique-mode", label: "Boutique de mode", category: "Mode", themeId: "rose" },
+
+  // Créatif
+  { id: "photographe", label: "Photographe", category: "Créatif", themeId: "graphite" },
+  { id: "videaste", label: "Vidéaste / Réalisateur", category: "Créatif", themeId: "noir" },
+  { id: "graphiste", label: "Graphiste / Designer", category: "Créatif", themeId: "violet" },
+  { id: "illustrateur", label: "Illustrateur", category: "Créatif", themeId: "violet" },
+  { id: "musicien", label: "Musicien / DJ", category: "Créatif", themeId: "magenta" },
+  { id: "architecte", label: "Architecte", category: "Créatif", themeId: "sand" },
+  { id: "decorateur", label: "Architecte d'intérieur", category: "Créatif", themeId: "sand" },
+
+  // Éducation
+  { id: "prof", label: "Professeur particulier", category: "Éducation", themeId: "sky" },
+  { id: "formateur", label: "Formateur pro", category: "Éducation", themeId: "sapphire" },
+  { id: "nounou", label: "Garde d'enfants / Nounou", category: "Éducation", themeId: "sky" },
+
+  // Voyage & Hôtellerie
+  { id: "agent-voyage", label: "Agent de voyage", category: "Voyage", themeId: "sun" },
+  { id: "hotelier", label: "Hôtelier / Gîte", category: "Voyage", themeId: "sun" },
+  { id: "guide", label: "Guide touristique", category: "Voyage", themeId: "sun" },
+
+  // Événementiel & Marketing
+  { id: "wedding", label: "Wedding planner", category: "Événementiel", themeId: "rose" },
+  { id: "event", label: "Organisateur d'événements", category: "Événementiel", themeId: "magenta" },
+  { id: "marketing", label: "Consultant marketing", category: "Événementiel", themeId: "violet" },
+  { id: "community", label: "Community manager", category: "Événementiel", themeId: "magenta" },
+
+  // Édito / Médias
+  { id: "journaliste", label: "Journaliste", category: "Médias", themeId: "paper" },
+  { id: "ecrivain", label: "Écrivain / Auteur", category: "Médias", themeId: "graphite" },
+  { id: "podcasteur", label: "Podcasteur", category: "Médias", themeId: "bordeaux" },
+];
+
+export const PROFESSIONS_BY_THEME: Record<string, Profession[]> = PROFESSIONS.reduce(
+  (acc, p) => {
+    (acc[p.themeId] ??= []).push(p);
+    return acc;
+  },
+  {} as Record<string, Profession[]>,
+);
+
+export const PROFESSION_CATEGORIES = Array.from(
+  new Set(PROFESSIONS.map((p) => p.category)),
+);

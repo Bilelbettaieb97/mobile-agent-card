@@ -500,36 +500,138 @@ function SocialsBrick({ data, update }: BrickProps) {
   );
 }
 
-import { CARD_THEMES } from "@/lib/card-themes";
+import {
+  CARD_THEMES,
+  PROFESSIONS,
+  PROFESSION_CATEGORIES,
+  PROFESSIONS_BY_THEME,
+  THEMES_BY_ID,
+} from "@/lib/card-themes";
 
 function ThemeBrick({ data, update }: BrickProps) {
+  const [tab, setTab] = useState<"profession" | "theme">("profession");
+  const [query, setQuery] = useState("");
+
+  const applyProfession = (profId: string, themeId: string) => {
+    update("profession", profId);
+    update("accent", themeId as typeof data.accent);
+  };
+
+  const q = query.trim().toLowerCase();
+  const filtered = q
+    ? PROFESSIONS.filter(
+        (p) =>
+          p.label.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q),
+      )
+    : PROFESSIONS;
+
+  const grouped = PROFESSION_CATEGORIES.map((cat) => ({
+    cat,
+    items: filtered.filter((p) => p.category === cat),
+  })).filter((g) => g.items.length > 0);
+
   return (
-    <div className="grid grid-cols-2 gap-2">
-      {CARD_THEMES.map((t) => {
-        const active = data.accent === t.id;
-        const p = t.palette;
-        return (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => update("accent", t.id as typeof data.accent)}
-            className={`flex items-center gap-2.5 rounded-xl border p-2 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
-          >
-            <span
-              className="h-10 w-10 rounded-lg shrink-0 border overflow-hidden relative"
-              style={{ background: p.bg, borderColor: p.border }}
-              aria-hidden
-            >
-              <span className="absolute inset-1 rounded-md" style={{ background: p.surface, borderColor: p.border, borderWidth: 1, borderStyle: "solid" }} />
-              <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full" style={{ background: p.gradient }} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-xs font-medium truncate">{t.label}</span>
-              <span className="block text-[10px] text-muted-foreground truncate">{t.sector}</span>
-            </span>
-          </button>
-        );
-      })}
+    <div className="space-y-3">
+      {/* Tabs */}
+      <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5 text-xs">
+        <button
+          type="button"
+          onClick={() => setTab("profession")}
+          className={`px-3 py-1.5 rounded-md transition ${tab === "profession" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+        >
+          Par métier
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab("theme")}
+          className={`px-3 py-1.5 rounded-md transition ${tab === "theme" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+        >
+          Par thème
+        </button>
+      </div>
+
+      {tab === "profession" ? (
+        <div className="space-y-3">
+          <Input
+            placeholder="Rechercher un métier…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <div className="max-h-[420px] overflow-y-auto space-y-4 pr-1">
+            {grouped.map(({ cat, items }) => (
+              <div key={cat}>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                  {cat}
+                </div>
+                <div className="grid grid-cols-1 gap-1.5">
+                  {items.map((p) => {
+                    const theme = THEMES_BY_ID[p.themeId];
+                    const active = data.profession === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => applyProfession(p.id, p.themeId)}
+                        className={`flex items-center gap-2.5 rounded-lg border p-2 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
+                      >
+                        <span
+                          className="h-7 w-7 rounded-md shrink-0 border relative overflow-hidden"
+                          style={{ background: theme.palette.bg, borderColor: theme.palette.border }}
+                          aria-hidden
+                        >
+                          <span className="absolute inset-1 rounded-sm" style={{ background: theme.palette.surface }} />
+                          <span className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full" style={{ background: theme.palette.gradient }} />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-xs font-medium truncate">{p.label}</span>
+                          <span className="block text-[10px] text-muted-foreground truncate">Thème {theme.label}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+            {grouped.length === 0 && (
+              <div className="text-xs text-muted-foreground py-6 text-center">Aucun métier ne correspond.</div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-2">
+          {CARD_THEMES.map((t) => {
+            const active = data.accent === t.id;
+            const p = t.palette;
+            const suggested = PROFESSIONS_BY_THEME[t.id] ?? [];
+            const hint = suggested.slice(0, 2).map((s) => s.label).join(", ");
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  update("accent", t.id as typeof data.accent);
+                  update("profession", undefined);
+                }}
+                className={`flex items-center gap-2.5 rounded-xl border p-2 text-left transition ${active ? "border-primary bg-accent/40" : "border-border hover:border-foreground/30"}`}
+              >
+                <span
+                  className="h-10 w-10 rounded-lg shrink-0 border overflow-hidden relative"
+                  style={{ background: p.bg, borderColor: p.border }}
+                  aria-hidden
+                >
+                  <span className="absolute inset-1 rounded-md" style={{ background: p.surface, borderColor: p.border, borderWidth: 1, borderStyle: "solid" }} />
+                  <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full" style={{ background: p.gradient }} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-xs font-medium truncate">{t.label}</span>
+                  <span className="block text-[10px] text-muted-foreground truncate">{hint || t.sector}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
