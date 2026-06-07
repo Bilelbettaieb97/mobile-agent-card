@@ -41,9 +41,11 @@ function NfcLandingPage() {
       <Nav />
       <Hero />
       <SocialProofBar />
+      <Gallery />
       <VideoSection />
       <ProblemSection />
       <HowItWorks />
+
       <Configurator />
       <Models />
       <ComparisonTable />
