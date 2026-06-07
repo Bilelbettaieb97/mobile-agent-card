@@ -11,14 +11,14 @@ interface Props {
   accent?: string;
 }
 
-export function MetricCard({ icon: Icon, label, value, delta, spark, hint, accent = "primary" }: Props) {
+export function MetricCard({ icon: Icon, label, value, delta, spark, hint }: Props) {
   const positive = (delta ?? 0) >= 0;
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-card to-card/40 p-4 transition hover:border-primary/40 hover:-translate-y-0.5">
-      <div className={`absolute -right-8 -top-8 h-24 w-24 rounded-full bg-${accent}/10 blur-2xl opacity-60 group-hover:opacity-100 transition`} aria-hidden />
+      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-primary/10 blur-2xl opacity-60 group-hover:opacity-100 transition" aria-hidden />
       <div className="relative flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className={`h-7 w-7 grid place-items-center rounded-md bg-${accent}/15 text-${accent}`}>
+          <span className="h-7 w-7 grid place-items-center rounded-md bg-primary/15 text-primary">
             <Icon className="h-3.5 w-3.5" />
           </span>
           <span className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</span>
