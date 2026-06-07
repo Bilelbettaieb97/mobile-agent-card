@@ -65,11 +65,6 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
     list[next]?.focus();
   };
 
-  // Build all 3 variants once for the comparison view
-  const compareCards = useMemo(() => {
-    if (!selectedProfession) return [];
-    return VARIANTS.map((v) => ({ ...v, data: buildPreviewCard(selectedProfession, v.id) }));
-  }, [selectedProfession]);
 
   // Preview data — derives from current selection + variant
   const previewData = useMemo<CardData>(() => {
