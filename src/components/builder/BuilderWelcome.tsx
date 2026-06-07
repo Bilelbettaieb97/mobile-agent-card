@@ -208,7 +208,7 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
               </div>
             </div>
             <Button size="lg" onClick={handleStart} className="shrink-0">
-              Commencer
+              Continuer
               <ArrowRight className="h-4 w-4 ml-1.5" />
             </Button>
           </div>
