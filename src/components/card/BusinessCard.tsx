@@ -123,122 +123,134 @@ export function BusinessCard({ data }: { data: CardData }) {
         </div>
       </header>
 
-      {/* QUICK ACTIONS */}
-      {anyAction && (
-        <section className="px-5 -mt-4 relative z-10">
-          <div className="flex gap-2 justify-center">
-            {data.actions.call && (
-              <QuickAction icon={Phone} label="Appeler" href={`tel:${data.phone}`} primary />
-            )}
-            {data.actions.whatsapp && (
-              <QuickAction icon={MessageCircle} label="WhatsApp" href={`https://wa.me/${data.whatsapp}`} />
-            )}
-            {data.actions.email && (
-              <QuickAction icon={Mail} label="Mail" href={`mailto:${data.email}`} />
-            )}
-            {data.actions.website && (
-              <QuickAction icon={Globe} label="Site" href={`https://${data.website}`} />
-            )}
-          </div>
+      {/* ORDERED SECTIONS */}
+      {data.sectionOrder
+        .filter((id) => id !== "identity" && id !== "theme")
+        .map((id) => {
+          switch (id) {
+            case "actions":
+              return anyAction ? (
+                <section key="actions" className="px-5 -mt-4 relative z-10">
+                  <div className="flex gap-2 justify-center">
+                    {data.actions.call && (
+                      <QuickAction icon={Phone} label="Appeler" href={`tel:${data.phone}`} primary />
+                    )}
+                    {data.actions.whatsapp && (
+                      <QuickAction icon={MessageCircle} label="WhatsApp" href={`https://wa.me/${data.whatsapp}`} />
+                    )}
+                    {data.actions.email && (
+                      <QuickAction icon={Mail} label="Mail" href={`mailto:${data.email}`} />
+                    )}
+                    {data.actions.website && (
+                      <QuickAction icon={Globe} label="Site" href={`https://${data.website}`} />
+                    )}
+                  </div>
+                </section>
+              ) : null;
 
-          {data.vcardEnabled && (
-            <>
-              <button
-                onClick={handleSave}
-                className="mt-3 w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-primary-foreground active:scale-[0.99] transition"
-                style={{ background: "var(--card-accent-gradient)", boxShadow: "0 0 40px -8px var(--card-accent)" }}
-              >
-                <Download className="h-4 w-4" strokeWidth={2.4} />
-                Enregistrer le contact
-              </button>
-              {copied && <p className="mt-2 text-center text-xs" style={{ color: "var(--card-accent)" }}>Lien copié ✓</p>}
-            </>
-          )}
-        </section>
-      )}
+            case "vcard":
+              return data.vcardEnabled ? (
+                <section key="vcard" className="px-5 mt-3">
+                  <button
+                    onClick={handleSave}
+                    className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-medium text-primary-foreground active:scale-[0.99] transition"
+                    style={{ background: "var(--card-accent-gradient)", boxShadow: "0 0 40px -8px var(--card-accent)" }}
+                  >
+                    <Download className="h-4 w-4" strokeWidth={2.4} />
+                    Enregistrer le contact
+                  </button>
+                  {copied && <p className="mt-2 text-center text-xs" style={{ color: "var(--card-accent)" }}>Lien copié ✓</p>}
+                </section>
+              ) : null;
 
-      {/* STATS */}
-      {data.statsEnabled && data.stats.length > 0 && (
-        <section className="px-5 mt-6">
-          <div className="grid rounded-2xl bg-card border border-border overflow-hidden" style={{ gridTemplateColumns: `repeat(${data.stats.length}, minmax(0,1fr))` }}>
-            {data.stats.map((s, i) => (
-              <div key={i} className={`py-4 px-2 text-center ${i < data.stats.length - 1 ? "border-r border-border" : ""}`}>
-                <div className="font-display text-2xl" style={{ color: "var(--card-accent)" }}>{s.value}</div>
-                <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+            case "stats":
+              return data.statsEnabled && data.stats.length > 0 ? (
+                <section key="stats" className="px-5 mt-6">
+                  <div className="grid rounded-2xl bg-card border border-border overflow-hidden" style={{ gridTemplateColumns: `repeat(${data.stats.length}, minmax(0,1fr))` }}>
+                    {data.stats.map((s, i) => (
+                      <div key={i} className={`py-4 px-2 text-center ${i < data.stats.length - 1 ? "border-r border-border" : ""}`}>
+                        <div className="font-display text-2xl" style={{ color: "var(--card-accent)" }}>{s.value}</div>
+                        <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ) : null;
 
-      {/* ABOUT */}
-      {data.aboutEnabled && (
-        <section className="px-5 mt-7">
-          <SectionTitle>À propos</SectionTitle>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{data.bio}</p>
-          {data.badges.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {data.badges.map((b) => (
-                <span key={b.id} className="inline-flex items-center gap-1.5 rounded-full bg-card border border-border px-3 py-1.5 text-xs">
-                  <Award className="h-3.5 w-3.5" style={{ color: "var(--card-accent)" }} />
-                  {b.label}
-                </span>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* LISTINGS */}
-      {data.listingsEnabled && data.listings.length > 0 && (
-        <section className="mt-8">
-          <div className="px-5 flex items-end justify-between">
-            <SectionTitle>Sélection en vente</SectionTitle>
-          </div>
-          <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {data.listings.map((l) => (
-              <article key={l.id} className="snap-start shrink-0 w-[78%] rounded-2xl overflow-hidden bg-card border border-border">
-                <div className="aspect-[4/3] overflow-hidden bg-muted">
-                  {l.img ? (
-                    <img src={l.img} alt={l.title} className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="h-full w-full grid place-items-center"><ImageIcon className="h-8 w-8 text-muted-foreground" /></div>
+            case "about":
+              return data.aboutEnabled ? (
+                <section key="about" className="px-5 mt-7">
+                  <SectionTitle>À propos</SectionTitle>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{data.bio}</p>
+                  {data.badges.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {data.badges.map((b) => (
+                        <span key={b.id} className="inline-flex items-center gap-1.5 rounded-full bg-card border border-border px-3 py-1.5 text-xs">
+                          <Award className="h-3.5 w-3.5" style={{ color: "var(--card-accent)" }} />
+                          {b.label}
+                        </span>
+                      ))}
+                    </div>
                   )}
-                </div>
-                <div className="p-4">
-                  <h3 className="font-display text-lg leading-tight">{l.title || "Sans titre"}</h3>
-                  {l.meta && <p className="mt-0.5 text-xs text-muted-foreground">{l.meta}</p>}
-                  {l.price && <p className="mt-2 font-medium" style={{ color: "var(--card-accent)" }}>{l.price}</p>}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
+                </section>
+              ) : null;
 
-      {/* CONTACT DETAILS */}
-      {data.contactEnabled && (
-        <section className="px-5 mt-7">
-          <SectionTitle>Coordonnées</SectionTitle>
-          <ul className="mt-3 rounded-2xl bg-card border border-border divide-y divide-border overflow-hidden">
-            <ContactRow icon={Phone} label="Téléphone" value={data.phoneDisplay || data.phone} href={`tel:${data.phone}`} />
-            <ContactRow icon={Mail} label="Email" value={data.email} href={`mailto:${data.email}`} />
-            <ContactRow icon={Globe} label="Site web" value={data.website} href={`https://${data.website}`} />
-            <ContactRow icon={MapPin} label="Secteur" value={data.area} />
-          </ul>
-        </section>
-      )}
+            case "listings":
+              return data.listingsEnabled && data.listings.length > 0 ? (
+                <section key="listings" className="mt-8">
+                  <div className="px-5 flex items-end justify-between">
+                    <SectionTitle>Sélection en vente</SectionTitle>
+                  </div>
+                  <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    {data.listings.map((l) => (
+                      <article key={l.id} className="snap-start shrink-0 w-[78%] rounded-2xl overflow-hidden bg-card border border-border">
+                        <div className="aspect-[4/3] overflow-hidden bg-muted">
+                          {l.img ? (
+                            <img src={l.img} alt={l.title} className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="h-full w-full grid place-items-center"><ImageIcon className="h-8 w-8 text-muted-foreground" /></div>
+                          )}
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-display text-lg leading-tight">{l.title || "Sans titre"}</h3>
+                          {l.meta && <p className="mt-0.5 text-xs text-muted-foreground">{l.meta}</p>}
+                          {l.price && <p className="mt-2 font-medium" style={{ color: "var(--card-accent)" }}>{l.price}</p>}
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ) : null;
 
-      {/* SOCIALS */}
-      {data.socialsEnabled && (
-        <section className="px-5 mt-6">
-          <div className="flex justify-center gap-3">
-            {data.linkedin && <SocialIcon icon={Linkedin} href={data.linkedin} label="LinkedIn" />}
-            {data.instagram && <SocialIcon icon={Instagram} href={data.instagram} label="Instagram" />}
-            {data.whatsappSocial && <SocialIcon icon={MessageCircle} href={`https://wa.me/${data.whatsappSocial}`} label="WhatsApp" />}
-          </div>
-        </section>
-      )}
+            case "contact":
+              return data.contactEnabled ? (
+                <section key="contact" className="px-5 mt-7">
+                  <SectionTitle>Coordonnées</SectionTitle>
+                  <ul className="mt-3 rounded-2xl bg-card border border-border divide-y divide-border overflow-hidden">
+                    <ContactRow icon={Phone} label="Téléphone" value={data.phoneDisplay || data.phone} href={`tel:${data.phone}`} />
+                    <ContactRow icon={Mail} label="Email" value={data.email} href={`mailto:${data.email}`} />
+                    <ContactRow icon={Globe} label="Site web" value={data.website} href={`https://${data.website}`} />
+                    <ContactRow icon={MapPin} label="Secteur" value={data.area} />
+                  </ul>
+                </section>
+              ) : null;
+
+            case "socials":
+              return data.socialsEnabled ? (
+                <section key="socials" className="px-5 mt-6">
+                  <div className="flex justify-center gap-3">
+                    {data.linkedin && <SocialIcon icon={Linkedin} href={data.linkedin} label="LinkedIn" />}
+                    {data.instagram && <SocialIcon icon={Instagram} href={data.instagram} label="Instagram" />}
+                    {data.whatsappSocial && <SocialIcon icon={MessageCircle} href={`https://wa.me/${data.whatsappSocial}`} label="WhatsApp" />}
+                  </div>
+                </section>
+              ) : null;
+
+            default:
+              return null;
+          }
+        })}
+
 
       <footer className="px-5 pt-8 pb-10 text-center">
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {data.agency} · Carte digitale</p>
