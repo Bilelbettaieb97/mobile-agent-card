@@ -39,8 +39,11 @@ export interface Stat { label: string; value: string }
 export interface Listing { id: string; img: string; title: string; meta: string; price: string }
 export interface Badge { id: string; label: string }
 export interface Service { id: string; title: string; description: string }
-export interface Testimonial { id: string; name: string; role: string; text: string; rating: number }
+export interface Testimonial { id: string; name: string; role: string; text: string; rating: number; photo: string; link: string }
 export interface Language { id: string; name: string; level: string }
+
+export type TestimonialsStyle = "cards" | "stacked" | "compact";
+
 
 export interface CardData {
   // Identity (always on)
