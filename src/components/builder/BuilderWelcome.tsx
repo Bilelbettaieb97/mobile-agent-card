@@ -39,15 +39,31 @@ export function BuilderWelcome({ initialProfessionId, initialAccent, onConfirm }
     setVariant("vitrine");
   }, [selectedProfession?.id]);
 
-  // Lock body scroll while compare overlay is open
-  useEffect(() => {
-    if (!compareOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setCompareOpen(false); };
-    window.addEventListener("keydown", onKey);
-    return () => { document.body.style.overflow = prev; window.removeEventListener("keydown", onKey); };
-  }, [compareOpen]);
+  // Build all 3 variants once for the comparison view
+  const compareCards = useMemo(() => {
+    if (!selectedProfession) return [];
+    return VARIANTS.map((v) => ({ ...v, data: buildPreviewCard(selectedProfession, v.id) }));
+  }, [selectedProfession]);
+
+  // Keyboard navigation within the compare dialog: ←/→/Home/End move focus and selection
+  const compareGridRef = useRef<HTMLDivElement>(null);
+  const handleCompareKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+    if (!keys.includes(e.key)) return;
+    const buttons = compareGridRef.current?.querySelectorAll<HTMLButtonElement>(
+      'button[data-variant-card="true"]'
+    );
+    if (!buttons || buttons.length === 0) return;
+    const list = Array.from(buttons);
+    const current = list.findIndex((b) => b === document.activeElement);
+    let next = current;
+    if (e.key === "ArrowRight") next = current < 0 ? 0 : (current + 1) % list.length;
+    if (e.key === "ArrowLeft") next = current < 0 ? list.length - 1 : (current - 1 + list.length) % list.length;
+    if (e.key === "Home") next = 0;
+    if (e.key === "End") next = list.length - 1;
+    e.preventDefault();
+    list[next]?.focus();
+  };
 
   // Build all 3 variants once for the comparison view
   const compareCards = useMemo(() => {
