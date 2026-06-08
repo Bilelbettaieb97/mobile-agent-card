@@ -862,7 +862,7 @@ function Configurator() {
               ))}
             </div>
           </div>
-
+          <Button
             size="lg"
             onClick={() => setOrdered(true)}
             className="w-full h-14 bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]"
