@@ -821,7 +821,7 @@ function Configurator() {
               <Nfc className={`h-4 w-4 ${variant.accent}`} />
             </div>
             <div className="absolute bottom-6 left-5 right-5">
-              <div className="font-display text-2xl tracking-wide truncate" style={{ background: variant.text, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              <div className="font-display text-2xl tracking-wide truncate" style={{ backgroundImage: variant.text, WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 {name || "Votre nom"}
               </div>
               <div className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5 truncate">
