@@ -33,6 +33,7 @@ import { Route as DashboardHelpRouteImport } from './routes/dashboard.help'
 import { Route as DashboardContactsRouteImport } from './routes/dashboard.contacts'
 import { Route as DashboardCardRouteImport } from './routes/dashboard.card'
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
+import { Route as DashboardAuditRouteImport } from './routes/dashboard.audit'
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as DashboardAccountRouteImport } from './routes/dashboard.account'
 import { Route as AuthenticatedBuilderRouteImport } from './routes/_authenticated/builder'
@@ -156,6 +157,11 @@ const DashboardBillingRoute = DashboardBillingRouteImport.update({
   path: '/billing',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardAuditRoute = DashboardAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/builder': typeof AuthenticatedBuilderRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/audit': typeof DashboardAuditRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/card': typeof DashboardCardRoute
   '/dashboard/contacts': typeof DashboardContactsRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/builder': typeof AuthenticatedBuilderRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/audit': typeof DashboardAuditRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/card': typeof DashboardCardRoute
   '/dashboard/contacts': typeof DashboardContactsRoute
@@ -241,6 +249,7 @@ export interface FileRoutesById {
   '/_authenticated/builder': typeof AuthenticatedBuilderRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/audit': typeof DashboardAuditRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/card': typeof DashboardCardRoute
   '/dashboard/contacts': typeof DashboardContactsRoute
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/builder'
     | '/dashboard/account'
     | '/dashboard/analytics'
+    | '/dashboard/audit'
     | '/dashboard/billing'
     | '/dashboard/card'
     | '/dashboard/contacts'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/builder'
     | '/dashboard/account'
     | '/dashboard/analytics'
+    | '/dashboard/audit'
     | '/dashboard/billing'
     | '/dashboard/card'
     | '/dashboard/contacts'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/_authenticated/builder'
     | '/dashboard/account'
     | '/dashboard/analytics'
+    | '/dashboard/audit'
     | '/dashboard/billing'
     | '/dashboard/card'
     | '/dashboard/contacts'
@@ -526,6 +538,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBillingRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/audit': {
+      id: '/dashboard/audit'
+      path: '/audit'
+      fullPath: '/dashboard/audit'
+      preLoaderRoute: typeof DashboardAuditRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/analytics': {
       id: '/dashboard/analytics'
       path: '/analytics'
@@ -564,6 +583,7 @@ const AuthenticatedRouteRouteWithChildren =
 interface DashboardRouteChildren {
   DashboardAccountRoute: typeof DashboardAccountRoute
   DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardAuditRoute: typeof DashboardAuditRoute
   DashboardBillingRoute: typeof DashboardBillingRoute
   DashboardCardRoute: typeof DashboardCardRoute
   DashboardContactsRoute: typeof DashboardContactsRoute
@@ -584,6 +604,7 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAccountRoute: DashboardAccountRoute,
   DashboardAnalyticsRoute: DashboardAnalyticsRoute,
+  DashboardAuditRoute: DashboardAuditRoute,
   DashboardBillingRoute: DashboardBillingRoute,
   DashboardCardRoute: DashboardCardRoute,
   DashboardContactsRoute: DashboardContactsRoute,
