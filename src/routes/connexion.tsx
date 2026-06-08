@@ -41,7 +41,7 @@ function ConnexionPage() {
       return;
     }
 
-    navigate({ to: "/dashboard" });
+    navigate({ to: "/builder" });
   }
 
   return (
@@ -114,7 +114,7 @@ function ConnexionPage() {
                 className="w-full"
                 onClick={async () => {
                   setError(null);
-                  const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
+                  const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/builder" });
                   if (r.error) setError(r.error.message);
                 }}
               >
