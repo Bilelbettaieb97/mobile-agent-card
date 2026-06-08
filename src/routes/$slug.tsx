@@ -22,22 +22,19 @@ function PublicCardPage() {
 
   useEffect(() => {
     supabase
-      .from("nfc_profiles")
-      .select("id, card_data, nom, actif")
-      .eq("slug", slug)
-      .eq("actif", true)
-      .maybeSingle()
+      .rpc("get_public_card_by_slug", { _slug: slug })
       .then(({ data, error }) => {
-        if (error || !data?.card_data) {
+        const row = Array.isArray(data) ? data[0] : data;
+        if (error || !row?.card_data) {
           setNotFound(true);
         } else {
-          setCardData(data.card_data as unknown as CardData);
+          setCardData(row.card_data as unknown as CardData);
 
           // Log view event — fire & forget
           supabase
             .from("nfc_analytics")
             .insert({
-              profile_id: data.id,
+              profile_id: row.id,
               event_type: "view",
               event_data: { slug },
             })
