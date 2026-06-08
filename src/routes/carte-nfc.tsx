@@ -790,6 +790,7 @@ function Configurator() {
   const [name, setName] = useState("Alex Martin");
   const [model, setModel] = useState<"onyx" | "aurum" | "carbone">("aurum");
   const [ordered, setOrdered] = useState(false);
+  const [position, setPosition] = useState<"bas" | "centre">("bas");
   const variant = useMemo(() => ({
     onyx: { bg: "linear-gradient(135deg,#0a0a0a 0%,#1f1f1f 100%)", border: "rgba(255,255,255,0.15)", text: "linear-gradient(180deg,#ffffff,#a3a3a3)", price: "29 €", accent: "text-white/80" },
     aurum: { bg: "linear-gradient(135deg,#0a0a0a 0%,#2a2419 50%,#0d0d0d 100%)", border: "rgba(234,179,8,0.35)", text: "linear-gradient(180deg,#f5e4a0,#c9a84c)", price: "59 €", accent: "text-amber-400" },
@@ -820,7 +821,7 @@ function Configurator() {
             <div className="absolute top-5 right-5 h-8 w-10 rounded-md grid place-items-center" style={{ border: `1px solid ${variant.border}`, background: "rgba(255,255,255,0.03)" }}>
               <Nfc className={`h-4 w-4 ${variant.accent}`} />
             </div>
-            <div className="absolute bottom-6 left-5 right-5">
+            <div className={`absolute left-5 right-5 transition-all duration-500 ${position === "centre" ? "top-1/2 -translate-y-1/2 text-center" : "bottom-6"}`}>
               <div className="font-display text-2xl tracking-wide truncate" style={{ backgroundImage: variant.text, WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 {name || "Votre nom"}
               </div>
@@ -849,7 +850,19 @@ function Configurator() {
               ))}
             </div>
           </div>
-          <Button
+          <div>
+            <label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Position du nom</label>
+            <div className="grid grid-cols-2 gap-2">
+              {(["bas", "centre"] as const).map((p) => (
+                <button key={p} onClick={() => setPosition(p)}
+                  className={`rounded-xl border p-3 text-left transition ${position === p ? "border-amber-500/60 bg-amber-500/5" : "border-border hover:border-amber-500/30"}`}>
+                  <div className="font-display text-sm capitalize">{p === "bas" ? "En bas" : "Au centre"}</div>
+                  <div className="text-[10px] text-muted-foreground mt-0.5">{p === "bas" ? "Style classique" : "Style minimaliste"}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
             size="lg"
             onClick={() => setOrdered(true)}
             className="w-full h-14 bg-gradient-to-br from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500 shadow-[0_10px_40px_-10px_rgba(234,179,8,0.6)]"
