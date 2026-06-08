@@ -55,8 +55,7 @@ export const listSignupEvents = createServerFn({ method: "GET" })
           null,
         provider:
           (u.app_metadata?.provider as string | undefined) ??
-          (Array.isArray(u.identities) && u.identities[0]?.provider) ??
-          null,
+          (Array.isArray(u.identities) ? u.identities[0]?.provider ?? null : null),
         created_at: u.created_at,
         email_confirmed_at: (u.email_confirmed_at as string | null) ?? null,
         last_sign_in_at: (u.last_sign_in_at as string | null) ?? null,
