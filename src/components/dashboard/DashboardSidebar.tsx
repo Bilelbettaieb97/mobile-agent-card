@@ -26,6 +26,7 @@ const PRIMARY = [
   { title: "Ma carte",       to: "/dashboard/card",      icon: CreditCard },
   { title: "Apparence",      to: "/dashboard/style",     icon: Palette },
   { title: "Liens & réseaux",to: "/dashboard/links",     icon: Link2 },
+  { title: "Médias",         to: "/dashboard/media",     icon: ImageIcon },
 ] as const;
 
 const CRM = [
