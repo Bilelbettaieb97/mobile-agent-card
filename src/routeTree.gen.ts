@@ -11,11 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as InscriptionRouteImport } from './routes/inscription'
-import { Route as ConnexionRouteImport } from './routes/connexion'
-import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as CarteNfcRouteImport } from './routes/carte-nfc'
 import { Route as BuilderRouteImport } from './routes/builder'
+import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardTeamRouteImport } from './routes/dashboard.team'
@@ -44,19 +44,14 @@ const InscriptionRoute = InscriptionRouteImport.update({
   path: '/inscription',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConnexionRoute = ConnexionRouteImport.update({
-  id: '/connexion',
-  path: '/connexion',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SlugRoute = SlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CarteNfcRoute = CarteNfcRouteImport.update({
@@ -67,6 +62,11 @@ const CarteNfcRoute = CarteNfcRouteImport.update({
 const BuilderRoute = BuilderRouteImport.update({
   id: '/builder',
   path: '/builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SlugRoute = SlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -157,13 +157,13 @@ const DashboardAccountRoute = DashboardAccountRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/builder': typeof BuilderRoute
   '/carte-nfc': typeof CarteNfcRoute
-  '/dashboard': typeof DashboardRouteWithChildren
-  '/pricing': typeof PricingRoute
-  '/inscription': typeof InscriptionRoute
   '/connexion': typeof ConnexionRoute
-  '/$slug': typeof SlugRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/inscription': typeof InscriptionRoute
+  '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -183,12 +183,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/builder': typeof BuilderRoute
   '/carte-nfc': typeof CarteNfcRoute
-  '/pricing': typeof PricingRoute
-  '/inscription': typeof InscriptionRoute
   '/connexion': typeof ConnexionRoute
-  '/$slug': typeof SlugRoute
+  '/inscription': typeof InscriptionRoute
+  '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -209,13 +209,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/builder': typeof BuilderRoute
   '/carte-nfc': typeof CarteNfcRoute
-  '/dashboard': typeof DashboardRouteWithChildren
-  '/pricing': typeof PricingRoute
-  '/inscription': typeof InscriptionRoute
   '/connexion': typeof ConnexionRoute
-  '/$slug': typeof SlugRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/inscription': typeof InscriptionRoute
+  '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -237,13 +237,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$slug'
     | '/builder'
     | '/carte-nfc'
-    | '/dashboard'
-    | '/pricing'
-    | '/inscription'
     | '/connexion'
-    | '/$slug'
+    | '/dashboard'
+    | '/inscription'
+    | '/pricing'
     | '/dashboard/account'
     | '/dashboard/analytics'
     | '/dashboard/billing'
@@ -263,12 +263,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$slug'
     | '/builder'
     | '/carte-nfc'
-    | '/pricing'
-    | '/inscription'
     | '/connexion'
-    | '/$slug'
+    | '/inscription'
+    | '/pricing'
     | '/dashboard/account'
     | '/dashboard/analytics'
     | '/dashboard/billing'
@@ -288,13 +288,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/$slug'
     | '/builder'
     | '/carte-nfc'
-    | '/dashboard'
-    | '/pricing'
-    | '/inscription'
     | '/connexion'
-    | '/$slug'
+    | '/dashboard'
+    | '/inscription'
+    | '/pricing'
     | '/dashboard/account'
     | '/dashboard/analytics'
     | '/dashboard/billing'
@@ -315,13 +315,13 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SlugRoute: typeof SlugRoute
   BuilderRoute: typeof BuilderRoute
   CarteNfcRoute: typeof CarteNfcRoute
-  DashboardRoute: typeof DashboardRouteWithChildren
-  PricingRoute: typeof PricingRoute
-  InscriptionRoute: typeof InscriptionRoute
   ConnexionRoute: typeof ConnexionRoute
-  SlugRoute: typeof SlugRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  InscriptionRoute: typeof InscriptionRoute
+  PricingRoute: typeof PricingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -340,25 +340,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/connexion': {
-      id: '/connexion'
-      path: '/connexion'
-      fullPath: '/connexion'
-      preLoaderRoute: typeof ConnexionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$slug': {
-      id: '/$slug'
-      path: '/$slug'
-      fullPath: '/$slug'
-      preLoaderRoute: typeof SlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/carte-nfc': {
@@ -373,6 +366,13 @@ declare module '@tanstack/react-router' {
       path: '/builder'
       fullPath: '/builder'
       preLoaderRoute: typeof BuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$slug': {
+      id: '/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof SlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -541,14 +541,24 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SlugRoute: SlugRoute,
   BuilderRoute: BuilderRoute,
   CarteNfcRoute: CarteNfcRoute,
-  DashboardRoute: DashboardRouteWithChildren,
-  PricingRoute: PricingRoute,
-  InscriptionRoute: InscriptionRoute,
   ConnexionRoute: ConnexionRoute,
-  SlugRoute: SlugRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  InscriptionRoute: InscriptionRoute,
+  PricingRoute: PricingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
