@@ -14,6 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
+      nfc_analytics: {
+        Row: {
+          created_at: string
+          event_data: Json | null
+          event_type: string
+          id: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nfc_analytics_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "nfc_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nfc_profiles: {
+        Row: {
+          actif: boolean
+          bio: string | null
+          card_data: Json | null
+          couleur_accent: string | null
+          cover_url: string | null
+          created_at: string
+          email: string | null
+          entreprise: string | null
+          fonction: string | null
+          id: string
+          nom: string
+          photo_url: string | null
+          secteur: string | null
+          site_web: string | null
+          slug: string
+          telephone: string | null
+          updated_at: string
+          user_id: string
+          vcard_enabled: boolean | null
+        }
+        Insert: {
+          actif?: boolean
+          bio?: string | null
+          card_data?: Json | null
+          couleur_accent?: string | null
+          cover_url?: string | null
+          created_at?: string
+          email?: string | null
+          entreprise?: string | null
+          fonction?: string | null
+          id?: string
+          nom?: string
+          photo_url?: string | null
+          secteur?: string | null
+          site_web?: string | null
+          slug: string
+          telephone?: string | null
+          updated_at?: string
+          user_id: string
+          vcard_enabled?: boolean | null
+        }
+        Update: {
+          actif?: boolean
+          bio?: string | null
+          card_data?: Json | null
+          couleur_accent?: string | null
+          cover_url?: string | null
+          created_at?: string
+          email?: string | null
+          entreprise?: string | null
+          fonction?: string | null
+          id?: string
+          nom?: string
+          photo_url?: string | null
+          secteur?: string | null
+          site_web?: string | null
+          slug?: string
+          telephone?: string | null
+          updated_at?: string
+          user_id?: string
+          vcard_enabled?: boolean | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
