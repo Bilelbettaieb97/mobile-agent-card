@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { DEFAULT_CARD, DEFAULT_SECTION_ORDER, type CardData, type BrickId } from "./card-types";
 import { THEMES_BY_ID, PROFESSIONS } from "./card-themes";
 
-const KEY = "lovable.card.v1";
+const KEY = "card.v1";
 
 function normalizeOrder(order: unknown): BrickId[] {
   const valid = new Set<BrickId>(DEFAULT_SECTION_ORDER);
