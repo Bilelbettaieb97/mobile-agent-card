@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutGrid, CreditCard, Palette, BarChart3, User, Sparkles,
-  Users, Settings, Zap, Crown,
+  Users, Settings, Zap, Crown, Link2, Target, Package, Bell, Plug,
+  Receipt, HelpCircle, Building2,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useCardStore } from "@/lib/card-store";
@@ -21,16 +22,31 @@ import {
 } from "@/components/ui/sidebar";
 
 const PRIMARY = [
-  { title: "Vue d'ensemble", to: "/dashboard",         icon: LayoutGrid },
-  { title: "Ma carte",       to: "/dashboard/card",    icon: CreditCard },
-  { title: "Statistiques",   to: "/dashboard/share",   icon: BarChart3 },
+  { title: "Vue d'ensemble", to: "/dashboard",           icon: LayoutGrid },
+  { title: "Ma carte",       to: "/dashboard/card",      icon: CreditCard },
+  { title: "Apparence",      to: "/dashboard/style",     icon: Palette },
+  { title: "Liens & réseaux",to: "/dashboard/links",     icon: Link2 },
 ] as const;
 
-const SECONDARY: { title: string; to: string; icon: typeof Users; soon?: boolean }[] = [
-  { title: "Contacts",       to: "/dashboard/contacts", icon: Users,    soon: true },
-  { title: "Paramètres",     to: "/dashboard/settings", icon: Settings, soon: true },
-  { title: "Plan & compte",  to: "/dashboard/account",  icon: User },
-];
+const CRM = [
+  { title: "Contacts",       to: "/dashboard/contacts",  icon: Users },
+  { title: "Pipeline",       to: "/dashboard/leads",     icon: Target },
+  { title: "Statistiques",   to: "/dashboard/analytics", icon: BarChart3 },
+  { title: "Notifications",  to: "/dashboard/notifications", icon: Bell },
+] as const;
+
+const BUSINESS = [
+  { title: "Équipe",         to: "/dashboard/team",      icon: Building2 },
+  { title: "Commandes",      to: "/dashboard/orders",    icon: Package },
+  { title: "Intégrations",   to: "/dashboard/integrations", icon: Plug },
+  { title: "Facturation",    to: "/dashboard/billing",   icon: Receipt },
+] as const;
+
+const ACCOUNT = [
+  { title: "Paramètres",     to: "/dashboard/settings",  icon: Settings },
+  { title: "Aide & support", to: "/dashboard/help",      icon: HelpCircle },
+  { title: "Plan & compte",  to: "/dashboard/account",   icon: User },
+] as const;
 
 export function DashboardSidebar() {
   const { state } = useSidebar();
@@ -78,33 +94,52 @@ export function DashboardSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          {!collapsed && <SidebarGroupLabel>Espace</SidebarGroupLabel>}
+          {!collapsed && <SidebarGroupLabel>CRM & Audience</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>
-              {SECONDARY.map((item) => (
+              {CRM.map((item) => (
                 <SidebarMenuItem key={item.to}>
-                  <SidebarMenuButton
-                    asChild={!item.soon}
-                    isActive={isActive(item.to)}
-                    tooltip={item.title + (item.soon ? " (bientôt)" : "")}
-                    className={item.soon ? "opacity-60 cursor-not-allowed" : undefined}
-                  >
-                    {item.soon ? (
-                      <div className="flex items-center gap-2.5 w-full">
-                        <item.icon className="h-4 w-4 shrink-0" />
-                        {!collapsed && (
-                          <>
-                            <span>{item.title}</span>
-                            <span className="ml-auto text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Bientôt</span>
-                          </>
-                        )}
-                      </div>
-                    ) : (
-                      <Link to={item.to} className="flex items-center gap-2.5">
-                        <item.icon className="h-4 w-4 shrink-0" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </Link>
-                    )}
+                  <SidebarMenuButton asChild isActive={isActive(item.to)} tooltip={item.title}>
+                    <Link to={item.to} className="flex items-center gap-2.5">
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          {!collapsed && <SidebarGroupLabel>Business</SidebarGroupLabel>}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {BUSINESS.map((item) => (
+                <SidebarMenuItem key={item.to}>
+                  <SidebarMenuButton asChild isActive={isActive(item.to)} tooltip={item.title}>
+                    <Link to={item.to} className="flex items-center gap-2.5">
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          {!collapsed && <SidebarGroupLabel>Compte</SidebarGroupLabel>}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {ACCOUNT.map((item) => (
+                <SidebarMenuItem key={item.to}>
+                  <SidebarMenuButton asChild isActive={isActive(item.to)} tooltip={item.title}>
+                    <Link to={item.to} className="flex items-center gap-2.5">
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
