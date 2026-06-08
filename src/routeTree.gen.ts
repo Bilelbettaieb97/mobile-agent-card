@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as InscriptionRouteImport } from './routes/inscription'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as CarteNfcRouteImport } from './routes/carte-nfc'
@@ -43,6 +44,11 @@ const PricingRoute = PricingRouteImport.update({
 const InscriptionRoute = InscriptionRouteImport.update({
   id: '/inscription',
   path: '/inscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/carte-nfc': typeof CarteNfcRoute
   '/connexion': typeof ConnexionRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/demo': typeof DemoRoute
   '/inscription': typeof InscriptionRoute
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/builder': typeof BuilderRoute
   '/carte-nfc': typeof CarteNfcRoute
   '/connexion': typeof ConnexionRoute
+  '/demo': typeof DemoRoute
   '/inscription': typeof InscriptionRoute
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
@@ -222,6 +230,7 @@ export interface FileRoutesById {
   '/carte-nfc': typeof CarteNfcRoute
   '/connexion': typeof ConnexionRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/demo': typeof DemoRoute
   '/inscription': typeof InscriptionRoute
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
@@ -251,6 +260,7 @@ export interface FileRouteTypes {
     | '/carte-nfc'
     | '/connexion'
     | '/dashboard'
+    | '/demo'
     | '/inscription'
     | '/pricing'
     | '/dashboard/account'
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/builder'
     | '/carte-nfc'
     | '/connexion'
+    | '/demo'
     | '/inscription'
     | '/pricing'
     | '/dashboard/account'
@@ -304,6 +315,7 @@ export interface FileRouteTypes {
     | '/carte-nfc'
     | '/connexion'
     | '/dashboard'
+    | '/demo'
     | '/inscription'
     | '/pricing'
     | '/dashboard/account'
@@ -332,6 +344,7 @@ export interface RootRouteChildren {
   CarteNfcRoute: typeof CarteNfcRoute
   ConnexionRoute: typeof ConnexionRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  DemoRoute: typeof DemoRoute
   InscriptionRoute: typeof InscriptionRoute
   PricingRoute: typeof PricingRoute
 }
@@ -350,6 +363,13 @@ declare module '@tanstack/react-router' {
       path: '/inscription'
       fullPath: '/inscription'
       preLoaderRoute: typeof InscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -567,9 +587,20 @@ const rootRouteChildren: RootRouteChildren = {
   CarteNfcRoute: CarteNfcRoute,
   ConnexionRoute: ConnexionRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  DemoRoute: DemoRoute,
   InscriptionRoute: InscriptionRoute,
   PricingRoute: PricingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
