@@ -20,11 +20,22 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 const META: Record<string, { title: string; subtitle?: string }> = {
-  "/dashboard":         { title: "Vue d'ensemble", subtitle: "Pilotage de votre carte digitale" },
-  "/dashboard/card":    { title: "Ma carte",       subtitle: "Aperçu, QR code et partage" },
-  "/dashboard/style":   { title: "Apparence & style", subtitle: "Thème global et variantes par brique" },
-  "/dashboard/share":   { title: "Statistiques",   subtitle: "Vues, clics et engagement" },
-  "/dashboard/account": { title: "Plan & compte",  subtitle: "Abonnement, facturation et préférences" },
+  "/dashboard":              { title: "Vue d'ensemble",      subtitle: "Pilotage de votre carte digitale" },
+  "/dashboard/card":         { title: "Ma carte",            subtitle: "Aperçu, QR code et partage" },
+  "/dashboard/style":        { title: "Apparence & style",   subtitle: "Thème global et variantes par brique" },
+  "/dashboard/links":        { title: "Liens & réseaux",     subtitle: "Ordre, activation et clics" },
+  "/dashboard/share":        { title: "Statistiques",        subtitle: "Vues, clics et engagement" },
+  "/dashboard/contacts":     { title: "Contacts",            subtitle: "CRM des personnes qui vous ont scanné" },
+  "/dashboard/leads":        { title: "Pipeline commercial", subtitle: "Suivi des leads en kanban" },
+  "/dashboard/analytics":    { title: "Statistiques avancées", subtitle: "Tendances, heatmap, sources, villes" },
+  "/dashboard/notifications":{ title: "Notifications",       subtitle: "Feed temps réel & préférences" },
+  "/dashboard/team":         { title: "Équipe",              subtitle: "Membres, rôles, multi-cartes" },
+  "/dashboard/orders":       { title: "Commandes",           subtitle: "Historique cartes NFC et livraisons" },
+  "/dashboard/integrations": { title: "Intégrations",        subtitle: "HubSpot, Zapier, Calendly, Slack…" },
+  "/dashboard/billing":      { title: "Facturation",         subtitle: "Plan, méthode de paiement, factures" },
+  "/dashboard/settings":     { title: "Paramètres",          subtitle: "Profil, sécurité, RGPD" },
+  "/dashboard/help":         { title: "Aide & onboarding",   subtitle: "Checklist activation, tutos, support" },
+  "/dashboard/account":      { title: "Plan & compte",       subtitle: "Abonnement, facturation et préférences" },
 };
 
 function DashboardLayout() {
