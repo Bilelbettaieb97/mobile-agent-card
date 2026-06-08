@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuthStore } from "@/lib/auth-store";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { BuilderWelcome } from "@/components/builder/BuilderWelcome";
 import { BuilderSections } from "@/components/builder/BuilderSections";
 import { StepHeader, type StepNum } from "@/components/builder/StepHeader";
 import { buildPreviewCard, buildPreviewFromTheme, type VariantId } from "@/lib/profession-personas";
-
+import { useNavigate } from "@tanstack/react-router";
 
 type Step = "welcome" | "essentials" | "extras" | "edit";
 
@@ -25,7 +25,7 @@ const NUM_STEP: Record<StepNum, Step> = {
   1: "welcome", 2: "essentials", 3: "extras", 4: "edit",
 };
 
-export const Route = createFileRoute("/builder")({
+export const Route = createFileRoute("/_authenticated/builder")({
   head: () => ({
     meta: [
       { title: "Builder — Carte de visite digitale" },
@@ -388,4 +388,3 @@ function Confetti() {
     </div>
   );
 }
-

@@ -15,8 +15,8 @@ import { Route as DemoRouteImport } from './routes/demo'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as CarteNfcRouteImport } from './routes/carte-nfc'
-import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as SlugRouteImport } from './routes/$slug'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardTeamRouteImport } from './routes/dashboard.team'
@@ -35,6 +35,7 @@ import { Route as DashboardCardRouteImport } from './routes/dashboard.card'
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as DashboardAccountRouteImport } from './routes/dashboard.account'
+import { Route as AuthenticatedBuilderRouteImport } from './routes/_authenticated/builder'
 
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
@@ -66,14 +67,13 @@ const CarteNfcRoute = CarteNfcRouteImport.update({
   path: '/carte-nfc',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BuilderRoute = BuilderRouteImport.update({
-  id: '/builder',
-  path: '/builder',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SlugRoute = SlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -166,17 +166,22 @@ const DashboardAccountRoute = DashboardAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => DashboardRoute,
 } as any)
+const AuthenticatedBuilderRoute = AuthenticatedBuilderRouteImport.update({
+  id: '/builder',
+  path: '/builder',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
-  '/builder': typeof BuilderRoute
   '/carte-nfc': typeof CarteNfcRoute
   '/connexion': typeof ConnexionRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/demo': typeof DemoRoute
   '/inscription': typeof InscriptionRoute
   '/pricing': typeof PricingRoute
+  '/builder': typeof AuthenticatedBuilderRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -198,12 +203,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
-  '/builder': typeof BuilderRoute
   '/carte-nfc': typeof CarteNfcRoute
   '/connexion': typeof ConnexionRoute
   '/demo': typeof DemoRoute
   '/inscription': typeof InscriptionRoute
   '/pricing': typeof PricingRoute
+  '/builder': typeof AuthenticatedBuilderRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -225,14 +230,15 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$slug': typeof SlugRoute
-  '/builder': typeof BuilderRoute
   '/carte-nfc': typeof CarteNfcRoute
   '/connexion': typeof ConnexionRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/demo': typeof DemoRoute
   '/inscription': typeof InscriptionRoute
   '/pricing': typeof PricingRoute
+  '/_authenticated/builder': typeof AuthenticatedBuilderRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -256,13 +262,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$slug'
-    | '/builder'
     | '/carte-nfc'
     | '/connexion'
     | '/dashboard'
     | '/demo'
     | '/inscription'
     | '/pricing'
+    | '/builder'
     | '/dashboard/account'
     | '/dashboard/analytics'
     | '/dashboard/billing'
@@ -284,12 +290,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
-    | '/builder'
     | '/carte-nfc'
     | '/connexion'
     | '/demo'
     | '/inscription'
     | '/pricing'
+    | '/builder'
     | '/dashboard/account'
     | '/dashboard/analytics'
     | '/dashboard/billing'
@@ -310,14 +316,15 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/$slug'
-    | '/builder'
     | '/carte-nfc'
     | '/connexion'
     | '/dashboard'
     | '/demo'
     | '/inscription'
     | '/pricing'
+    | '/_authenticated/builder'
     | '/dashboard/account'
     | '/dashboard/analytics'
     | '/dashboard/billing'
@@ -339,8 +346,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   SlugRoute: typeof SlugRoute
-  BuilderRoute: typeof BuilderRoute
   CarteNfcRoute: typeof CarteNfcRoute
   ConnexionRoute: typeof ConnexionRoute
   DashboardRoute: typeof DashboardRouteWithChildren
@@ -393,18 +400,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CarteNfcRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/builder': {
-      id: '/builder'
-      path: '/builder'
-      fullPath: '/builder'
-      preLoaderRoute: typeof BuilderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/$slug': {
       id: '/$slug'
       path: '/$slug'
       fullPath: '/$slug'
       preLoaderRoute: typeof SlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -533,8 +540,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAccountRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_authenticated/builder': {
+      id: '/_authenticated/builder'
+      path: '/builder'
+      fullPath: '/builder'
+      preLoaderRoute: typeof AuthenticatedBuilderRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedBuilderRoute: typeof AuthenticatedBuilderRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedBuilderRoute: AuthenticatedBuilderRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface DashboardRouteChildren {
   DashboardAccountRoute: typeof DashboardAccountRoute
@@ -582,8 +607,8 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   SlugRoute: SlugRoute,
-  BuilderRoute: BuilderRoute,
   CarteNfcRoute: CarteNfcRoute,
   ConnexionRoute: ConnexionRoute,
   DashboardRoute: DashboardRouteWithChildren,
@@ -594,3 +619,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
