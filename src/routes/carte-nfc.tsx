@@ -808,7 +808,7 @@ function Configurator() {
         {/* Live card */}
         <div className="relative h-[340px] grid place-items-center">
           <div
-            className="h-56 w-[22rem] rounded-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] -rotate-6 transition-all duration-500"
+            className="relative h-56 w-[22rem] rounded-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] -rotate-6 transition-all duration-500 overflow-hidden"
             style={{ background: variant.bg, border: `1px solid ${variant.border}` }}
           >
             <div className="absolute inset-0 rounded-2xl opacity-40 pointer-events-none"
