@@ -26,6 +26,7 @@ const META: Record<string, { title: string; subtitle?: string }> = {
   "/dashboard/card":         { title: "Ma carte",            subtitle: "Aperçu, QR code et partage" },
   "/dashboard/style":        { title: "Apparence & style",   subtitle: "Thème global et variantes par brique" },
   "/dashboard/links":        { title: "Liens & réseaux",     subtitle: "Ordre, activation et clics" },
+  "/dashboard/media":        { title: "Médias",              subtitle: "Logo, photos d'annonces et bibliothèque" },
   "/dashboard/share":        { title: "Statistiques",        subtitle: "Vues, clics et engagement" },
   "/dashboard/contacts":     { title: "Contacts",            subtitle: "CRM des personnes qui vous ont scanné" },
   "/dashboard/leads":        { title: "Pipeline commercial", subtitle: "Suivi des leads en kanban" },
