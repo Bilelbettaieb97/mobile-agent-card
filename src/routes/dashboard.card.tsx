@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BrickList } from "@/components/builder/BrickList";
 import { BusinessCard } from "@/components/card/BusinessCard";
@@ -8,6 +9,8 @@ import { useCardStore } from "@/lib/card-store";
 import { CARD_THEMES } from "@/lib/card-themes";
 import type { CardData } from "@/lib/card-types";
 import { Sparkles, Check, ArrowRight, Layers, Palette, Share2, Smartphone } from "lucide-react";
+import { updateCard } from "@/lib/card-actions";
+import { getProfileMeta } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/dashboard/card")({
   component: MyCardPage,
@@ -15,7 +18,18 @@ export const Route = createFileRoute("/dashboard/card")({
 
 function MyCardPage() {
   const { data, setData, update, hydrated } = useCardStore();
-  const publicUrl = typeof window !== "undefined" ? window.location.origin + "/" : "https://macarte.app/";
+  const profile = getProfileMeta();
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://macarte.app";
+  const publicUrl = profile ? `${origin}/${profile.slug}` : `${origin}/`;
+
+  // Auto-save to Supabase after card changes (debounced 1.5s)
+  useEffect(() => {
+    if (!hydrated || !profile) return;
+    const timer = setTimeout(() => {
+      updateCard(profile.id, data).catch(console.error);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [data, hydrated]);
 
   if (!hydrated) {
     return <div className="p-8 text-muted-foreground">Chargement…</div>;

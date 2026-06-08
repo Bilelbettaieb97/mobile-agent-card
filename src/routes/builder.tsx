@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useAuthStore } from "@/lib/auth-store";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle2, Sparkles, Rocket, ArrowRight, Lock, QrCode,
@@ -133,11 +134,21 @@ function SuccessStep({
   goToStep: (n: StepNum) => void;
   onEditAgain: () => void;
 }) {
+  const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [showConfetti, setShowConfetti] = useState(true);
   useEffect(() => {
     const t = setTimeout(() => setShowConfetti(false), 2600);
     return () => clearTimeout(t);
   }, []);
+
+  function handleActivate() {
+    if (user) {
+      navigate({ to: "/pricing" });
+    } else {
+      navigate({ to: "/inscription", search: { redirect: "/pricing" } });
+    }
+  }
 
   // Recap counters from the user's card
   const recap = useMemo(() => {
@@ -263,16 +274,17 @@ function SuccessStep({
 
           {/* Primary CTA */}
           <div className="pt-1 space-y-2">
-            <Link to="/pricing" className="block">
+            <div className="block">
               <Button
                 size="lg"
                 className="w-full text-base h-14 shadow-[var(--shadow-elegant)] group"
+                onClick={handleActivate}
               >
                 <Rocket className="h-5 w-5 mr-2 transition-transform group-hover:-translate-y-0.5" />
                 Activer ma carte — 7 jours gratuits
                 <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-0.5" />
               </Button>
-            </Link>
+            </div>
             <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <ShieldCheck className="h-3 w-3 text-primary" /> 0 € aujourd'hui

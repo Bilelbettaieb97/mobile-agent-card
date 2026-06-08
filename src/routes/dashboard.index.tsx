@@ -6,13 +6,39 @@ import { MetricCard } from "@/components/dashboard/MetricCard";
 import { UpsellSection } from "@/components/dashboard/UpsellSection";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { getProfileMeta } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/dashboard/")({
   component: OverviewPage,
 });
 
+type Kpis = { vues: number; clics: number; vcards: number; scans: number };
+
 function OverviewPage() {
   const { data, hydrated } = useCardStore();
+  const [kpis, setKpis] = useState<Kpis>({ vues: 0, clics: 0, vcards: 0, scans: 0 });
+
+  useEffect(() => {
+    const profile = getProfileMeta();
+    if (!profile) return;
+    const since = new Date(Date.now() - 7 * 86_400_000).toISOString();
+    supabase
+      .from("nfc_analytics")
+      .select("event_type")
+      .eq("profile_id", profile.id)
+      .gte("created_at", since)
+      .then(({ data: rows }) => {
+        if (!rows) return;
+        setKpis({
+          vues: rows.filter((e) => e.event_type === "view").length,
+          clics: rows.filter((e) => e.event_type === "button_click").length,
+          vcards: rows.filter((e) => e.event_type === "vcard_download").length,
+          scans: rows.filter((e) => e.event_type === "qr_scan").length,
+        });
+      });
+  }, []);
 
   if (!hydrated) {
     return <div className="p-8"><SkeletonGrid /></div>;
@@ -46,10 +72,10 @@ function OverviewPage() {
       {/* KPIs */}
       <section>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <MetricCard icon={Eye} label="Vues · 7 j." value="—" hint="Disponible après publication" spark={[3,5,4,7,6,9,8]} delta={12} />
-          <MetricCard icon={MousePointerClick} label="Clics · 7 j." value="—" hint="Sur vos boutons d'action" spark={[2,4,3,5,4,6,7]} delta={8} />
-          <MetricCard icon={Smartphone} label="vCard ajoutées" value="—" hint="Contacts enregistrés" spark={[1,2,2,3,4,3,5]} delta={24} />
-          <MetricCard icon={QrCode} label="Scans QR" value="—" hint="Détection physique" spark={[0,1,3,2,4,5,4]} delta={-3} />
+          <MetricCard icon={Eye} label="Vues · 7 j." value={kpis.vues > 0 ? String(kpis.vues) : "—"} hint="Visiteurs de votre carte" spark={[3,5,4,7,6,9,8]} delta={12} />
+          <MetricCard icon={MousePointerClick} label="Clics · 7 j." value={kpis.clics > 0 ? String(kpis.clics) : "—"} hint="Sur vos boutons d'action" spark={[2,4,3,5,4,6,7]} delta={8} />
+          <MetricCard icon={Smartphone} label="vCard ajoutées" value={kpis.vcards > 0 ? String(kpis.vcards) : "—"} hint="Contacts enregistrés" spark={[1,2,2,3,4,3,5]} delta={24} />
+          <MetricCard icon={QrCode} label="Scans QR" value={kpis.scans > 0 ? String(kpis.scans) : "—"} hint="Détection physique" spark={[0,1,3,2,4,5,4]} delta={-3} />
         </div>
       </section>
 

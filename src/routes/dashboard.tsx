@@ -1,5 +1,5 @@
-import { createFileRoute, Outlet, useRouterState, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Outlet, useRouterState, Link, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { CommandPalette } from "@/components/dashboard/CommandPalette";
@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCardStore } from "@/lib/card-store";
 import { ExternalLink, Share2, Command, Circle } from "lucide-react";
+import { useAuthStore } from "@/lib/auth-store";
+import { getProfileMeta } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -43,8 +45,31 @@ function DashboardLayout() {
   const meta = META[pathname] ?? { title: "Dashboard" };
   const { data } = useCardStore();
   const [shareOpen, setShareOpen] = useState(false);
-  const publicUrl = typeof window !== "undefined" ? window.location.origin + "/" : "https://macarte.app/";
-  const isPublished = false; // future: derive from data/server
+  const { user, loading } = useAuthStore();
+  const navigate = useNavigate();
+
+  // Auth guard
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate({ to: "/inscription" });
+    }
+  }, [user, loading, navigate]);
+
+  // Build real publicUrl from profile stored after card creation
+  const profile = getProfileMeta();
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://macarte.app";
+  const publicUrl = profile ? `${origin}/${profile.slug}` : `${origin}/`;
+  const isPublished = profile?.actif ?? false;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background grid place-items-center">
+        <div className="animate-pulse text-muted-foreground text-sm">Chargement…</div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   return (
     <SidebarProvider>

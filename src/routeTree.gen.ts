@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as InscriptionRouteImport } from './routes/inscription'
+import { Route as ConnexionRouteImport } from './routes/connexion'
+import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CarteNfcRouteImport } from './routes/carte-nfc'
 import { Route as BuilderRouteImport } from './routes/builder'
@@ -34,6 +37,21 @@ import { Route as DashboardAccountRouteImport } from './routes/dashboard.account
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InscriptionRoute = InscriptionRouteImport.update({
+  id: '/inscription',
+  path: '/inscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SlugRoute = SlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -143,6 +161,9 @@ export interface FileRoutesByFullPath {
   '/carte-nfc': typeof CarteNfcRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/pricing': typeof PricingRoute
+  '/inscription': typeof InscriptionRoute
+  '/connexion': typeof ConnexionRoute
+  '/$slug': typeof SlugRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -165,6 +186,9 @@ export interface FileRoutesByTo {
   '/builder': typeof BuilderRoute
   '/carte-nfc': typeof CarteNfcRoute
   '/pricing': typeof PricingRoute
+  '/inscription': typeof InscriptionRoute
+  '/connexion': typeof ConnexionRoute
+  '/$slug': typeof SlugRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -189,6 +213,9 @@ export interface FileRoutesById {
   '/carte-nfc': typeof CarteNfcRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/pricing': typeof PricingRoute
+  '/inscription': typeof InscriptionRoute
+  '/connexion': typeof ConnexionRoute
+  '/$slug': typeof SlugRoute
   '/dashboard/account': typeof DashboardAccountRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -214,6 +241,9 @@ export interface FileRouteTypes {
     | '/carte-nfc'
     | '/dashboard'
     | '/pricing'
+    | '/inscription'
+    | '/connexion'
+    | '/$slug'
     | '/dashboard/account'
     | '/dashboard/analytics'
     | '/dashboard/billing'
@@ -236,6 +266,9 @@ export interface FileRouteTypes {
     | '/builder'
     | '/carte-nfc'
     | '/pricing'
+    | '/inscription'
+    | '/connexion'
+    | '/$slug'
     | '/dashboard/account'
     | '/dashboard/analytics'
     | '/dashboard/billing'
@@ -259,6 +292,9 @@ export interface FileRouteTypes {
     | '/carte-nfc'
     | '/dashboard'
     | '/pricing'
+    | '/inscription'
+    | '/connexion'
+    | '/$slug'
     | '/dashboard/account'
     | '/dashboard/analytics'
     | '/dashboard/billing'
@@ -283,6 +319,9 @@ export interface RootRouteChildren {
   CarteNfcRoute: typeof CarteNfcRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   PricingRoute: typeof PricingRoute
+  InscriptionRoute: typeof InscriptionRoute
+  ConnexionRoute: typeof ConnexionRoute
+  SlugRoute: typeof SlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -292,6 +331,27 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inscription': {
+      id: '/inscription'
+      path: '/inscription'
+      fullPath: '/inscription'
+      preLoaderRoute: typeof InscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$slug': {
+      id: '/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof SlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -485,6 +545,9 @@ const rootRouteChildren: RootRouteChildren = {
   CarteNfcRoute: CarteNfcRoute,
   DashboardRoute: DashboardRouteWithChildren,
   PricingRoute: PricingRoute,
+  InscriptionRoute: InscriptionRoute,
+  ConnexionRoute: ConnexionRoute,
+  SlugRoute: SlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

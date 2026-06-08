@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,6 +10,10 @@ import {
   Star, Users, Coffee, TrendingUp, Calendar,
 } from "lucide-react";
 import { UpsellSection } from "@/components/dashboard/UpsellSection";
+import { useCardStore } from "@/lib/card-store";
+import { createCard } from "@/lib/card-actions";
+import { CelebrationModal } from "@/components/CelebrationModal";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -90,6 +94,27 @@ const FAQ = [
 function PricingPage() {
   const [billing, setBilling] = useState<Billing>("yearly");
   const [selected, setSelected] = useState<Plan["id"]>("vitrine");
+  const [creating, setCreating] = useState(false);
+  const [celebrationSlug, setCelebrationSlug] = useState<string | null>(null);
+  const { data: cardData } = useCardStore();
+  const navigate = useNavigate();
+
+  async function handleActivate() {
+    setCreating(true);
+    try {
+      const { slug } = await createCard(cardData);
+      setCelebrationSlug(slug);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erreur inconnue";
+      if (msg.includes("Non connecté")) {
+        navigate({ to: "/inscription", search: { redirect: "/pricing" } });
+      } else {
+        toast.error(`Erreur lors de l'activation : ${msg}`);
+      }
+    } finally {
+      setCreating(false);
+    }
+  }
 
   const today = new Date();
   const trialEnd = new Date(today);
@@ -415,8 +440,15 @@ function PricingPage() {
               )}
             </div>
           </div>
-          <Button size="lg" className="h-12 shadow-[var(--shadow-elegant)] shrink-0">
-            {selected === "vitrine" ? (
+          <Button
+            size="lg"
+            className="h-12 shadow-[var(--shadow-elegant)] shrink-0"
+            onClick={handleActivate}
+            disabled={creating}
+          >
+            {creating ? (
+              <>Activation en cours…</>
+            ) : selected === "vitrine" ? (
               <>
                 <Rocket className="h-4 w-4 mr-2" />
                 Activer gratuitement
@@ -427,6 +459,19 @@ function PricingPage() {
           </Button>
         </div>
       </div>
+
+      {/* Celebration modal après activation */}
+      {celebrationSlug && (
+        <CelebrationModal
+          cardUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/${celebrationSlug}`}
+          nom={cardData.name || "vous"}
+          onClose={() => setCelebrationSlug(null)}
+          onDashboard={() => {
+            setCelebrationSlug(null);
+            navigate({ to: "/dashboard" });
+          }}
+        />
+      )}
     </main>
   );
 }
