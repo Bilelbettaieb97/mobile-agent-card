@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutGrid, CreditCard, Palette, BarChart3, User, Sparkles,
   Users, Settings, Zap, Crown, Link2, Target, Package, Bell, Plug,
-  Receipt, HelpCircle, Building2,
+  Receipt, HelpCircle, Building2, Image as ImageIcon,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useCardStore } from "@/lib/card-store";
@@ -26,6 +26,7 @@ const PRIMARY = [
   { title: "Ma carte",       to: "/dashboard/card",      icon: CreditCard },
   { title: "Apparence",      to: "/dashboard/style",     icon: Palette },
   { title: "Liens & réseaux",to: "/dashboard/links",     icon: Link2 },
+  { title: "Médias",         to: "/dashboard/media",     icon: ImageIcon },
 ] as const;
 
 const CRM = [

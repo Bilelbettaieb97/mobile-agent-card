@@ -24,6 +24,7 @@ import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
 import { Route as DashboardOrdersRouteImport } from './routes/dashboard.orders'
 import { Route as DashboardNotificationsRouteImport } from './routes/dashboard.notifications'
+import { Route as DashboardMediaRouteImport } from './routes/dashboard.media'
 import { Route as DashboardLinksRouteImport } from './routes/dashboard.links'
 import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardIntegrationsRouteImport } from './routes/dashboard.integrations'
@@ -109,6 +110,11 @@ const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardMediaRoute = DashboardMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardLinksRoute = DashboardLinksRouteImport.update({
   id: '/links',
   path: '/links',
@@ -173,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/integrations': typeof DashboardIntegrationsRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/links': typeof DashboardLinksRoute
+  '/dashboard/media': typeof DashboardMediaRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
@@ -198,6 +205,7 @@ export interface FileRoutesByTo {
   '/dashboard/integrations': typeof DashboardIntegrationsRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/links': typeof DashboardLinksRoute
+  '/dashboard/media': typeof DashboardMediaRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
@@ -225,6 +233,7 @@ export interface FileRoutesById {
   '/dashboard/integrations': typeof DashboardIntegrationsRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/links': typeof DashboardLinksRoute
+  '/dashboard/media': typeof DashboardMediaRoute
   '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
@@ -253,6 +262,7 @@ export interface FileRouteTypes {
     | '/dashboard/integrations'
     | '/dashboard/leads'
     | '/dashboard/links'
+    | '/dashboard/media'
     | '/dashboard/notifications'
     | '/dashboard/orders'
     | '/dashboard/settings'
@@ -278,6 +288,7 @@ export interface FileRouteTypes {
     | '/dashboard/integrations'
     | '/dashboard/leads'
     | '/dashboard/links'
+    | '/dashboard/media'
     | '/dashboard/notifications'
     | '/dashboard/orders'
     | '/dashboard/settings'
@@ -304,6 +315,7 @@ export interface FileRouteTypes {
     | '/dashboard/integrations'
     | '/dashboard/leads'
     | '/dashboard/links'
+    | '/dashboard/media'
     | '/dashboard/notifications'
     | '/dashboard/orders'
     | '/dashboard/settings'
@@ -431,6 +443,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardNotificationsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/media': {
+      id: '/dashboard/media'
+      path: '/media'
+      fullPath: '/dashboard/media'
+      preLoaderRoute: typeof DashboardMediaRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/links': {
       id: '/dashboard/links'
       path: '/links'
@@ -507,6 +526,7 @@ interface DashboardRouteChildren {
   DashboardIntegrationsRoute: typeof DashboardIntegrationsRoute
   DashboardLeadsRoute: typeof DashboardLeadsRoute
   DashboardLinksRoute: typeof DashboardLinksRoute
+  DashboardMediaRoute: typeof DashboardMediaRoute
   DashboardNotificationsRoute: typeof DashboardNotificationsRoute
   DashboardOrdersRoute: typeof DashboardOrdersRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
@@ -526,6 +546,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardIntegrationsRoute: DashboardIntegrationsRoute,
   DashboardLeadsRoute: DashboardLeadsRoute,
   DashboardLinksRoute: DashboardLinksRoute,
+  DashboardMediaRoute: DashboardMediaRoute,
   DashboardNotificationsRoute: DashboardNotificationsRoute,
   DashboardOrdersRoute: DashboardOrdersRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
