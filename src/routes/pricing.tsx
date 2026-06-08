@@ -99,17 +99,19 @@ function PricingPage() {
   const { data: cardData } = useCardStore();
   const navigate = useNavigate();
 
-  async function handleActivate() {
+  async function handleActivate(planId?: Plan["id"]) {
+    if (planId) setSelected(planId);
     setCreating(true);
     try {
       const { slug } = await createCard(cardData);
       setCelebrationSlug(slug);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erreur inconnue";
+      console.error("[pricing] handleActivate error:", err);
       if (msg.includes("Non connecté")) {
         navigate({ to: "/inscription", search: { redirect: "/pricing" } });
       } else {
-        toast.error(`Erreur lors de l'activation : ${msg}`);
+        toast.error(`Erreur lors de l'activation : ${msg}`, { duration: 8000 });
       }
     } finally {
       setCreating(false);
@@ -300,13 +302,14 @@ function PricingPage() {
                   className="w-full h-11 text-base"
                   variant={isHighlight ? "default" : "outline"}
                   size={isHighlight ? "lg" : "default"}
+                  disabled={creating}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelected(p.id);
+                    handleActivate(p.id);
                   }}
                 >
                   {isHighlight && <Rocket className="h-4 w-4 mr-2" />}
-                  {p.ctaLabel(billing)}
+                  {creating && selected === p.id ? "Activation en cours…" : p.ctaLabel(billing)}
                 </Button>
               </Card>
             </button>
@@ -443,7 +446,7 @@ function PricingPage() {
           <Button
             size="lg"
             className="h-12 shadow-[var(--shadow-elegant)] shrink-0"
-            onClick={handleActivate}
+            onClick={() => handleActivate()}
             disabled={creating}
           >
             {creating ? (

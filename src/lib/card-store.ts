@@ -26,7 +26,7 @@ function normalizeProfession(profession: unknown): string | undefined {
 export function loadCard(): CardData {
   if (typeof window === "undefined") return DEFAULT_CARD;
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(KEY) || localStorage.getItem("lovable.card.v1");
     if (!raw) return DEFAULT_CARD;
     const parsed = JSON.parse(raw);
     return {

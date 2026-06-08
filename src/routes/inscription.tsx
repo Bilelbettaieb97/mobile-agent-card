@@ -29,7 +29,7 @@ function InscriptionPage() {
     setError(null);
     setLoading(true);
 
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -40,6 +40,13 @@ function InscriptionPage() {
       } else {
         setError(signUpError.message);
       }
+      setLoading(false);
+      return;
+    }
+
+    // If Supabase requires email confirmation, session is null → show message
+    if (!signUpData.session) {
+      setError("Vérifiez votre email pour confirmer votre compte avant de continuer.");
       setLoading(false);
       return;
     }
