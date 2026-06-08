@@ -144,7 +144,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_public_card_by_slug: {
+        Args: { _slug: string }
+        Returns: {
+          bio: string
+          card_data: Json
+          couleur_accent: string
+          cover_url: string
+          email: string
+          entreprise: string
+          fonction: string
+          id: string
+          nom: string
+          photo_url: string
+          secteur: string
+          site_web: string
+          slug: string
+          telephone: string
+          vcard_enabled: boolean
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
