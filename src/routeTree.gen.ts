@@ -15,9 +15,20 @@ import { Route as CarteNfcRouteImport } from './routes/carte-nfc'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardTeamRouteImport } from './routes/dashboard.team'
 import { Route as DashboardStyleRouteImport } from './routes/dashboard.style'
 import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardOrdersRouteImport } from './routes/dashboard.orders'
+import { Route as DashboardNotificationsRouteImport } from './routes/dashboard.notifications'
+import { Route as DashboardLinksRouteImport } from './routes/dashboard.links'
+import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
+import { Route as DashboardIntegrationsRouteImport } from './routes/dashboard.integrations'
+import { Route as DashboardHelpRouteImport } from './routes/dashboard.help'
+import { Route as DashboardContactsRouteImport } from './routes/dashboard.contacts'
 import { Route as DashboardCardRouteImport } from './routes/dashboard.card'
+import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
+import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as DashboardAccountRouteImport } from './routes/dashboard.account'
 
 const PricingRoute = PricingRouteImport.update({
@@ -50,6 +61,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardTeamRoute = DashboardTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardStyleRoute = DashboardStyleRouteImport.update({
   id: '/style',
   path: '/style',
@@ -60,9 +76,59 @@ const DashboardShareRoute = DashboardShareRouteImport.update({
   path: '/share',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardOrdersRoute = DashboardOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLinksRoute = DashboardLinksRouteImport.update({
+  id: '/links',
+  path: '/links',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLeadsRoute = DashboardLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardIntegrationsRoute = DashboardIntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardHelpRoute = DashboardHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardContactsRoute = DashboardContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardCardRoute = DashboardCardRouteImport.update({
   id: '/card',
   path: '/card',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardBillingRoute = DashboardBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardAccountRoute = DashboardAccountRouteImport.update({
@@ -78,9 +144,20 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/card': typeof DashboardCardRoute
+  '/dashboard/contacts': typeof DashboardContactsRoute
+  '/dashboard/help': typeof DashboardHelpRoute
+  '/dashboard/integrations': typeof DashboardIntegrationsRoute
+  '/dashboard/leads': typeof DashboardLeadsRoute
+  '/dashboard/links': typeof DashboardLinksRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
+  '/dashboard/team': typeof DashboardTeamRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -89,9 +166,20 @@ export interface FileRoutesByTo {
   '/carte-nfc': typeof CarteNfcRoute
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/card': typeof DashboardCardRoute
+  '/dashboard/contacts': typeof DashboardContactsRoute
+  '/dashboard/help': typeof DashboardHelpRoute
+  '/dashboard/integrations': typeof DashboardIntegrationsRoute
+  '/dashboard/leads': typeof DashboardLeadsRoute
+  '/dashboard/links': typeof DashboardLinksRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
+  '/dashboard/team': typeof DashboardTeamRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -102,9 +190,20 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/pricing': typeof PricingRoute
   '/dashboard/account': typeof DashboardAccountRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/card': typeof DashboardCardRoute
+  '/dashboard/contacts': typeof DashboardContactsRoute
+  '/dashboard/help': typeof DashboardHelpRoute
+  '/dashboard/integrations': typeof DashboardIntegrationsRoute
+  '/dashboard/leads': typeof DashboardLeadsRoute
+  '/dashboard/links': typeof DashboardLinksRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/style': typeof DashboardStyleRoute
+  '/dashboard/team': typeof DashboardTeamRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -116,9 +215,20 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/pricing'
     | '/dashboard/account'
+    | '/dashboard/analytics'
+    | '/dashboard/billing'
     | '/dashboard/card'
+    | '/dashboard/contacts'
+    | '/dashboard/help'
+    | '/dashboard/integrations'
+    | '/dashboard/leads'
+    | '/dashboard/links'
+    | '/dashboard/notifications'
+    | '/dashboard/orders'
+    | '/dashboard/settings'
     | '/dashboard/share'
     | '/dashboard/style'
+    | '/dashboard/team'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -127,9 +237,20 @@ export interface FileRouteTypes {
     | '/carte-nfc'
     | '/pricing'
     | '/dashboard/account'
+    | '/dashboard/analytics'
+    | '/dashboard/billing'
     | '/dashboard/card'
+    | '/dashboard/contacts'
+    | '/dashboard/help'
+    | '/dashboard/integrations'
+    | '/dashboard/leads'
+    | '/dashboard/links'
+    | '/dashboard/notifications'
+    | '/dashboard/orders'
+    | '/dashboard/settings'
     | '/dashboard/share'
     | '/dashboard/style'
+    | '/dashboard/team'
     | '/dashboard'
   id:
     | '__root__'
@@ -139,9 +260,20 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/pricing'
     | '/dashboard/account'
+    | '/dashboard/analytics'
+    | '/dashboard/billing'
     | '/dashboard/card'
+    | '/dashboard/contacts'
+    | '/dashboard/help'
+    | '/dashboard/integrations'
+    | '/dashboard/leads'
+    | '/dashboard/links'
+    | '/dashboard/notifications'
+    | '/dashboard/orders'
+    | '/dashboard/settings'
     | '/dashboard/share'
     | '/dashboard/style'
+    | '/dashboard/team'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -197,6 +329,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/team': {
+      id: '/dashboard/team'
+      path: '/team'
+      fullPath: '/dashboard/team'
+      preLoaderRoute: typeof DashboardTeamRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/style': {
       id: '/dashboard/style'
       path: '/style'
@@ -211,11 +350,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardShareRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/orders': {
+      id: '/dashboard/orders'
+      path: '/orders'
+      fullPath: '/dashboard/orders'
+      preLoaderRoute: typeof DashboardOrdersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/notifications': {
+      id: '/dashboard/notifications'
+      path: '/notifications'
+      fullPath: '/dashboard/notifications'
+      preLoaderRoute: typeof DashboardNotificationsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/links': {
+      id: '/dashboard/links'
+      path: '/links'
+      fullPath: '/dashboard/links'
+      preLoaderRoute: typeof DashboardLinksRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/leads': {
+      id: '/dashboard/leads'
+      path: '/leads'
+      fullPath: '/dashboard/leads'
+      preLoaderRoute: typeof DashboardLeadsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/integrations': {
+      id: '/dashboard/integrations'
+      path: '/integrations'
+      fullPath: '/dashboard/integrations'
+      preLoaderRoute: typeof DashboardIntegrationsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/help': {
+      id: '/dashboard/help'
+      path: '/help'
+      fullPath: '/dashboard/help'
+      preLoaderRoute: typeof DashboardHelpRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/contacts': {
+      id: '/dashboard/contacts'
+      path: '/contacts'
+      fullPath: '/dashboard/contacts'
+      preLoaderRoute: typeof DashboardContactsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/card': {
       id: '/dashboard/card'
       path: '/card'
       fullPath: '/dashboard/card'
       preLoaderRoute: typeof DashboardCardRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/billing': {
+      id: '/dashboard/billing'
+      path: '/billing'
+      fullPath: '/dashboard/billing'
+      preLoaderRoute: typeof DashboardBillingRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/analytics': {
+      id: '/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardAnalyticsRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/account': {
@@ -230,17 +439,39 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardAccountRoute: typeof DashboardAccountRoute
+  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardBillingRoute: typeof DashboardBillingRoute
   DashboardCardRoute: typeof DashboardCardRoute
+  DashboardContactsRoute: typeof DashboardContactsRoute
+  DashboardHelpRoute: typeof DashboardHelpRoute
+  DashboardIntegrationsRoute: typeof DashboardIntegrationsRoute
+  DashboardLeadsRoute: typeof DashboardLeadsRoute
+  DashboardLinksRoute: typeof DashboardLinksRoute
+  DashboardNotificationsRoute: typeof DashboardNotificationsRoute
+  DashboardOrdersRoute: typeof DashboardOrdersRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardShareRoute: typeof DashboardShareRoute
   DashboardStyleRoute: typeof DashboardStyleRoute
+  DashboardTeamRoute: typeof DashboardTeamRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAccountRoute: DashboardAccountRoute,
+  DashboardAnalyticsRoute: DashboardAnalyticsRoute,
+  DashboardBillingRoute: DashboardBillingRoute,
   DashboardCardRoute: DashboardCardRoute,
+  DashboardContactsRoute: DashboardContactsRoute,
+  DashboardHelpRoute: DashboardHelpRoute,
+  DashboardIntegrationsRoute: DashboardIntegrationsRoute,
+  DashboardLeadsRoute: DashboardLeadsRoute,
+  DashboardLinksRoute: DashboardLinksRoute,
+  DashboardNotificationsRoute: DashboardNotificationsRoute,
+  DashboardOrdersRoute: DashboardOrdersRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardShareRoute: DashboardShareRoute,
   DashboardStyleRoute: DashboardStyleRoute,
+  DashboardTeamRoute: DashboardTeamRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -258,3 +489,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
